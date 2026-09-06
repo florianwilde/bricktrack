@@ -1,0 +1,46 @@
+# ---------------------------------------------------------------------------
+# Bricktrack - ein Service, ein Datenverzeichnis.
+#
+# TLS terminiert der Reverse Proxy (z. B. Nginx Proxy Manager). Der Container
+# spricht nur HTTP und muss nicht nach aussen erreichbar sein.
+# ---------------------------------------------------------------------------
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bricktrack:latest
+    container_name: bricktrack
+    restart: unless-stopped
+
+    env_file:
+      - .env
+
+    environment:
+      # Im Container liegen die Daten immer unter /data - der Pfad auf dem Host
+      # wird ueber den Bind-Mount unten bestimmt.
+      DATA_DIR: /data
+      PORT: 3000
+
+    ports:
+      # Nur an localhost binden: erreichbar wird die App ueber den Reverse
+      # Proxy. Laeuft der Proxy in einem anderen Docker-Netz, siehe README.
+      - "127.0.0.1:3000:3000"
+
+    volumes:
+      # Das eine Verzeichnis, das gesichert werden muss.
+      - ./data:/data
+
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

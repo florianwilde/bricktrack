@@ -1,0 +1,17 @@
+# Normalise line endings so files written on Windows still work in the
+# Linux container. A shell script with CRLF fails with the confusing
+# "no such file or directory" on its shebang line.
+* text=auto eol=lf
+
+*.sh          text eol=lf
+Dockerfile    text eol=lf
+*.yml         text eol=lf
+*.yaml        text eol=lf
+
+# Binary files must never be touched.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.pdf binary
+*.ico binary

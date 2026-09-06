@@ -1,36 +1,227 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bricktrack
 
-## Getting Started
+Self-hosted Verwaltung für die Spielzeug-Set-Sammlung deines Kindes – Lego,
+Playmobil, Cobi, BlueBrixx, Mega Bloks und jeden weiteren Hersteller, den du
+selbst anlegst.
 
-First, run the development server:
+Die App beantwortet zwei Fragen sofort:
+
+- **Welche Sets hat er?** → die Sammlung, mit Standort, Zustand und Statistik.
+- **Welche Sets hat er noch nicht?** → alles im Katalog ohne Sammlungseintrag.
+
+Aus den fehlenden Sets entsteht in wenigen Handgriffen eine Wunschliste, die
+du per Link mit Familie und Freunden teilst. Die reservieren dort ihr Geschenk
+– **ohne sich zu registrieren**, und ohne dass jemand doppelt kauft.
+
+> **Neu hier?** → [QUICKSTART.md](QUICKSTART.md) führt dich in 15 Minuten von
+> null zur laufenden Instanz, inklusive Nginx Proxy Manager.
+> **Bedienung?** → [docs/ANLEITUNG.md](docs/ANLEITUNG.md), bebildert.
+
+---
+
+## Was drin ist
+
+| | |
+|---|---|
+| **Katalog** | Sets aller Hersteller, Suche nach Nummer, Name oder EAN, Filter nach Hersteller, Thema, Jahr und Besitzstatus |
+| **Sammlung** | Was tatsächlich da ist: Status, Vollständigkeit, Zustand, Standort, Kaufpreis, „geschenkt von" |
+| **Anleitungen** | PDFs hochladen und im Browser blättern (pdf.js, ohne externe Dienste) oder auf die Hersteller-Seite verlinken |
+| **Fotos** | Eigene Bilder je Set – direkt aus der Handykamera |
+| **Wunschlisten** | Mehrfachauswahl aus den fehlenden Sets, Priorität, Reihenfolge, Termin |
+| **Teilen** | Öffentlicher Link ohne Anmeldung, Reservierung mit Namen, Storno-Link, Überraschungsmodus |
+| **Anmeldung** | E-Mail und Passwort oder Passkey (WebAuthn), mehrere Geräte je Konto |
+
+Mobil zuerst gebaut: Die App wird im Laden und im Kinderzimmer benutzt, nicht
+am Schreibtisch.
+
+## Technik
+
+Next.js 15 (App Router, Server Actions, TypeScript strict) · Tailwind CSS 4 ·
+shadcn/ui · SQLite über Drizzle ORM und better-sqlite3 · better-auth mit
+Passkey-Plugin · alles in **einem** Docker-Container.
+
+Keine Cloud, keine externen Dienste, keine Telemetrie. Der Browser lädt nichts
+von fremden Servern außer den Bild-URLs, die du selbst hinterlegt hast.
+
+Details zu Stack, Konventionen und Datenmodell: [CLAUDE.md](CLAUDE.md).
+
+---
+
+## Installation
+
+Ausführlich in [QUICKSTART.md](QUICKSTART.md). Die Kurzfassung:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://git.wilde-server.de/florian.wilde/bricktrack.git
+cd bricktrack
+
+cp .env.example .env
+# BASE_URL und BETTER_AUTH_SECRET setzen:
+#   openssl rand -base64 48
+
+mkdir -p ./data
+sudo chown -R 1000:1000 ./data     # der Container laeuft als UID 1000
+
+docker compose up -d --build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Danach `https://deine-domain` aufrufen. **Der erste registrierte Nutzer wird
+Administrator**, danach ist die Registrierung geschlossen.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Konfiguration
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Alle Werte kommen aus `.env` (Vorlage: `.env.example`).
 
-## Learn More
+| Variable | Pflicht | Standard | Bedeutung |
+|---|---|---|---|
+| `BASE_URL` | ja | `http://localhost:3000` | Öffentliche Adresse. Bestimmt die Passkey-Domain (RP-ID). |
+| `BETTER_AUTH_SECRET` | ja | – | Signiergeheimnis, mindestens 32 Zeichen. |
+| `DATA_DIR` | nein | `/data` | Datenverzeichnis im Container. Nicht ändern. |
+| `MAX_UPLOAD_MB` | nein | `25` | Größenlimit je Datei. Muss zum Proxy passen. |
+| `TZ` | nein | `Europe/Berlin` | Zeitzone des Containers. |
+| `REBRICKABLE_API_KEY` | nein | – | Ab Version 0.2.0: Lego-Import. Ohne Key läuft alles manuell. |
 
-To learn more about Next.js, take a look at the following resources:
+### Reverse Proxy
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+TLS wird außerhalb terminiert, der Container spricht nur HTTP auf Port 3000.
+Drei Dinge sind wichtig:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. **HTTPS mit Force-SSL** – ohne das keine Passkeys.
+2. **`client_max_body_size`** mindestens so groß wie `MAX_UPLOAD_MB`, sonst
+   scheitern große Anleitungs-PDFs mit „413".
+3. **`X-Forwarded-For`** durchreichen, damit das Rate-Limit auf dem
+   Login-Endpunkt die echte Client-IP sieht.
 
-## Deploy on Vercel
+Die vollständige Nginx-Proxy-Manager-Konfiguration steht in
+[QUICKSTART.md, Schritt 5](QUICKSTART.md#5-reverse-proxy-einrichten-nginx-proxy-manager).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Backup und Restore
+
+**Ein Verzeichnis reicht.** `./data` enthält die Datenbank *und* alle
+hochgeladenen Dateien:
+
+```
+data/
+  db/bricktrack.db          SQLite (dazu -wal und -shm)
+  files/images/sets/…       Set-Bilder
+  files/photos/…            eigene Fotos
+  files/instructions/…      Anleitungs-PDFs
+```
+
+**Sichern** (Container kurz anhalten, damit die Datenbank nicht mitten im
+Schreiben eingepackt wird):
+
+```bash
+docker compose stop app
+tar czf bricktrack-$(date +%F).tar.gz data .env
+docker compose start app
+```
+
+**Zurückspielen:**
+
+```bash
+docker compose down
+rm -rf data
+tar xzf bricktrack-2026-09-06.tar.gz
+sudo chown -R 1000:1000 ./data
+docker compose up -d
+```
+
+Migrationen laufen bei jedem Start automatisch – ein altes Backup wird beim
+Zurückspielen also auf den aktuellen Schemastand gehoben.
+
+## Aktualisieren
+
+```bash
+./update.sh
+```
+
+Das Skript sichert `./data` und `.env`, holt den neuen Stand, baut das Image,
+startet neu und wartet auf den Healthcheck. Wird der Container nicht gesund,
+rollt es Code **und** Container automatisch auf den vorherigen Commit zurück
+und sagt dir, wo die Sicherung liegt.
+
+```bash
+./update.sh --no-pull      # nur neu bauen, ohne git pull
+./update.sh --no-backup    # ohne Sicherung (nicht empfohlen)
+```
+
+Die letzten zehn Sicherungen bleiben unter `./backups` liegen.
+
+---
+
+## Entwicklung
+
+```bash
+corepack enable pnpm       # pnpm 10
+pnpm install
+
+cp .env.example .env       # DATA_DIR=./data, BASE_URL=http://localhost:3000
+pnpm db:migrate            # Datenbank anlegen
+pnpm db:seed               # Beispieldaten: 3 Hersteller, 10 Sets, 1 Wunschliste
+pnpm dev                   # http://localhost:3000
+```
+
+| Befehl | Wirkung |
+|---|---|
+| `pnpm dev` | Entwicklungsserver |
+| `pnpm build` | Produktionsbuild (standalone) |
+| `pnpm lint` / `pnpm typecheck` | ESLint / TypeScript – beide müssen sauber sein |
+| `pnpm test` | Unit-Tests (Vitest) |
+| `pnpm test:e2e` | Playwright-Smoke-Test gegen ein eigenes `./data-e2e` |
+| `pnpm db:generate` | SQL-Migration aus dem Drizzle-Schema erzeugen |
+| `pnpm db:migrate` | Migrationen anwenden |
+| `pnpm db:studio` | Drizzle Studio |
+
+> **Unter Windows** schlägt `pnpm build` mit `EPERM … symlink` fehl: der
+> Standalone-Output legt Symlinks an, wofür Windows den Entwicklermodus oder
+> administrative Rechte braucht. Der Docker-Build unter Linux ist davon nicht
+> betroffen. Zum Prüfen lokal: `docker build -t bricktrack:test .`
+
+Die Passkey-Anmeldung funktioniert lokal auch über `http://localhost` –
+WebAuthn behandelt localhost als sicheren Kontext. Auf jeder anderen Adresse
+braucht es HTTPS.
+
+---
+
+## Datenmodell in einem Absatz
+
+Ein **`set`** ist ein Katalogeintrag: Das Set existiert in der Welt,
+unabhängig davon, ob wir es besitzen. Ein **`collection_item`** verknüpft ein
+Set mit einem tatsächlich vorhandenen Exemplar – dasselbe Set zweimal im Regal
+sind zwei Einträge. Daraus folgt die zentrale Regel:
+
+> „Hat er nicht" = Sets im Katalog, zu denen kein `collection_item` mit einem
+> Status ungleich `sold` existiert.
+
+Ein verkauftes Exemplar zählt also nicht mehr als Besitz – das Set taucht
+wieder unter „fehlt noch" auf und darf zurück auf eine Wunschliste. Diese
+Regel steht an genau einer Stelle im Code: `src/lib/ownership.ts`.
+
+Das vollständige Modell inklusive aller Tabellen: [CLAUDE.md](CLAUDE.md#datenmodell).
+
+## Sicherheit
+
+- Jede Eingabe wird serverseitig mit zod validiert.
+- Uploads sind auf PDF, JPEG, PNG und WebP begrenzt – geprüft an den **Magic
+  Bytes**, nicht am gemeldeten MIME-Typ. Dateinamen erzeugt immer der Server.
+- Die öffentliche Wunschliste nutzt ausschließlich den Share-Token als
+  Schlüssel und gibt nichts außer den Wunschlisten-Daten preis. Sie ist
+  `noindex`.
+- Storno- und Einladungs-Token liegen nur als SHA-256-Hash in der Datenbank.
+- Session-Cookies sind `httpOnly`, `sameSite=lax` und im Betrieb `secure`.
+  Auf den Login-Endpunkten liegt ein Rate-Limit (5 Versuche pro Minute).
+- Set-Bilder sind ohne Anmeldung abrufbar – die geteilte Wunschliste braucht
+  sie. Anleitungs-PDFs und eigene Fotos **nie**.
+
+## Stand und Pläne
+
+Aktuelle Version und Änderungen: [CHANGELOG.md](CHANGELOG.md).
+Was als Nächstes kommt: [docs/ROADMAP.md](docs/ROADMAP.md).
+Wie lange was gedauert hat: [docs/DEVLOG.md](docs/DEVLOG.md).
+
+## Lizenz
+
+Privates Projekt, keine Lizenz vergeben.

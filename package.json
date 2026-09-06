@@ -20,7 +20,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "node scripts/reset-e2e.mjs && playwright test",
-    "screenshots": "playwright test --config=playwright.screenshots.config.ts"
+    "screenshots": "node scripts/reset-shots.mjs && playwright test --config=playwright.screenshots.config.ts"
   },
   "dependencies": {
     "@better-auth/passkey": "^1.7.3",
@@ -53,6 +53,7 @@
     "@types/react-dom": "^19",
     "dotenv": "^17.4.2",
     "drizzle-kit": "^0.31.10",
+    "esbuild": "^0.25.12",
     "eslint": "^9",
     "eslint-config-next": "15.5.25",
     "shadcn": "^4.21.0",
