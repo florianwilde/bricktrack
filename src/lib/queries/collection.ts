@@ -1,0 +1,160 @@
+import 'server-only';
+import { and, asc, countDistinct, eq, sql, type SQL } from 'drizzle-orm';
+import { db } from '@/db';
+import { collectionItem, location, manufacturer, set, theme } from '@/db/schema';
+import { SOLD_STATUS } from '@/lib/ownership';
+import type { CollectionStatus, Completeness, Condition } from '@/db/types';
+
+export type CollectionFilters = {
+  q?: string;
+  status?: CollectionStatus;
+  completeness?: Completeness;
+  locationId?: string;
+  manufacturerId?: string;
+};
+
+export type CollectionRow = {
+  id: string;
+  setId: string;
+  status: CollectionStatus;
+  completeness: Completeness;
+  condition: Condition | null;
+  locationId: string | null;
+  locationName: string | null;
+  acquiredAt: Date | null;
+  acquiredPriceCents: number | null;
+  acquiredFrom: string | null;
+  giftedBy: string | null;
+  lentOutTo: string | null;
+  notes: string | null;
+  setNumber: string;
+  setName: string;
+  year: number | null;
+  pieceCount: number | null;
+  imageUrl: string | null;
+  imagePath: string | null;
+  retailPriceCents: number | null;
+  manufacturerName: string;
+  themeName: string | null;
+};
+
+function buildWhere(filters: CollectionFilters): SQL | undefined {
+  const conditions: SQL[] = [];
+
+  const q = filters.q?.trim().toLowerCase();
+  if (q) {
+    conditions.push(
+      sql`(lower(${set.setNumber}) like ${`%${q}%`} or lower(${set.name}) like ${`%${q}%`})`,
+    );
+  }
+  if (filters.status) conditions.push(eq(collectionItem.status, filters.status));
+  if (filters.completeness) conditions.push(eq(collectionItem.completeness, filters.completeness));
+  if (filters.locationId) conditions.push(eq(collectionItem.locationId, filters.locationId));
+  if (filters.manufacturerId) conditions.push(eq(set.manufacturerId, filters.manufacturerId));
+
+  return conditions.length > 0 ? and(...conditions) : undefined;
+}
+
+export function listCollectionItems(filters: CollectionFilters): CollectionRow[] {
+  return db
+    .select({
+      id: collectionItem.id,
+      setId: collectionItem.setId,
+      status: collectionItem.status,
+      completeness: collectionItem.completeness,
+      condition: collectionItem.condition,
+      locationId: collectionItem.locationId,
+      locationName: location.name,
+      acquiredAt: collectionItem.acquiredAt,
+      acquiredPriceCents: collectionItem.acquiredPriceCents,
+      acquiredFrom: collectionItem.acquiredFrom,
+      giftedBy: collectionItem.giftedBy,
+      lentOutTo: collectionItem.lentOutTo,
+      notes: collectionItem.notes,
+      setNumber: set.setNumber,
+      setName: set.name,
+      year: set.year,
+      pieceCount: set.pieceCount,
+      imageUrl: set.imageUrl,
+      imagePath: set.imagePath,
+      retailPriceCents: set.retailPriceCents,
+      manufacturerName: manufacturer.name,
+      themeName: theme.name,
+    })
+    .from(collectionItem)
+    .innerJoin(set, eq(set.id, collectionItem.setId))
+    .innerJoin(manufacturer, eq(manufacturer.id, set.manufacturerId))
+    .leftJoin(theme, eq(theme.id, set.themeId))
+    .leftJoin(location, eq(location.id, collectionItem.locationId))
+    .where(buildWhere(filters))
+    .orderBy(asc(manufacturer.name), asc(set.setNumber))
+    .all();
+}
+
+export type CollectionStats = {
+  setCount: number;
+  itemCount: number;
+  pieceCount: number;
+  retailValueCents: number;
+  paidCents: number;
+  byManufacturer: Array<{ name: string; count: number }>;
+};
+
+/**
+ * The numbers on top of the collection page. Sold copies are history and do
+ * not count anywhere - same rule as everywhere else in the app.
+ */
+export function getCollectionStats(): CollectionStats {
+  const active = sql`${collectionItem.status} <> ${SOLD_STATUS}`;
+
+  const [totals] = db
+    .select({
+      setCount: countDistinct(collectionItem.setId),
+      itemCount: sql<number>`count(*)`.mapWith(Number),
+      pieceCount: sql<number>`coalesce(sum(${set.pieceCount}), 0)`.mapWith(Number),
+      retailValueCents: sql<number>`coalesce(sum(${set.retailPriceCents}), 0)`.mapWith(Number),
+      paidCents: sql<number>`coalesce(sum(${collectionItem.acquiredPriceCents}), 0)`.mapWith(Number),
+    })
+    .from(collectionItem)
+    .innerJoin(set, eq(set.id, collectionItem.setId))
+    .where(active)
+    .all();
+
+  const byManufacturer = db
+    .select({
+      name: manufacturer.name,
+      count: sql<number>`count(*)`.mapWith(Number),
+    })
+    .from(collectionItem)
+    .innerJoin(set, eq(set.id, collectionItem.setId))
+    .innerJoin(manufacturer, eq(manufacturer.id, set.manufacturerId))
+    .where(active)
+    .groupBy(manufacturer.id)
+    .orderBy(asc(manufacturer.name))
+    .all();
+
+  return {
+    setCount: totals?.setCount ?? 0,
+    itemCount: totals?.itemCount ?? 0,
+    pieceCount: totals?.pieceCount ?? 0,
+    retailValueCents: totals?.retailValueCents ?? 0,
+    paidCents: totals?.paidCents ?? 0,
+    byManufacturer,
+  };
+}
+
+/** Number of catalog sets that are not in the collection - the "fehlt" count. */
+export function countMissingSets(): number {
+  const [row] = db
+    .select({ total: sql<number>`count(*)`.mapWith(Number) })
+    .from(set)
+    .where(
+      sql`not exists (
+        select 1 from collection_item ci
+        where ci.set_id = ${set.id} and ci.status <> ${SOLD_STATUS}
+      )`,
+    )
+    .all();
+
+  return row?.total ?? 0;
+}
