@@ -11,13 +11,18 @@ const BASE_URL = `http://localhost:${PORT}`;
 
 export default defineConfig({
   testDir: './e2e',
+  // The screenshot run has its own config, its own server and its own data
+  // directory - it must never join the smoke run.
+  testMatch: 'smoke.spec.ts',
   globalSetup: './e2e/global-setup.ts',
   fullyParallel: false,
   workers: 1,
   retries: 0,
   // Generous: the dev server compiles each route on first visit.
   timeout: 240_000,
-  expect: { timeout: 15_000 },
+  // A first navigation to a route the dev server has not compiled yet can
+  // take well over ten seconds on a cold cache.
+  expect: { timeout: 30_000 },
   reporter: process.env.CI ? 'github' : 'list',
   use: {
     baseURL: BASE_URL,
