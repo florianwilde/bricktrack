@@ -21,7 +21,13 @@ export function Field({
     <div className={cn('space-y-2', className)}>
       <Label htmlFor={htmlFor}>
         {label}
-        {required ? <span className="text-destructive"> *</span> : null}
+        {/* aria-hidden keeps the accessible name clean ("Name", not "Name *");
+            the required state is already carried by the input itself. */}
+        {required ? (
+          <span aria-hidden className="text-destructive">
+            {' *'}
+          </span>
+        ) : null}
       </Label>
       {children}
       {hint ? <p className="text-xs text-muted-foreground">{hint}</p> : null}

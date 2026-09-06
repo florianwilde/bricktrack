@@ -69,7 +69,12 @@ export function SetActions({
       let wishlistId = targetId;
 
       if (wishlistId === NEW_LIST) {
-        const created = await createWishlist({ title: newTitle, occasion: 'other' });
+        // isPublic: a list created on the fly is meant to be shared right away.
+        const created = await createWishlist({
+          title: newTitle,
+          occasion: 'other',
+          isPublic: 'on',
+        });
         if (!created.ok) {
           toast.error(created.error);
           return;

@@ -85,7 +85,13 @@ export function ShareCard({
     <div className="space-y-2 rounded-lg border border-border p-3">
       <p className="text-sm font-medium">Link zum Teilen</p>
       <div className="flex gap-2">
-        <Input readOnly value={url} onFocus={(event) => event.currentTarget.select()} className="font-mono text-xs" />
+        <Input
+          readOnly
+          aria-label="Link zum Teilen"
+          value={url}
+          onFocus={(event) => event.currentTarget.select()}
+          className="font-mono text-xs"
+        />
         <Button variant="outline" size="icon" onClick={copy} aria-label="Link kopieren">
           {copied ? <Check className="text-emerald-600" /> : <Copy />}
         </Button>
