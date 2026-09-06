@@ -2,36 +2,36 @@
 
 Legende: `[ ]` offen · `[~]` in Arbeit · `[x]` fertig
 
-## Phase 1 - MVP (Ziel: v0.1.0)
+## Phase 1 - MVP (v0.1.0, abgeschlossen am 07.09.2026)
 
-Alles laeuft vollstaendig im Docker-Stack.
+Laeuft vollstaendig im Docker-Stack.
 
 - [x] Projekt-Scaffold (Next 15, Tailwind 4, shadcn/ui, pnpm)
 - [x] Datenmodell in Drizzle, initiale Migration
 - [x] Projektdokumentation (CLAUDE.md, Roadmap, Changelog, Devlog)
-- [ ] Auth: Registrierung des ersten Users (wird Admin), Login mit
+- [x] Auth: Registrierung des ersten Users (wird Admin), Login mit
       Passwort, Passkey anlegen und damit einloggen (Conditional UI),
       Passkey-Verwaltung unter "Konto", Rate-Limit auf Login
-- [ ] Mobile-first Layout-Shell mit Bottom-Navigation
-- [ ] Stammdaten: Hersteller, Themen (mit Unterthemen), Standorte
-- [ ] Set-Katalog: Kachelliste, Suche, Filter (Hersteller, Thema, Jahr,
+- [x] Mobile-first Layout-Shell mit Bottom-Navigation
+- [x] Stammdaten: Hersteller, Themen (mit Unterthemen), Standorte
+- [x] Set-Katalog: Kachelliste, Suche, Filter (Hersteller, Thema, Jahr,
       Besitzstatus), Anlegen und Bearbeiten
-- [ ] Upload-Pipeline (PDF/JPEG/PNG/WebP, Magic-Byte-Pruefung,
+- [x] Upload-Pipeline (PDF/JPEG/PNG/WebP, Magic-Byte-Pruefung,
       serverseitige Dateinamen, Thumbnails)
-- [ ] Set-Detailseite: Metadaten, Bild, Anleitungen mit pdf.js-Viewer,
+- [x] Set-Detailseite: Metadaten, Bild, Anleitungen mit pdf.js-Viewer,
       Fotos, Sammlungseintraege
-- [ ] Sammlung: Uebersicht, Filter, Statistik-Kacheln
-- [ ] Fehlende Sets (`/katalog?besitz=fehlt`) mit Mehrfachauswahl und
+- [x] Sammlung: Uebersicht, Filter, Statistik-Kacheln
+- [x] Fehlende Sets (`/katalog?besitz=fehlt`) mit Mehrfachauswahl und
       Bulk-Aktion "Zur Wunschliste hinzufuegen"
-- [ ] Wunschlisten: Verwaltung, Prioritaet, Sortierung, Teilen,
+- [x] Wunschlisten: Verwaltung, Prioritaet, Sortierung, Teilen,
       Ueberraschungsmodus, automatisches "erfuellt"
-- [ ] Oeffentliche Wunschliste `/w/[shareToken]` mit Reservierung ohne
+- [x] Oeffentliche Wunschliste `/w/[shareToken]` mit Reservierung ohne
       Anmeldung und Storno-Link
-- [ ] Seed-Skript (3 Hersteller, 10 Sets, 4 in Sammlung, 1 Wunschliste)
-- [ ] Unit-Tests (Besitzstatus, Bulk-Add inkl. Dubletten, Reservierung,
+- [x] Seed-Skript (3 Hersteller, 10 Sets, 4 in Sammlung, 1 Wunschliste)
+- [x] Unit-Tests (Besitzstatus, Bulk-Add inkl. Dubletten, Reservierung,
       Token-Erzeugung) und Playwright-Smoke-Test
-- [ ] Docker: Multi-Stage-Build, Compose-Stack, Healthcheck, Entrypoint
-- [ ] Dokumentation: README, QUICKSTART, bebilderte Anleitung,
+- [x] Docker: Multi-Stage-Build, Compose-Stack, Healthcheck, Entrypoint
+- [x] Dokumentation: README, QUICKSTART, bebilderte Anleitung,
       update.sh, Nginx-Proxy-Manager-Konfiguration
 
 ## Phase 2 - Komfort (Ziel: v0.2.0)

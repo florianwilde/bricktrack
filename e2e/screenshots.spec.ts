@@ -22,9 +22,14 @@ async function shoot(page: Page, name: string) {
   await page.screenshot({ path: shotPath(name), fullPage: true });
 }
 
+/** Small wrapper so every navigation waits the same way. */
+async function visit(page: Page, url: string) {
+  await page.goto(url, { waitUntil: 'domcontentloaded' });
+}
+
 test('Screenshots fuer die Anleitung', async ({ page, browser }) => {
   // --- 1. registration ------------------------------------------------------
-  await page.goto('/registrieren');
+  await visit(page, '/registrieren');
   await expect(page.getByText('Erstes Konto anlegen')).toBeVisible();
   await shoot(page, '01-registrierung');
 
@@ -41,25 +46,26 @@ test('Screenshots fuer die Anleitung', async ({ page, browser }) => {
   });
 
   // --- 2. dashboard ---------------------------------------------------------
-  await page.goto('/');
+  await visit(page, '/');
   await shoot(page, '02-start');
 
   // --- 3. master data -------------------------------------------------------
-  await page.goto('/verwaltung/hersteller');
-  await expect(page.getByText('Lego')).toBeVisible();
+  await visit(page, '/verwaltung/hersteller');
+  await expect(page.getByText('Lego', { exact: true })).toBeVisible();
   await shoot(page, '03-verwaltung-hersteller');
 
   // --- 4. catalog -----------------------------------------------------------
-  await page.goto('/katalog');
-  await expect(page.getByText('Familienhaus und Elektroauto')).toBeVisible();
+  await visit(page, '/katalog');
+  await expect(page.getByText('Familienhaus und Elektroauto').first()).toBeVisible();
   await shoot(page, '04-katalog');
 
   // --- 5. missing sets, selection mode --------------------------------------
-  await page.goto('/katalog?besitz=fehlt');
-  await expect(page.getByText('Fehlende Sets')).toBeVisible();
+  await visit(page, '/katalog?besitz=fehlt');
+  await expect(page.getByRole('heading', { name: 'Fehlende Sets' })).toBeVisible();
   await shoot(page, '05-fehlende-sets');
 
   await page.getByRole('button', { name: 'Auswählen' }).click();
+  await expect(page.getByText('Tippe die Sets an')).toBeVisible();
   const cards = page.locator('button[aria-pressed]');
   await cards.nth(0).click();
   await cards.nth(1).click();
@@ -72,25 +78,25 @@ test('Screenshots fuer die Anleitung', async ({ page, browser }) => {
   await page.getByRole('button', { name: 'Abbrechen' }).click();
 
   // --- 6. set detail --------------------------------------------------------
-  await page.goto('/katalog?q=60398');
+  await visit(page, '/katalog?q=60398');
   await page.getByText('Familienhaus und Elektroauto').first().click();
   await expect(page.getByRole('heading', { name: 'Familienhaus und Elektroauto' })).toBeVisible();
   await shoot(page, '08-set-detail');
 
   // --- 7. collection --------------------------------------------------------
-  await page.goto('/sammlung');
-  await expect(page.getByText('Wert nach UVP')).toBeVisible();
+  await visit(page, '/sammlung');
+  await expect(page.getByText('Wert nach UVP').first()).toBeVisible();
   await shoot(page, '09-sammlung');
 
   // --- 8. wishlist ----------------------------------------------------------
-  await page.goto('/wunschlisten');
-  await expect(page.getByText('Weihnachten 2026')).toBeVisible();
+  await visit(page, '/wunschlisten');
+  await expect(page.getByText('Weihnachten 2026').first()).toBeVisible();
   await shoot(page, '10-wunschlisten');
 
   const listHref = await page
     .getByRole('link', { name: /Weihnachten 2026/ })
     .getAttribute('href');
-  await page.goto(listHref!);
+  await visit(page, listHref!);
   await expect(page.getByRole('heading', { name: 'Weihnachten 2026' })).toBeVisible();
   await shoot(page, '11-wunschliste-bearbeiten');
 
@@ -100,7 +106,7 @@ test('Screenshots fuer die Anleitung', async ({ page, browser }) => {
   const visitorContext = await browser.newContext({ locale: 'de-DE' });
   const visitor = await visitorContext.newPage();
   await visitor.setViewportSize({ width: 412, height: 915 });
-  await visitor.goto(shareUrl);
+  await visit(visitor, shareUrl);
   await expect(visitor.getByRole('heading', { name: 'Weihnachten 2026' })).toBeVisible();
   await shoot(visitor, '12-oeffentliche-wunschliste');
 
@@ -118,7 +124,7 @@ test('Screenshots fuer die Anleitung', async ({ page, browser }) => {
   await shoot(page, '15-wunschliste-reserviert');
 
   // --- 11. account and passkeys --------------------------------------------
-  await page.goto('/konto');
-  await expect(page.getByText('Passkeys')).toBeVisible();
+  await visit(page, '/konto');
+  await expect(page.getByText('Passkeys', { exact: true })).toBeVisible();
   await shoot(page, '16-konto-passkeys');
 });

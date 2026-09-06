@@ -159,7 +159,13 @@ export function CatalogGrid({ sets, wishlists, defaultWishlistId, emptyState }: 
         )}
       </div>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+      <div
+        className={cn(
+          'grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4',
+          // Room for the fixed action bar, so the last row stays reachable.
+          selecting && 'pb-20',
+        )}
+      >
         {sets.map((item) => {
           const owned = item.ownedCopies > 0;
           const isSelected = selected.has(item.id);
