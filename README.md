@@ -79,6 +79,8 @@ Alle Werte kommen aus `.env` (Vorlage: `.env.example`).
 | `DATA_DIR` | nein | `/data` | Datenverzeichnis im Container. Nicht ändern. |
 | `MAX_UPLOAD_MB` | nein | `25` | Größenlimit je Datei. Muss zum Proxy passen. |
 | `TZ` | nein | `Europe/Berlin` | Zeitzone des Containers. |
+| `BIND_ADDRESS` | nein | `127.0.0.1` | Auf welcher Host-Adresse der Container lauscht. `0.0.0.0`, wenn der Proxy auf einem anderen Host läuft. |
+| `HOST_PORT` | nein | `3000` | Port auf dem Host, falls 3000 belegt ist. |
 | `REBRICKABLE_API_KEY` | nein | – | Ab Version 0.2.0: Lego-Import. Ohne Key läuft alles manuell. |
 
 ### Reverse Proxy

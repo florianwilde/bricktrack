@@ -116,15 +116,19 @@ proxy_set_header X-Real-IP         $remote_addr;
 `client_max_body_size` muss mindestens so groß sein wie `MAX_UPLOAD_MB` in
 deiner `.env` (Standard 25 MB); 64m gibt Luft.
 
-> **Läuft NPM im selben Docker-Netz?** Dann in `docker-compose.yml` das
-> Port-Mapping auf `- "3000:3000"` ändern oder ganz entfernen und beide
-> Container in ein gemeinsames Netzwerk hängen. Als Forward Hostname trägst du
-> dann `bricktrack` ein (den Container-Namen), Port `3000`.
+> **Wo lauscht der Container?** Voreinstellung ist `127.0.0.1:3000` – die App
+> ist dann ausschließlich über einen Proxy auf demselben Host erreichbar.
+> Zwei Fälle brauchen eine Anpassung in der `.env`:
 >
-> Die Voreinstellung `127.0.0.1:3000:3000` bindet den Port nur an localhost –
-> die App ist dann ausschließlich über den Proxy erreichbar. Sitzt NPM auf
-> einem **anderen** Host, muss das Mapping auf `3000:3000` geändert und der
-> Zugriff per Firewall beschränkt werden.
+> - **NPM läuft auf einem anderen Host:** `BIND_ADDRESS=0.0.0.0` setzen und
+>   den Zugriff per Firewall auf die Proxy-IP beschränken.
+> - **Port 3000 ist schon belegt:** `HOST_PORT=3001` (o. ä.) setzen und im
+>   Proxy denselben Port eintragen.
+>
+> **Läuft NPM im selben Docker-Netz?** Dann brauchst du gar kein
+> Port-Mapping: die `ports`-Zeile in `docker-compose.yml` entfernen, beide
+> Container in ein gemeinsames Netzwerk hängen und als Forward Hostname den
+> Container-Namen `bricktrack` mit Port `3000` eintragen.
 
 ## 6. Ersten Nutzer anlegen
 
@@ -155,15 +159,12 @@ eigener Passkey – Handy, Tablet, Laptop.
    **„Zur Wunschliste hinzufügen"**.
 7. **Wunschlisten → Liste öffnen → Link kopieren** und verschicken.
 
-Zum Ausprobieren gibt es Beispieldaten:
+Wie das im Einzelnen aussieht, zeigt die [bebilderte
+Anleitung](docs/ANLEITUNG.md).
 
-```bash
-docker compose exec app node -e "process.exit(0)"   # laeuft der Container?
-docker compose exec app sh -c 'echo "Seed nur in der Entwicklung"'
-```
-
-Das Seed-Skript ist bewusst nicht im Produktions-Image. Zum Ausprobieren
-lokal: `pnpm db:seed`.
+> Beispieldaten (`pnpm db:seed`) gibt es nur in der Entwicklungsumgebung – das
+> Produktions-Image bringt sie bewusst nicht mit, damit in deiner Sammlung
+> nichts steht, was dir nicht gehört.
 
 ---
 
