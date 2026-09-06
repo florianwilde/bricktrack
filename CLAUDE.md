@@ -33,9 +33,9 @@ Bild-URLs, die der Nutzer selbst hinterlegt hat.
   (`retail_price_cents`, `acquired_price_cents`). SQLite hat keinen
   Decimal-Typ; Float-Summen waeren ungenau. Umrechnung ausschliesslich
   in `src/lib/money.ts`.
-- Datenbankspalten in `snake_case` - **ausser** in den Auth-Tabellen,
-  die `camelCase` verwenden, weil das exakt der Ausgabe von
-  `@better-auth/cli generate` entspricht.
+- Alle Datenbankspalten in `snake_case`. Auch in den Auth-Tabellen -
+  der Drizzle-Adapter von better-auth loest Modelle ueber die
+  TypeScript-Property-Namen auf, nicht ueber die Spaltennamen.
 - IDs sind Text-UUIDs (`crypto.randomUUID()`), Zeitstempel sind
   `integer(mode: 'timestamp')`.
 - Routen sind deutsch (`/katalog`, `/sammlung`, `/wunschlisten`),

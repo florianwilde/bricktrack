@@ -1,12 +1,19 @@
-import { sql, type AnyColumn } from 'drizzle-orm';
-import { check, index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { sql } from 'drizzle-orm';
+import {
+  type AnySQLiteColumn,
+  check,
+  index,
+  integer,
+  sqliteTable,
+  text,
+} from 'drizzle-orm/sqlite-core';
 import { set } from './catalog';
 
 export const location = sqliteTable('location', {
   id: text('id').primaryKey(),
   /** e.g. "Regal Kinderzimmer", "Kiste Keller 3". */
   name: text('name').notNull(),
-  parentLocationId: text('parent_location_id').references((): AnyColumn => location.id, {
+  parentLocationId: text('parent_location_id').references((): AnySQLiteColumn => location.id, {
     onDelete: 'set null',
   }),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),

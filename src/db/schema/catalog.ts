@@ -1,5 +1,6 @@
-import { sql, type AnyColumn } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 import {
+  type AnySQLiteColumn,
   check,
   index,
   integer,
@@ -25,7 +26,7 @@ export const theme = sqliteTable(
     manufacturerId: text('manufacturer_id')
       .notNull()
       .references(() => manufacturer.id, { onDelete: 'cascade' }),
-    parentThemeId: text('parent_theme_id').references((): AnyColumn => theme.id, {
+    parentThemeId: text('parent_theme_id').references((): AnySQLiteColumn => theme.id, {
       onDelete: 'set null',
     }),
     name: text('name').notNull(),

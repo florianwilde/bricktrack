@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "5d6a1e8b-5b30-4c01-8044-1db2d04615e0",
+  "id": "426c9bf5-ccbd-473a-a819-11f8b9252494",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "account": {
@@ -14,57 +14,57 @@
           "notNull": true,
           "autoincrement": false
         },
-        "accountId": {
-          "name": "accountId",
+        "account_id": {
+          "name": "account_id",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "providerId": {
-          "name": "providerId",
+        "provider_id": {
+          "name": "provider_id",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "userId": {
-          "name": "userId",
+        "user_id": {
+          "name": "user_id",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "accessToken": {
-          "name": "accessToken",
+        "access_token": {
+          "name": "access_token",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "refreshToken": {
-          "name": "refreshToken",
+        "refresh_token": {
+          "name": "refresh_token",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "idToken": {
-          "name": "idToken",
+        "id_token": {
+          "name": "id_token",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "accessTokenExpiresAt": {
-          "name": "accessTokenExpiresAt",
+        "access_token_expires_at": {
+          "name": "access_token_expires_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "refreshTokenExpiresAt": {
-          "name": "refreshTokenExpiresAt",
+        "refresh_token_expires_at": {
+          "name": "refresh_token_expires_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
@@ -84,15 +84,15 @@
           "notNull": false,
           "autoincrement": false
         },
-        "createdAt": {
-          "name": "createdAt",
+        "created_at": {
+          "name": "created_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "updatedAt": {
-          "name": "updatedAt",
+        "updated_at": {
+          "name": "updated_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
@@ -103,18 +103,18 @@
         "account_user_idx": {
           "name": "account_user_idx",
           "columns": [
-            "userId"
+            "user_id"
           ],
           "isUnique": false
         }
       },
       "foreignKeys": {
-        "account_userId_user_id_fk": {
-          "name": "account_userId_user_id_fk",
+        "account_user_id_user_id_fk": {
+          "name": "account_user_id_user_id_fk",
           "tableFrom": "account",
           "tableTo": "user",
           "columnsFrom": [
-            "userId"
+            "user_id"
           ],
           "columnsTo": [
             "id"
@@ -253,22 +253,22 @@
           "notNull": false,
           "autoincrement": false
         },
-        "publicKey": {
-          "name": "publicKey",
+        "public_key": {
+          "name": "public_key",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "userId": {
-          "name": "userId",
+        "user_id": {
+          "name": "user_id",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "credentialID": {
-          "name": "credentialID",
+        "credential_id": {
+          "name": "credential_id",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -281,15 +281,15 @@
           "notNull": true,
           "autoincrement": false
         },
-        "deviceType": {
-          "name": "deviceType",
+        "device_type": {
+          "name": "device_type",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "backedUp": {
-          "name": "backedUp",
+        "backed_up": {
+          "name": "backed_up",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
@@ -309,8 +309,8 @@
           "notNull": false,
           "autoincrement": false
         },
-        "createdAt": {
-          "name": "createdAt",
+        "created_at": {
+          "name": "created_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
@@ -318,28 +318,28 @@
         }
       },
       "indexes": {
-        "passkey_credentialID_unique": {
-          "name": "passkey_credentialID_unique",
+        "passkey_credential_id_unique": {
+          "name": "passkey_credential_id_unique",
           "columns": [
-            "credentialID"
+            "credential_id"
           ],
           "isUnique": true
         },
         "passkey_user_idx": {
           "name": "passkey_user_idx",
           "columns": [
-            "userId"
+            "user_id"
           ],
           "isUnique": false
         }
       },
       "foreignKeys": {
-        "passkey_userId_user_id_fk": {
-          "name": "passkey_userId_user_id_fk",
+        "passkey_user_id_user_id_fk": {
+          "name": "passkey_user_id_user_id_fk",
           "tableFrom": "passkey",
           "tableTo": "user",
           "columnsFrom": [
-            "userId"
+            "user_id"
           ],
           "columnsTo": [
             "id"
@@ -352,8 +352,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "rateLimit": {
-      "name": "rateLimit",
+    "rate_limit": {
+      "name": "rate_limit",
       "columns": {
         "id": {
           "name": "id",
@@ -376,8 +376,8 @@
           "notNull": false,
           "autoincrement": false
         },
-        "lastRequest": {
-          "name": "lastRequest",
+        "last_request": {
+          "name": "last_request",
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
@@ -407,43 +407,43 @@
           "notNull": true,
           "autoincrement": false
         },
-        "userId": {
-          "name": "userId",
+        "user_id": {
+          "name": "user_id",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "expiresAt": {
-          "name": "expiresAt",
+        "expires_at": {
+          "name": "expires_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "ipAddress": {
-          "name": "ipAddress",
+        "ip_address": {
+          "name": "ip_address",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "userAgent": {
-          "name": "userAgent",
+        "user_agent": {
+          "name": "user_agent",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "createdAt": {
-          "name": "createdAt",
+        "created_at": {
+          "name": "created_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "updatedAt": {
-          "name": "updatedAt",
+        "updated_at": {
+          "name": "updated_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
@@ -461,18 +461,18 @@
         "session_user_idx": {
           "name": "session_user_idx",
           "columns": [
-            "userId"
+            "user_id"
           ],
           "isUnique": false
         }
       },
       "foreignKeys": {
-        "session_userId_user_id_fk": {
-          "name": "session_userId_user_id_fk",
+        "session_user_id_user_id_fk": {
+          "name": "session_user_id_user_id_fk",
           "tableFrom": "session",
           "tableTo": "user",
           "columnsFrom": [
-            "userId"
+            "user_id"
           ],
           "columnsTo": [
             "id"
@@ -509,8 +509,8 @@
           "notNull": true,
           "autoincrement": false
         },
-        "emailVerified": {
-          "name": "emailVerified",
+        "email_verified": {
+          "name": "email_verified",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
@@ -532,15 +532,15 @@
           "autoincrement": false,
           "default": "'member'"
         },
-        "createdAt": {
-          "name": "createdAt",
+        "created_at": {
+          "name": "created_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "updatedAt": {
-          "name": "updatedAt",
+        "updated_at": {
+          "name": "updated_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
@@ -585,22 +585,22 @@
           "notNull": true,
           "autoincrement": false
         },
-        "expiresAt": {
-          "name": "expiresAt",
+        "expires_at": {
+          "name": "expires_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "createdAt": {
-          "name": "createdAt",
+        "created_at": {
+          "name": "created_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "updatedAt": {
-          "name": "updatedAt",
+        "updated_at": {
+          "name": "updated_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
