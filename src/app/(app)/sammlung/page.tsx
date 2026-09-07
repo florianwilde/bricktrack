@@ -56,7 +56,12 @@ export default async function SammlungPage({ searchParams }: { searchParams: Sea
   const tiles = [
     { icon: Boxes, label: 'Sets', value: formatNumber(stats.setCount) },
     { icon: Layers, label: 'Teile gesamt', value: formatNumber(stats.pieceCount) },
-    { icon: Euro, label: 'Wert nach UVP', value: formatEuro(stats.retailValueCents) },
+    {
+      icon: Euro,
+      // Notierte Preise gehen vor, sonst die UVP.
+      label: stats.currentValueCents === stats.retailValueCents ? 'Wert nach UVP' : 'Aktueller Wert',
+      value: formatEuro(stats.currentValueCents),
+    },
     { icon: PackageSearch, label: 'Fehlt noch', value: formatNumber(missing) },
   ] as const;
 

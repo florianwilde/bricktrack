@@ -113,6 +113,8 @@ export type CollectionStats = {
   itemCount: number;
   pieceCount: number;
   retailValueCents: number;
+  /** Latest observed price where there is one, UVP otherwise. */
+  currentValueCents: number;
   paidCents: number;
   byManufacturer: Array<{ name: string; count: number }>;
 };
@@ -155,11 +157,28 @@ export function getCollectionStats(collectorId?: string): CollectionStats {
     .orderBy(asc(manufacturer.name))
     .all();
 
+  // Current value per copy: the newest observed price, falling back to the
+  // recommended retail price of the set.
+  const [current] = db
+    .select({
+      total: sql<number>`coalesce(sum(coalesce((
+        select p.price_cents from price_point p
+        where p.set_id = ${set.id}
+        order by p.observed_at desc, p.created_at desc
+        limit 1
+      ), ${set.retailPriceCents}, 0)), 0)`.mapWith(Number),
+    })
+    .from(collectionItem)
+    .innerJoin(set, eq(set.id, collectionItem.setId))
+    .where(active)
+    .all();
+
   return {
     setCount: totals?.setCount ?? 0,
     itemCount: totals?.itemCount ?? 0,
     pieceCount: totals?.pieceCount ?? 0,
     retailValueCents: totals?.retailValueCents ?? 0,
+    currentValueCents: current?.total ?? 0,
     paidCents: totals?.paidCents ?? 0,
     byManufacturer,
   };

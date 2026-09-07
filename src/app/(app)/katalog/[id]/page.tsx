@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { Check, ExternalLink, Gift, ImageOff, Pencil } from 'lucide-react';
 import { InstructionsSection } from '@/components/katalog/instructions-section';
 import { PhotosSection } from '@/components/katalog/photos-section';
+import { PriceSection } from '@/components/katalog/price-section';
 import { SetActions } from '@/components/katalog/set-actions';
 import { CollectionItemsSection } from '@/components/sammlung/collection-items-section';
 import { Badge } from '@/components/ui/badge';
@@ -17,6 +18,7 @@ import {
   listCollectionItemsForSet,
   listInstructionsForSet,
   listPhotosForSet,
+  listPricePoints,
 } from '@/lib/queries/catalog';
 import { listMissingParts } from '@/lib/queries/collection';
 import { listCollectors, resolveCollectorId } from '@/lib/queries/collectors';
@@ -165,6 +167,19 @@ export default async function SetDetailPage({ params, searchParams }: Props) {
             items={collectionItems}
             locations={locations}
             collectors={collectors.map((row) => ({ id: row.id, name: row.name }))}
+          />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Preis und Wertentwicklung</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <PriceSection
+            setId={set.id}
+            prices={listPricePoints(set.id)}
+            retailPriceCents={set.retailPriceCents}
           />
         </CardContent>
       </Card>

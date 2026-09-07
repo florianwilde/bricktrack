@@ -15,6 +15,13 @@
       "when": 1788763704015,
       "tag": "0001_lumpy_bill_hollister",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1788765229376,
+      "tag": "0002_aspiring_whiplash",
+      "breakpoints": true
     }
   ]
 }

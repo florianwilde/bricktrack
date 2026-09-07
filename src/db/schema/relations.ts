@@ -3,6 +3,7 @@ import { passkey, session, user } from './auth';
 import { instruction, manufacturer, set, setTag, tag, theme } from './catalog';
 import { collectionItem, location, missingPart, photo } from './collection';
 import { collector } from './collector';
+import { pricePoint } from './prices';
 import { wishlist, wishlistItem } from './wishlist';
 
 export const userRelations = relations(user, ({ many }) => ({
@@ -49,6 +50,11 @@ export const setRelations = relations(set, ({ one, many }) => ({
   photos: many(photo),
   setTags: many(setTag),
   wishlistItems: many(wishlistItem),
+  pricePoints: many(pricePoint),
+}));
+
+export const pricePointRelations = relations(pricePoint, ({ one }) => ({
+  set: one(set, { fields: [pricePoint.setId], references: [set.id] }),
 }));
 
 export const tagRelations = relations(tag, ({ many }) => ({

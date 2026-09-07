@@ -1,7 +1,15 @@
 import 'server-only';
 import { and, asc, desc, eq, like, not, or, sql, type SQL } from 'drizzle-orm';
 import { db } from '@/db';
-import { collectionItem, instruction, manufacturer, photo, set, theme } from '@/db/schema';
+import {
+  collectionItem,
+  instruction,
+  manufacturer,
+  photo,
+  pricePoint,
+  set,
+  theme,
+} from '@/db/schema';
 import { ownedCopiesSql, wishlistCountSql, type OwnershipFilter } from '@/lib/ownership';
 
 export const CATALOG_PAGE_SIZE = 48;
@@ -226,4 +234,29 @@ export function listSetYears(): number[] {
     .orderBy(desc(set.year))
     .all()
     .flatMap((row) => (row.year === null ? [] : [row.year]));
+}
+
+export type PricePointRow = {
+  id: string;
+  priceCents: number;
+  condition: 'new' | 'used';
+  source: string | null;
+  observedAt: Date;
+  note: string | null;
+};
+
+export function listPricePoints(setId: string): PricePointRow[] {
+  return db
+    .select({
+      id: pricePoint.id,
+      priceCents: pricePoint.priceCents,
+      condition: pricePoint.condition,
+      source: pricePoint.source,
+      observedAt: pricePoint.observedAt,
+      note: pricePoint.note,
+    })
+    .from(pricePoint)
+    .where(eq(pricePoint.setId, setId))
+    .orderBy(desc(pricePoint.observedAt))
+    .all();
 }
