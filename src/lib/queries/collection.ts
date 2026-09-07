@@ -1,8 +1,16 @@
 import 'server-only';
 import { and, asc, countDistinct, eq, inArray, sql, type SQL } from 'drizzle-orm';
 import { db } from '@/db';
-import { collectionItem, location, manufacturer, missingPart, set, theme } from '@/db/schema';
-import { SOLD_STATUS } from '@/lib/ownership';
+import {
+  collectionItem,
+  collector,
+  location,
+  manufacturer,
+  missingPart,
+  set,
+  theme,
+} from '@/db/schema';
+import { ownedCopiesSql, SOLD_STATUS } from '@/lib/ownership';
 import type { CollectionStatus, Completeness, Condition } from '@/db/types';
 
 export type CollectionFilters = {
@@ -11,6 +19,7 @@ export type CollectionFilters = {
   completeness?: Completeness;
   locationId?: string;
   manufacturerId?: string;
+  collectorId?: string;
 };
 
 export type CollectionRow = {
@@ -21,6 +30,9 @@ export type CollectionRow = {
   condition: Condition | null;
   locationId: string | null;
   locationName: string | null;
+  collectorId: string | null;
+  collectorName: string | null;
+  collectorColor: string | null;
   acquiredAt: Date | null;
   acquiredPriceCents: number | null;
   acquiredFrom: string | null;
@@ -51,6 +63,7 @@ function buildWhere(filters: CollectionFilters): SQL | undefined {
   if (filters.completeness) conditions.push(eq(collectionItem.completeness, filters.completeness));
   if (filters.locationId) conditions.push(eq(collectionItem.locationId, filters.locationId));
   if (filters.manufacturerId) conditions.push(eq(set.manufacturerId, filters.manufacturerId));
+  if (filters.collectorId) conditions.push(eq(collectionItem.collectorId, filters.collectorId));
 
   return conditions.length > 0 ? and(...conditions) : undefined;
 }
@@ -65,6 +78,9 @@ export function listCollectionItems(filters: CollectionFilters): CollectionRow[]
       condition: collectionItem.condition,
       locationId: collectionItem.locationId,
       locationName: location.name,
+      collectorId: collectionItem.collectorId,
+      collectorName: collector.name,
+      collectorColor: collector.color,
       acquiredAt: collectionItem.acquiredAt,
       acquiredPriceCents: collectionItem.acquiredPriceCents,
       acquiredFrom: collectionItem.acquiredFrom,
@@ -86,6 +102,7 @@ export function listCollectionItems(filters: CollectionFilters): CollectionRow[]
     .innerJoin(manufacturer, eq(manufacturer.id, set.manufacturerId))
     .leftJoin(theme, eq(theme.id, set.themeId))
     .leftJoin(location, eq(location.id, collectionItem.locationId))
+    .leftJoin(collector, eq(collector.id, collectionItem.collectorId))
     .where(buildWhere(filters))
     .orderBy(asc(manufacturer.name), asc(set.setNumber))
     .all();
@@ -104,8 +121,13 @@ export type CollectionStats = {
  * The numbers on top of the collection page. Sold copies are history and do
  * not count anywhere - same rule as everywhere else in the app.
  */
-export function getCollectionStats(): CollectionStats {
-  const active = sql`${collectionItem.status} <> ${SOLD_STATUS}`;
+export function getCollectionStats(collectorId?: string): CollectionStats {
+  const active = collectorId
+    ? and(
+        sql`${collectionItem.status} <> ${SOLD_STATUS}`,
+        eq(collectionItem.collectorId, collectorId),
+      )
+    : sql`${collectionItem.status} <> ${SOLD_STATUS}`;
 
   const [totals] = db
     .select({
@@ -144,16 +166,11 @@ export function getCollectionStats(): CollectionStats {
 }
 
 /** Number of catalog sets that are not in the collection - the "fehlt" count. */
-export function countMissingSets(): number {
+export function countMissingSets(collectorId?: string): number {
   const [row] = db
     .select({ total: sql<number>`count(*)`.mapWith(Number) })
     .from(set)
-    .where(
-      sql`not exists (
-        select 1 from collection_item ci
-        where ci.set_id = ${set.id} and ci.status <> ${SOLD_STATUS}
-      )`,
-    )
+    .where(sql`${ownedCopiesSql(set.id, collectorId)} = 0`)
     .all();
 
   return row?.total ?? 0;

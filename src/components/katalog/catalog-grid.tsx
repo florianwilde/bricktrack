@@ -33,6 +33,8 @@ type Props = {
   wishlists: WishlistTarget[];
   /** Preselected target, used by the embedded view on a wishlist page. */
   defaultWishlistId?: string;
+  /** A list created from a filtered view belongs to that collector. */
+  collectorId?: string;
   emptyState?: React.ReactNode;
 };
 
@@ -43,7 +45,13 @@ type Props = {
  * On a desktop the "Auswählen" button does the same job. Sets that are already
  * in the collection cannot be selected - they do not belong on a wishlist.
  */
-export function CatalogGrid({ sets, wishlists, defaultWishlistId, emptyState }: Props) {
+export function CatalogGrid({
+  sets,
+  wishlists,
+  defaultWishlistId,
+  collectorId,
+  emptyState,
+}: Props) {
   const router = useRouter();
   const [selecting, setSelecting] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -102,6 +110,7 @@ export function CatalogGrid({ sets, wishlists, defaultWishlistId, emptyState }: 
           title: newTitle,
           occasion: 'other',
           isPublic: 'on',
+          collectorId: collectorId ?? '',
         });
         if (!created.ok) {
           toast.error(created.error);

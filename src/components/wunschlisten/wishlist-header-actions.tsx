@@ -18,7 +18,13 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
-export function WishlistHeaderActions({ wishlist }: { wishlist: WishlistFormValues }) {
+export function WishlistHeaderActions({
+  wishlist,
+  collectors = [],
+}: {
+  wishlist: WishlistFormValues;
+  collectors?: Array<{ id: string; name: string }>;
+}) {
   const router = useRouter();
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -52,7 +58,12 @@ export function WishlistHeaderActions({ wishlist }: { wishlist: WishlistFormValu
         <Trash2 className="text-destructive" />
       </Button>
 
-      <WishlistFormDialog wishlist={wishlist} open={editOpen} onOpenChange={setEditOpen} />
+      <WishlistFormDialog
+        wishlist={wishlist}
+        collectors={collectors}
+        open={editOpen}
+        onOpenChange={setEditOpen}
+      />
 
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <AlertDialogContent>

@@ -19,23 +19,34 @@ import {
   listPhotosForSet,
 } from '@/lib/queries/catalog';
 import { listMissingParts } from '@/lib/queries/collection';
+import { listCollectors, resolveCollectorId } from '@/lib/queries/collectors';
 import { listLocations } from '@/lib/queries/master-data';
 import { listWishlistsForSet, listWishlistTargets } from '@/lib/queries/wishlists';
 import { requireUser } from '@/lib/session';
 
-type Props = { params: Promise<{ id: string }> };
+type Props = {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: Pick<Props, 'params'>): Promise<Metadata> {
   const { id } = await params;
   const set = getSetById(id);
   return { title: set ? `${set.setNumber} · ${set.name}` : 'Set' };
 }
 
-export default async function SetDetailPage({ params }: Props) {
+export default async function SetDetailPage({ params, searchParams }: Props) {
   await requireUser();
   const { id } = await params;
+  const query = await searchParams;
 
-  const set = getSetById(id);
+  // Keeps the "vorhanden / fehlt" badge in step with the collector the user
+  // was looking at in the catalog.
+  const rawCollector = Array.isArray(query.sammler) ? query.sammler[0] : query.sammler;
+  const collectorId = resolveCollectorId(rawCollector);
+  const collectors = listCollectors();
+
+  const set = getSetById(id, collectorId);
   if (!set) notFound();
 
   const image = setImageSrc(set);
@@ -43,11 +54,16 @@ export default async function SetDetailPage({ params }: Props) {
   const locations = listLocations().map((row) => ({ id: row.id, name: row.name }));
   const locationNames = new Map(locations.map((row) => [row.id, row.name]));
 
+  const collectorsById = new Map(collectors.map((row) => [row.id, row]));
   const collectionItems = listCollectionItemsForSet(set.id).map((item) => ({
     ...item,
     locationName: item.locationId ? (locationNames.get(item.locationId) ?? null) : null,
     setName: `${set.setNumber} · ${set.name}`,
     missingParts: listMissingParts(item.id),
+    collectorName: item.collectorId ? (collectorsById.get(item.collectorId)?.name ?? null) : null,
+    collectorColor: item.collectorId
+      ? (collectorsById.get(item.collectorId)?.color ?? null)
+      : null,
   }));
 
   const facts: Array<[string, string]> = [
@@ -113,6 +129,7 @@ export default async function SetDetailPage({ params }: Props) {
             setName={`${set.setNumber} · ${set.name}`}
             owned={owned}
             wishlists={listWishlistTargets()}
+            collectors={collectors.map((row) => ({ id: row.id, name: row.name }))}
           />
 
           <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm sm:grid-cols-3">
@@ -144,7 +161,11 @@ export default async function SetDetailPage({ params }: Props) {
           <CardTitle>In der Sammlung</CardTitle>
         </CardHeader>
         <CardContent>
-          <CollectionItemsSection items={collectionItems} locations={locations} />
+          <CollectionItemsSection
+            items={collectionItems}
+            locations={locations}
+            collectors={collectors.map((row) => ({ id: row.id, name: row.name }))}
+          />
         </CardContent>
       </Card>
 

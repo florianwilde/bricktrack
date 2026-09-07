@@ -27,7 +27,7 @@ export default async function PublicWishlistPage({ params }: Props) {
   const list = getWishlistByShareToken(shareToken);
   if (!list || !list.isPublic) notFound();
 
-  const rows = listWishlistItems(list.id);
+  const rows = listWishlistItems(list.id, list.collectorId);
 
   // Fulfilled wishes are gone from the public view: the present is already
   // under the tree, no reason to let someone buy it twice.

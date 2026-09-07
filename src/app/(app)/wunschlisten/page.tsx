@@ -4,8 +4,10 @@ import { CalendarDays, Gift, Link2Off } from 'lucide-react';
 import { NewWishlistButton } from '@/components/wunschlisten/wishlist-form-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { collectorBadgeClass } from '@/lib/collector-colors';
 import { formatDate, pluralize } from '@/lib/format';
 import { occasionLabel } from '@/lib/labels';
+import { listCollectors } from '@/lib/queries/collectors';
 import { listWishlists } from '@/lib/queries/wishlists';
 import { requireUser } from '@/lib/session';
 
@@ -14,6 +16,7 @@ export const metadata: Metadata = { title: 'Wunschlisten' };
 export default async function WunschlistenPage() {
   const user = await requireUser();
   const lists = listWishlists(user.id);
+  const collectors = listCollectors();
 
   return (
     <div className="space-y-5">
@@ -24,7 +27,9 @@ export default async function WunschlistenPage() {
             Zum Teilen mit Familie und Freunden – ganz ohne Konto für die anderen.
           </p>
         </div>
-        <NewWishlistButton />
+        <NewWishlistButton
+          collectors={collectors.map((row) => ({ id: row.id, name: row.name }))}
+        />
       </div>
 
       {lists.length === 0 ? (
@@ -54,6 +59,11 @@ export default async function WunschlistenPage() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="flex flex-wrap items-center gap-2 text-xs">
+                    {collectors.length > 1 && list.collectorName ? (
+                      <Badge className={collectorBadgeClass(list.collectorColor)}>
+                        {list.collectorName}
+                      </Badge>
+                    ) : null}
                     <Badge variant="secondary">{pluralize(list.itemCount, 'Wunsch', 'Wünsche')}</Badge>
                     {list.openCount > 0 ? (
                       <Badge variant="outline">{list.openCount} noch offen</Badge>

@@ -2,6 +2,7 @@ import { sql } from 'drizzle-orm';
 import { check, index, integer, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 import { user } from './auth';
 import { set } from './catalog';
+import { collector } from './collector';
 
 export const wishlist = sqliteTable(
   'wishlist',
@@ -10,6 +11,11 @@ export const wishlist = sqliteTable(
     ownerUserId: text('owner_user_id')
       .notNull()
       .references(() => user.id, { onDelete: 'cascade' }),
+    /**
+     * Whose list this is. Null means "not tied to one collector" - useful
+     * while there is only one, and for a shared list.
+     */
+    collectorId: text('collector_id').references(() => collector.id, { onDelete: 'set null' }),
     /** e.g. "Weihnachten 2026". */
     title: text('title').notNull(),
     occasion: text('occasion', { enum: ['christmas', 'birthday', 'easter', 'other'] })

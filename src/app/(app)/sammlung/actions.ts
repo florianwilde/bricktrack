@@ -11,6 +11,7 @@ import {
   parseForm,
   type ActionResult,
 } from '@/lib/action-result';
+import { defaultCollectorId } from '@/lib/queries/collectors';
 import { reconcileFulfilledWishlistItems } from '@/lib/queries/wishlists';
 import { requireUser } from '@/lib/session';
 import { collectionItemSchema, missingPartSchema } from '@/lib/validation';
@@ -32,17 +33,24 @@ function revalidateCollection(setId?: string) {
  * Quick add from the set detail page: one tap, sensible defaults, details can
  * be filled in later.
  */
-export async function addSetToCollection(setId: string): Promise<ActionResult<{ id: string }>> {
+export async function addSetToCollection(
+  setId: string,
+  collectorId?: string,
+): Promise<ActionResult<{ id: string }>> {
   await requireUser();
 
   const exists = db.select({ id: set.id }).from(set).where(eq(set.id, setId)).get();
   if (!exists) return actionError('Das Set gibt es nicht mehr.');
+
+  // With a single collector nobody is asked - the copy simply belongs to them.
+  const owner = collectorId ?? defaultCollectorId();
 
   const id = crypto.randomUUID();
   db.insert(collectionItem)
     .values({
       id,
       setId,
+      collectorId: owner,
       status: 'owned',
       completeness: 'unknown',
       createdAt: now(),
@@ -68,6 +76,7 @@ export async function updateCollectionItem(id: string, input: unknown): Promise<
 
   db.update(collectionItem)
     .set({
+      collectorId: parsed.data.collectorId ?? existing.collectorId,
       status: parsed.data.status,
       completeness: parsed.data.completeness,
       condition: parsed.data.condition as Condition | null,

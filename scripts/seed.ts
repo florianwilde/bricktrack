@@ -33,11 +33,12 @@ type SeedSet = {
   minifigCount: number | null;
   retailPriceCents: number;
   ageRange: string;
-  /** Copies owned - 0 means the set is only in the catalog. */
+  /** Copies owned - absent means the set is only in the catalog. */
   owned?: {
     status: 'owned' | 'built' | 'disassembled' | 'lent_out' | 'sold';
     completeness: 'complete' | 'missing_parts' | 'unknown';
     location: string;
+    collector: string;
     giftedBy?: string;
   };
 };
@@ -59,6 +60,13 @@ const THEMES: Array<{ manufacturer: string; name: string }> = [
 
 const LOCATIONS = ['Regal Kinderzimmer', 'Kiste Keller 3', 'Vitrine Wohnzimmer'];
 
+// Two collectors, so the shared catalog and the separate collections are
+// visible right away. With only one, the whole concept stays hidden in the UI.
+const COLLECTORS = [
+  { name: 'Max', color: 'blue' as const },
+  { name: 'Mia', color: 'rose' as const },
+];
+
 const SETS: SeedSet[] = [
   {
     manufacturer: 'Lego',
@@ -70,7 +78,12 @@ const SETS: SeedSet[] = [
     minifigCount: 4,
     retailPriceCents: 4999,
     ageRange: '6-12',
-    owned: { status: 'built', completeness: 'complete', location: 'Regal Kinderzimmer' },
+    owned: {
+      status: 'built',
+      completeness: 'complete',
+      location: 'Regal Kinderzimmer',
+      collector: 'Max',
+    },
   },
   {
     manufacturer: 'Lego',
@@ -86,6 +99,7 @@ const SETS: SeedSet[] = [
       status: 'owned',
       completeness: 'missing_parts',
       location: 'Kiste Keller 3',
+      collector: 'Max',
       giftedBy: 'Oma Helga',
     },
   },
@@ -99,7 +113,12 @@ const SETS: SeedSet[] = [
     minifigCount: null,
     retailPriceCents: 999,
     ageRange: '7-14',
-    owned: { status: 'disassembled', completeness: 'unknown', location: 'Kiste Keller 3' },
+    owned: {
+      status: 'disassembled',
+      completeness: 'unknown',
+      location: 'Kiste Keller 3',
+      collector: 'Mia',
+    },
   },
   {
     manufacturer: 'Lego',
@@ -144,7 +163,12 @@ const SETS: SeedSet[] = [
     minifigCount: 5,
     retailPriceCents: 12999,
     ageRange: '4-10',
-    owned: { status: 'built', completeness: 'complete', location: 'Regal Kinderzimmer' },
+    owned: {
+      status: 'built',
+      completeness: 'complete',
+      location: 'Regal Kinderzimmer',
+      collector: 'Mia',
+    },
   },
   {
     manufacturer: 'Playmobil',
@@ -241,6 +265,59 @@ function seedThemes(manufacturers: Map<string, string>) {
   return byKey;
 }
 
+function seedCollectors() {
+  const byName = new Map<string, string>();
+
+  COLLECTORS.forEach((entry, index) => {
+    const all = db
+      .select({ id: schema.collector.id, name: schema.collector.name })
+      .from(schema.collector)
+      .all();
+
+    const existing = all.find((row) => row.name === entry.name);
+    if (existing) {
+      byName.set(entry.name, existing.id);
+      return;
+    }
+
+    // A fresh install already has the collector the migration created. Rather
+    // than adding a third one next to it, the seed takes it over.
+    const untouchedDefault = all.find(
+      (row) =>
+        row.name === 'Sammlung' &&
+        !db
+          .select({ id: schema.collectionItem.id })
+          .from(schema.collectionItem)
+          .where(eq(schema.collectionItem.collectorId, row.id))
+          .get(),
+    );
+
+    if (untouchedDefault) {
+      db.update(schema.collector)
+        .set({ name: entry.name, color: entry.color, sortOrder: index, updatedAt: now })
+        .where(eq(schema.collector.id, untouchedDefault.id))
+        .run();
+      byName.set(entry.name, untouchedDefault.id);
+      return;
+    }
+
+    const newId = id();
+    db.insert(schema.collector)
+      .values({
+        id: newId,
+        name: entry.name,
+        color: entry.color,
+        sortOrder: index,
+        createdAt: now,
+        updatedAt: now,
+      })
+      .run();
+    byName.set(entry.name, newId);
+  });
+
+  return byName;
+}
+
 function seedLocations() {
   const byName = new Map<string, string>();
 
@@ -270,6 +347,7 @@ function seedSets(
   manufacturers: Map<string, string>,
   themes: Map<string, string>,
   locations: Map<string, string>,
+  collectors: Map<string, string>,
 ) {
   const setIds = new Map<string, string>();
 
@@ -317,6 +395,7 @@ function seedSets(
           completeness: entry.owned.completeness,
           condition: 'good',
           locationId: locations.get(entry.owned.location) ?? null,
+          collectorId: collectors.get(entry.owned.collector) ?? null,
           acquiredAt: new Date(entry.year, 11, 24),
           acquiredPriceCents: entry.retailPriceCents,
           giftedBy: entry.owned.giftedBy ?? null,
@@ -330,7 +409,7 @@ function seedSets(
   return setIds;
 }
 
-function seedWishlist(setIds: Map<string, string>) {
+function seedWishlist(setIds: Map<string, string>, collectors: Map<string, string>) {
   const owner = db.select({ id: schema.user.id }).from(schema.user).get();
   if (!owner) {
     console.log('[seed] Kein Nutzer vorhanden - die Beispiel-Wunschliste wird uebersprungen.');
@@ -353,6 +432,7 @@ function seedWishlist(setIds: Map<string, string>) {
     .values({
       id: wishlistId,
       ownerUserId: owner.id,
+      collectorId: collectors.get('Max') ?? null,
       title: 'Weihnachten 2026',
       occasion: 'christmas',
       eventDate: new Date(2026, 11, 24),
@@ -389,10 +469,12 @@ console.log('[seed] Beispieldaten werden eingespielt …');
 const manufacturers = seedManufacturers();
 const themes = seedThemes(manufacturers);
 const locations = seedLocations();
-const setIds = seedSets(manufacturers, themes, locations);
-seedWishlist(setIds);
+const collectors = seedCollectors();
+const setIds = seedSets(manufacturers, themes, locations, collectors);
+seedWishlist(setIds, collectors);
 
 console.log(
-  `[seed] Fertig: ${manufacturers.size} Hersteller, ${themes.size} Themen, ${setIds.size} Sets.`,
+  `[seed] Fertig: ${collectors.size} Sammler, ${manufacturers.size} Hersteller, ` +
+    `${themes.size} Themen, ${setIds.size} Sets.`,
 );
 sqlite.close();

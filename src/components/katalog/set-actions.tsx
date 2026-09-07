@@ -38,30 +38,45 @@ export function SetActions({
   setName,
   owned,
   wishlists,
+  collectors,
 }: {
   setId: string;
   setName: string;
   owned: boolean;
   wishlists: Array<{ id: string; title: string }>;
+  /** More than one turns "Zur Sammlung" into a question of "for whom". */
+  collectors: Array<{ id: string; name: string }>;
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [wishlistOpen, setWishlistOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [targetId, setTargetId] = useState(wishlists[0]?.id ?? NEW_LIST);
+  const [collectorOpen, setCollectorOpen] = useState(false);
+  const [collectorId, setCollectorId] = useState(collectors[0]?.id ?? '');
   const [newTitle, setNewTitle] = useState('');
   const [priority, setPriority] = useState('2');
 
-  function addToCollection() {
+  function addToCollection(forCollectorId?: string) {
     startTransition(async () => {
-      const result = await addSetToCollection(setId);
+      const result = await addSetToCollection(setId, forCollectorId);
       if (!result.ok) {
         toast.error(result.error);
         return;
       }
-      toast.success('Zur Sammlung hinzugefügt.');
+      const owner = collectors.find((entry) => entry.id === forCollectorId);
+      toast.success(
+        owner ? `Zur Sammlung von ${owner.name} hinzugefügt.` : 'Zur Sammlung hinzugefügt.',
+      );
+      setCollectorOpen(false);
       router.refresh();
     });
+  }
+
+  // With a single collector there is nothing to ask.
+  function onAddClick() {
+    if (collectors.length > 1) setCollectorOpen(true);
+    else addToCollection();
   }
 
   function addToWishlist() {
@@ -111,7 +126,7 @@ export function SetActions({
 
   return (
     <div className="flex flex-wrap gap-2">
-      <Button size="lg" onClick={addToCollection} disabled={pending}>
+      <Button size="lg" onClick={onAddClick} disabled={pending}>
         {pending ? <Loader2 className="animate-spin" /> : <Plus />}
         Zur Sammlung hinzufügen
       </Button>
@@ -137,6 +152,39 @@ export function SetActions({
           Sets aus der Sammlung lassen sich nicht auf eine Wunschliste setzen.
         </p>
       ) : null}
+
+      <Dialog open={collectorOpen} onOpenChange={setCollectorOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Wer bekommt das Set?</DialogTitle>
+            <DialogDescription>{setName}</DialogDescription>
+          </DialogHeader>
+
+          <Field label="Sammler" htmlFor="add-collector" required>
+            <NativeSelect
+              id="add-collector"
+              value={collectorId}
+              onChange={(event) => setCollectorId(event.target.value)}
+            >
+              {collectors.map((entry) => (
+                <option key={entry.id} value={entry.id}>
+                  {entry.name}
+                </option>
+              ))}
+            </NativeSelect>
+          </Field>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCollectorOpen(false)} disabled={pending}>
+              Abbrechen
+            </Button>
+            <Button onClick={() => addToCollection(collectorId)} disabled={pending}>
+              {pending ? <Loader2 className="animate-spin" /> : <Plus />}
+              Hinzufügen
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={wishlistOpen} onOpenChange={setWishlistOpen}>
         <DialogContent>

@@ -1,8 +1,8 @@
 import 'server-only';
 import { and, asc, count, eq, inArray, isNotNull, isNull, sql } from 'drizzle-orm';
 import { db } from '@/db';
-import { manufacturer, set, theme, wishlist, wishlistItem } from '@/db/schema';
-import { ownedCopiesSql } from '@/lib/ownership';
+import { collector, manufacturer, set, theme, wishlist, wishlistItem } from '@/db/schema';
+import { ownedCopiesSql, SOLD_STATUS } from '@/lib/ownership';
 
 /** Short list for the "auf welche Wunschliste?" dialogs. */
 export function listWishlistTargets() {
@@ -34,12 +34,16 @@ export function listWishlists(ownerUserId: string) {
       isPublic: wishlist.isPublic,
       surpriseMode: wishlist.surpriseMode,
       shareToken: wishlist.shareToken,
+      collectorId: wishlist.collectorId,
+      collectorName: collector.name,
+      collectorColor: collector.color,
       createdAt: wishlist.createdAt,
       itemCount: count(wishlistItem.id),
       openCount: openItems,
     })
     .from(wishlist)
     .leftJoin(wishlistItem, eq(wishlistItem.wishlistId, wishlist.id))
+    .leftJoin(collector, eq(collector.id, wishlist.collectorId))
     .where(eq(wishlist.ownerUserId, ownerUserId))
     .groupBy(wishlist.id)
     .orderBy(asc(wishlist.title))
@@ -76,7 +80,10 @@ export type WishlistItemRow = {
   ownedCopies: number;
 };
 
-export function listWishlistItems(wishlistId: string): WishlistItemRow[] {
+export function listWishlistItems(
+  wishlistId: string,
+  collectorId?: string | null,
+): WishlistItemRow[] {
   return db
     .select({
       id: wishlistItem.id,
@@ -97,7 +104,7 @@ export function listWishlistItems(wishlistId: string): WishlistItemRow[] {
       manufacturerName: manufacturer.name,
       manufacturerWebsite: manufacturer.website,
       themeName: theme.name,
-      ownedCopies: ownedCopiesSql(set.id).mapWith(Number),
+      ownedCopies: ownedCopiesSql(set.id, collectorId).mapWith(Number),
     })
     .from(wishlistItem)
     .innerJoin(set, eq(set.id, wishlistItem.setId))
@@ -145,17 +152,28 @@ export function listWishlistsForSet(setId: string) {
  * Marks wishlist entries as fulfilled once the set is in the collection, and
  * clears the flag again if the copy was sold. Called after every change to the
  * collection, so the lists stay honest without a background job.
+ *
+ * With several collectors the question is per list: a wish on Max's list is
+ * fulfilled when *Max* owns the set, not when his sister does. A list without
+ * a collector falls back to "anyone here owns it".
  */
 export function reconcileFulfilledWishlistItems(): void {
-  const owned = ownedCopiesSql(wishlistItem.setId);
+  const ownedForThisList = sql`exists (
+    select 1
+    from collection_item ci
+    join wishlist w on w.id = ${wishlistItem.wishlistId}
+    where ci.set_id = ${wishlistItem.setId}
+      and ci.status <> ${SOLD_STATUS}
+      and (w.collector_id is null or ci.collector_id = w.collector_id)
+  )`;
 
   db.update(wishlistItem)
     .set({ fulfilledAt: new Date() })
-    .where(and(isNull(wishlistItem.fulfilledAt), sql`${owned} > 0`))
+    .where(and(isNull(wishlistItem.fulfilledAt), ownedForThisList))
     .run();
 
   db.update(wishlistItem)
     .set({ fulfilledAt: null })
-    .where(and(isNotNull(wishlistItem.fulfilledAt), sql`${owned} = 0`))
+    .where(and(isNotNull(wishlistItem.fulfilledAt), sql`not ${ownedForThisList}`))
     .run();
 }

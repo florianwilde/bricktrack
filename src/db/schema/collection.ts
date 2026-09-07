@@ -8,6 +8,7 @@ import {
   text,
 } from 'drizzle-orm/sqlite-core';
 import { set } from './catalog';
+import { collector } from './collector';
 
 export const location = sqliteTable('location', {
   id: text('id').primaryKey(),
@@ -31,6 +32,12 @@ export const collectionItem = sqliteTable(
     setId: text('set_id')
       .notNull()
       .references(() => set.id, { onDelete: 'cascade' }),
+    /**
+     * Who owns this copy. Nullable only for the sake of the migration path -
+     * the app always sets it, and the migration assigned every existing row to
+     * the first collector.
+     */
+    collectorId: text('collector_id').references(() => collector.id, { onDelete: 'cascade' }),
     status: text('status', {
       enum: ['owned', 'built', 'disassembled', 'lent_out', 'sold'],
     })
@@ -54,6 +61,7 @@ export const collectionItem = sqliteTable(
   },
   (t) => [
     index('collection_item_set_idx').on(t.setId),
+    index('collection_item_collector_idx').on(t.collectorId),
     index('collection_item_status_idx').on(t.status),
     index('collection_item_location_idx').on(t.locationId),
   ],
