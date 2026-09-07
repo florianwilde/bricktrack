@@ -81,6 +81,30 @@ test('Registrieren, Set anlegen, Wunschliste teilen und reservieren', async ({ p
   await visitorContext.close();
 });
 
+test('Dublettenpruefung warnt vor einem fast gleichen Set', async ({ page }) => {
+  await page.goto('/anmelden');
+  await page.getByLabel('E-Mail').fill('test@bricktrack.local');
+  await page.getByLabel('Passwort').fill('smoketest-passwort');
+  await page.getByRole('button', { name: 'Anmelden', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Hallo Florian' })).toBeVisible();
+
+  // Dasselbe Set noch einmal, mit Tippfehler im Namen und anderer Nummer.
+  await page.goto('/katalog/neu');
+  await page.getByLabel('Setnummer').fill('60399');
+  await page
+    .getByRole('textbox', { name: 'Name', exact: true })
+    .fill('Familienhaus und Elektroauo');
+  await page.getByRole('button', { name: 'Set anlegen' }).click();
+
+  await expect(page.getByText('Gibt es das vielleicht schon?')).toBeVisible();
+  await expect(page.getByText('Sehr ähnlicher Name')).toBeVisible();
+
+  // Zurueck ins Formular: nichts wurde angelegt.
+  await page.getByRole('button', { name: 'Zurück zum Formular' }).click();
+  await page.goto('/katalog?q=60399');
+  await expect(page.getByText('0 Sets')).toBeVisible();
+});
+
 test('Einladung: zweiter Elternteil bekommt ein eigenes Konto', async ({ page, browser }) => {
   // The admin from the first test is still the only account, so log in.
   await page.goto('/anmelden');
