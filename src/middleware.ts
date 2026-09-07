@@ -24,9 +24,11 @@ export const config = {
      * Everything except the public surface:
      * - /anmelden, /registrieren, /einladung  (auth pages)
      * - /w/...                                (public wishlists)
+     * - /offline                              (shown by the service worker)
      * - /api/auth, /api/health, /api/files    (handled by their own guards)
+     * - sw.js, manifest, icons                (must load before a session exists)
      * - Next internals and static assets
      */
-    '/((?!anmelden|registrieren|einladung|w/|api/auth|api/health|api/files|_next/static|_next/image|favicon.ico|icons/|manifest.webmanifest).*)',
+    '/((?!anmelden|registrieren|einladung|offline|w/|api/auth|api/health|api/files|_next/static|_next/image|favicon.ico|favicon.png|icons/|sw.js|manifest.webmanifest).*)',
   ],
 };

@@ -41,6 +41,9 @@ export default defineConfig({
       `-e BASE_URL=${BASE_URL}`,
       '-e BETTER_AUTH_SECRET=screenshot-run-secret-0123456789abcdefgh',
       '-e TZ=Europe/Berlin',
+      // A placeholder key so the manual shows the import form rather than the
+      // "not configured" hint. The screenshot run never submits it.
+      '-e REBRICKABLE_API_KEY=screenshot-placeholder',
       `-v "${dataDir}:/data"`,
       'bricktrack:shots',
     ].join(' '),

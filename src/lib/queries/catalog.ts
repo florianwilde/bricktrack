@@ -160,6 +160,24 @@ export function getSetById(id: string) {
   return row ?? null;
 }
 
+/**
+ * Lookup by barcode. EANs are stored as typed, so the comparison strips
+ * everything but digits on both sides - a scanner never produces the spaces
+ * and dashes people write by hand.
+ */
+export function findSetByEan(ean: string) {
+  const digits = ean.replace(/\D/g, '');
+  if (digits.length === 0) return null;
+
+  return (
+    db
+      .select({ id: set.id, setNumber: set.setNumber, name: set.name })
+      .from(set)
+      .where(sql`replace(replace(coalesce(${set.ean}, ''), '-', ''), ' ', '') = ${digits}`)
+      .get() ?? null
+  );
+}
+
 export function getSetByNumber(manufacturerId: string, setNumber: string) {
   return (
     db

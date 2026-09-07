@@ -2,9 +2,11 @@
 
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
-import { Loader2, Pencil, Trash2 } from 'lucide-react';
+import { Loader2, Pencil, PuzzleIcon, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { deleteCollectionItem, updateCollectionItem } from '@/app/(app)/sammlung/actions';
+import type { MissingPartRow } from '@/lib/queries/collection';
+import { MissingPartsDialog } from './missing-parts-dialog';
 import type { CollectionStatus, Completeness, Condition } from '@/db/types';
 import { formatDate, toDateInputValue } from '@/lib/format';
 import {
@@ -54,6 +56,8 @@ export type CollectionItemRow = {
   giftedBy: string | null;
   lentOutTo: string | null;
   notes: string | null;
+  setName: string;
+  missingParts: MissingPartRow[];
 };
 
 export function CollectionItemsSection({
@@ -67,6 +71,11 @@ export function CollectionItemsSection({
   const [pending, startTransition] = useTransition();
   const [editing, setEditing] = useState<CollectionItemRow | null>(null);
   const [deleting, setDeleting] = useState<CollectionItemRow | null>(null);
+  // Only the id, never a snapshot: the dialog shows a live list, and a copy
+  // taken when it opened would not show a part that was just added.
+  const [partsItemId, setPartsItemId] = useState<string | null>(null);
+
+  const partsItem = items.find((item) => item.id === partsItemId) ?? null;
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -121,6 +130,11 @@ export function CollectionItemsSection({
                   {statusLabel(item.status)}
                 </Badge>
                 <Badge variant="secondary">{completenessLabel(item.completeness)}</Badge>
+                {item.missingParts.some((part) => !part.resolved) ? (
+                  <Badge variant="outline">
+                    {item.missingParts.filter((part) => !part.resolved).length} Fehlteile
+                  </Badge>
+                ) : null}
                 {item.locationName ? (
                   <span className="text-xs text-muted-foreground">{item.locationName}</span>
                 ) : null}
@@ -140,6 +154,16 @@ export function CollectionItemsSection({
               </p>
               {item.notes ? <p className="text-xs">{item.notes}</p> : null}
             </div>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              aria-label="Fehlteile"
+              title="Fehlteile"
+              onClick={() => setPartsItemId(item.id)}
+              disabled={pending}
+            >
+              <PuzzleIcon />
+            </Button>
             <Button
               variant="ghost"
               size="icon-sm"
@@ -282,6 +306,16 @@ export function CollectionItemsSection({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {partsItem ? (
+        <MissingPartsDialog
+          collectionItemId={partsItem.id}
+          setName={partsItem.setName}
+          parts={partsItem.missingParts}
+          open
+          onOpenChange={(open) => !open && setPartsItemId(null)}
+        />
+      ) : null}
 
       <AlertDialog open={deleting !== null} onOpenChange={(open) => !open && setDeleting(null)}>
         <AlertDialogContent>

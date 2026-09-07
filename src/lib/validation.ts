@@ -147,6 +147,22 @@ export const collectionItemSchema = z.object({
   notes: optionalText(2000),
 });
 
+/**
+ * A missing part needs at least something identifying: a part number or a
+ * note. An entry with neither says nothing and would only clutter the list.
+ */
+export const missingPartSchema = z
+  .object({
+    partNumber: optionalText(40),
+    colorName: optionalText(40),
+    quantity: z.coerce.number().int().min(1).max(999).default(1),
+    notes: optionalText(300),
+  })
+  .refine(
+    (value) => value.partNumber !== null || value.notes !== null,
+    'Bitte gib mindestens die Teilenummer oder eine Notiz an.',
+  );
+
 // ---------------------------------------------------------------------------
 // Wishlists
 // ---------------------------------------------------------------------------

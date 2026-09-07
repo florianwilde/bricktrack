@@ -5,17 +5,20 @@ import { usePathname } from 'next/navigation';
 import { cn } from 'cn';
 
 const tabs = [
-  { href: '/verwaltung/hersteller', label: 'Hersteller' },
-  { href: '/verwaltung/themen', label: 'Themen' },
-  { href: '/verwaltung/standorte', label: 'Standorte' },
+  { href: '/verwaltung/hersteller', label: 'Hersteller', adminOnly: false },
+  { href: '/verwaltung/themen', label: 'Themen', adminOnly: false },
+  { href: '/verwaltung/standorte', label: 'Standorte', adminOnly: false },
+  { href: '/verwaltung/einladungen', label: 'Einladungen', adminOnly: true },
+  { href: '/verwaltung/daten', label: 'Daten', adminOnly: true },
 ] as const;
 
-export function VerwaltungNav() {
+export function VerwaltungNav({ isAdmin }: { isAdmin: boolean }) {
   const pathname = usePathname();
+  const visible = tabs.filter((tab) => !tab.adminOnly || isAdmin);
 
   return (
     <nav className="flex gap-1 overflow-x-auto rounded-lg bg-muted p-1" aria-label="Stammdaten">
-      {tabs.map((tab) => {
+      {visible.map((tab) => {
         const active = pathname === tab.href;
         return (
           <Link

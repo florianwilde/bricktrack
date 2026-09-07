@@ -10,6 +10,7 @@ import { completenessLabel, statusLabel } from '@/lib/labels';
 import { formatEuro } from '@/lib/money';
 import {
   countMissingSets,
+  countOpenMissingParts,
   getCollectionStats,
   listCollectionItems,
   type CollectionFilters as Filters,
@@ -40,6 +41,7 @@ export default async function SammlungPage({ searchParams }: { searchParams: Sea
   };
 
   const items = listCollectionItems(filters);
+  const openParts = countOpenMissingParts(items.map((item) => item.id));
   const stats = getCollectionStats();
   const missing = countMissingSets();
 
@@ -131,6 +133,9 @@ export default async function SammlungPage({ searchParams }: { searchParams: Sea
                       </Badge>
                       {item.completeness !== 'unknown' ? (
                         <Badge variant="secondary">{completenessLabel(item.completeness)}</Badge>
+                      ) : null}
+                      {openParts.get(item.id) ? (
+                        <Badge variant="outline">{openParts.get(item.id)} Fehlteile</Badge>
                       ) : null}
                       {item.acquiredAt ? (
                         <span className="text-xs text-muted-foreground">

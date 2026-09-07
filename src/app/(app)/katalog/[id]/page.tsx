@@ -18,6 +18,7 @@ import {
   listInstructionsForSet,
   listPhotosForSet,
 } from '@/lib/queries/catalog';
+import { listMissingParts } from '@/lib/queries/collection';
 import { listLocations } from '@/lib/queries/master-data';
 import { listWishlistsForSet, listWishlistTargets } from '@/lib/queries/wishlists';
 import { requireUser } from '@/lib/session';
@@ -45,6 +46,8 @@ export default async function SetDetailPage({ params }: Props) {
   const collectionItems = listCollectionItemsForSet(set.id).map((item) => ({
     ...item,
     locationName: item.locationId ? (locationNames.get(item.locationId) ?? null) : null,
+    setName: `${set.setNumber} · ${set.name}`,
+    missingParts: listMissingParts(item.id),
   }));
 
   const facts: Array<[string, string]> = [

@@ -29,6 +29,22 @@ Commit-Spalte verweist auf den Stand am Ende des Schritts.
 
 **Summe Phase 1: 2:44**
 
+## Phase 2 – Komfort (v0.2.0)
+
+### 07.09.2026
+
+| Von | Bis | Dauer | Schritt | Ergebnis | Commit |
+|---|---|---|---|---|---|
+| 06:50 | 07:01 | 0:11 | Einladungen | Admin erzeugt einmal gültige Registrierungslinks; Freigabe über AsyncLocalStorage, damit die Rolle nicht aus dem Formular kommen kann. Smoke-Test deckt den ganzen Weg ab | `52d69e5` |
+| 07:01 | 07:12 | 0:11 | Rebrickable-Import | Setnummer genügt: Metadaten, Thema und lokal gespeichertes Bild; 14 Tests gegen gestubbtes `fetch` inklusive aller Fehlerfälle | `4e3cbb8` |
+| 07:12 | 07:15 | 0:03 | Barcode-Scanner | EAN mit der Handykamera, Prüfziffer-Kontrolle, zxing wird erst beim Öffnen geladen | `baa94bf` |
+| 07:15 | 07:18 | 0:03 | Fehlteile | Liste je Sammlungseintrag; Vollständigkeit pflegt sich daraus selbst | `5c5c521` |
+| 07:18 | 07:23 | 0:05 | Export und Import | ZIP, JSON und CSV; Import ersetzt in einer Transaktion, 10 Tests für den Rundweg | `45aa8f1` |
+| 07:23 | 07:27 | 0:04 | PWA | Manifest, Icons aus SVG-Quelle, Service Worker mit Offline-Katalog | `39271f8` |
+| 07:27 | 07:45 | 0:18 | Verifikation und Dokumentation | Smoke-Test, Docker-Build, Changelog 0.2.0, Anleitung und Roadmap | folgt |
+
+**Summe Phase 2: 0:55**
+
 ---
 
 ## Notizen und Entscheidungen
@@ -85,6 +101,24 @@ Commit-Spalte verweist auf den Stand am Ende des Schritts.
   `Unexpected end of JSON input` ab. Die Bilder entstehen jetzt gegen das
   Produktions-Image im Container – verlässlich und zugleich näher an dem, was
   Nutzer wirklich sehen.
+
+### Phase 2
+
+- **`server-only` in Tests**: Das Paket wirft beim Import ausserhalb einer
+  Server-Komponente, wodurch sich Servermodule nicht testen liessen. In
+  `vitest.config.mts` ist es jetzt auf einen leeren Stub gemappt – der Import
+  ist eine Build-Zeit-Absicherung, kein Verhalten.
+- **Namenskonflikt `BASE_URL`**: Vite benutzt genau diesen Namen für seinen
+  Public-Base-Path und setzt ihn auf `/`. Die Tests überschreiben ihn deshalb
+  ausdrücklich. Dabei ist aufgefallen, dass `src/env.ts` bei einem leeren Wert
+  abbrach statt auf den Standard zurückzufallen – behoben, denn ein
+  `BASE_URL=` in der `.env` ist ein realistischer Tippfehler.
+- **Rebrickable und Anleitungen**: Die API v3 stellt keine Anleitungsdateien
+  bereit. Statt das zu verschleiern, legt der Import einen externen Link auf
+  die LEGO-Serviceseite zur Setnummer an.
+- **Import statt Zusammenführen**: Zwei Sammlungen zu mischen bräuchte
+  Konfliktregeln für jede Tabelle und wäre im Ergebnis nicht vorhersagbar.
+  Der Import ersetzt deshalb – dafür mit getipptem `ERSETZEN` als Bremse.
 
 ### Beim Testen gefunden und behoben
 

@@ -1,7 +1,7 @@
 import 'server-only';
-import { and, asc, countDistinct, eq, sql, type SQL } from 'drizzle-orm';
+import { and, asc, countDistinct, eq, inArray, sql, type SQL } from 'drizzle-orm';
 import { db } from '@/db';
-import { collectionItem, location, manufacturer, set, theme } from '@/db/schema';
+import { collectionItem, location, manufacturer, missingPart, set, theme } from '@/db/schema';
 import { SOLD_STATUS } from '@/lib/ownership';
 import type { CollectionStatus, Completeness, Condition } from '@/db/types';
 
@@ -157,4 +157,52 @@ export function countMissingSets(): number {
     .all();
 
   return row?.total ?? 0;
+}
+
+export type MissingPartRow = {
+  id: string;
+  partNumber: string | null;
+  colorName: string | null;
+  quantity: number;
+  resolved: boolean;
+  notes: string | null;
+};
+
+export function listMissingParts(collectionItemId: string): MissingPartRow[] {
+  return db
+    .select({
+      id: missingPart.id,
+      partNumber: missingPart.partNumber,
+      colorName: missingPart.colorName,
+      quantity: missingPart.quantity,
+      resolved: missingPart.resolved,
+      notes: missingPart.notes,
+    })
+    .from(missingPart)
+    .where(eq(missingPart.collectionItemId, collectionItemId))
+    // Open entries first: those are the ones you act on.
+    .orderBy(asc(missingPart.resolved), asc(missingPart.createdAt))
+    .all();
+}
+
+/** Open missing parts per collection item, for the badges in the lists. */
+export function countOpenMissingParts(collectionItemIds: string[]): Map<string, number> {
+  if (collectionItemIds.length === 0) return new Map();
+
+  const rows = db
+    .select({
+      collectionItemId: missingPart.collectionItemId,
+      open: sql<number>`count(*)`.mapWith(Number),
+    })
+    .from(missingPart)
+    .where(
+      and(
+        inArray(missingPart.collectionItemId, collectionItemIds),
+        eq(missingPart.resolved, false),
+      ),
+    )
+    .groupBy(missingPart.collectionItemId)
+    .all();
+
+  return new Map(rows.map((row) => [row.collectionItemId, row.open]));
 }

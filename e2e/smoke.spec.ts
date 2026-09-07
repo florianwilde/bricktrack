@@ -81,6 +81,53 @@ test('Registrieren, Set anlegen, Wunschliste teilen und reservieren', async ({ p
   await visitorContext.close();
 });
 
+test('Einladung: zweiter Elternteil bekommt ein eigenes Konto', async ({ page, browser }) => {
+  // The admin from the first test is still the only account, so log in.
+  await page.goto('/anmelden');
+  await page.getByLabel('E-Mail').fill('test@bricktrack.local');
+  await page.getByLabel('Passwort').fill('smoketest-passwort');
+  await page.getByRole('button', { name: 'Anmelden', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Hallo Florian' })).toBeVisible();
+
+  // --- the admin issues an invitation --------------------------------------
+  await page.goto('/verwaltung/einladungen');
+  await page.getByRole('button', { name: 'Einladung erstellen' }).click();
+  await page.getByRole('button', { name: 'Erstellen' }).click();
+
+  const inviteUrl = await page
+    .getByRole('textbox', { name: 'Einladungslink' })
+    .inputValue();
+  expect(inviteUrl).toContain('/einladung/');
+  await page.getByRole('button', { name: 'Fertig' }).click();
+  await expect(page.getByText('Offen').first()).toBeVisible();
+
+  // --- the invited person registers ----------------------------------------
+  const guestContext = await browser.newContext();
+  const guest = await guestContext.newPage();
+  await guest.goto(inviteUrl);
+  await expect(guest.getByRole('button', { name: 'Konto anlegen' })).toBeVisible();
+
+  await guest.getByLabel('Name').fill('Mama');
+  await guest.getByLabel('E-Mail').fill('mama@bricktrack.local');
+  await guest.getByLabel('Passwort').fill('zweites-passwort');
+  await guest.getByRole('button', { name: 'Konto anlegen' }).click();
+
+  await expect(guest.getByRole('heading', { name: 'Hallo Mama' })).toBeVisible();
+
+  // A member is not an admin: no invitation management for them.
+  await guest.goto('/verwaltung/einladungen');
+  await expect(guest).toHaveURL(/\/$|\/anmelden/);
+
+  // --- the link is single use ----------------------------------------------
+  const secondTry = await browser.newContext();
+  const secondPage = await secondTry.newPage();
+  await secondPage.goto(inviteUrl);
+  await expect(secondPage.getByText('Einladung ungültig')).toBeVisible();
+
+  await guestContext.close();
+  await secondTry.close();
+});
+
 test('Ohne Anmeldung fuehrt jeder geschuetzte Pfad zur Anmeldung', async ({ page }) => {
   await page.goto('/sammlung');
   await expect(page).toHaveURL(/\/anmelden|\/registrieren/);

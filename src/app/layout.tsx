@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { ServiceWorkerRegistration } from '@/components/layout/service-worker';
 import { Toaster } from '@/components/ui/sonner';
 import './globals.css';
 
@@ -9,6 +10,16 @@ export const metadata: Metadata = {
   },
   description: 'Sammlung und Wunschlisten für Spielzeug-Sets',
   applicationName: 'Bricktrack',
+  manifest: '/manifest.webmanifest',
+  icons: {
+    icon: [{ url: '/favicon.png', type: 'image/png', sizes: '32x32' }],
+    apple: [{ url: '/icons/apple-touch-icon.png', sizes: '180x180' }],
+  },
+  appleWebApp: {
+    capable: true,
+    title: 'Bricktrack',
+    statusBarStyle: 'default',
+  },
   // A private, self-hosted instance never belongs in a search index - and the
   // public wishlist links are meant to be shared, not found.
   robots: { index: false, follow: false },
@@ -30,6 +41,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className="min-h-dvh bg-background text-foreground antialiased">
         {children}
         <Toaster position="top-center" richColors closeButton />
+        <ServiceWorkerRegistration />
       </body>
     </html>
   );
