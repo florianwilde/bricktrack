@@ -19,6 +19,10 @@ next-env.d.ts
 
 # runtime data (database, uploads) - never in git, this is the backup target
 /data
+/data-e2e
+/data-shots
+/data-docker
+/backups
 
 # production
 *.tsbuildinfo
