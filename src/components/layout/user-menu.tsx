@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { LogOut, Settings, UserRound } from 'lucide-react';
+import { clearOfflineCaches } from '@/components/layout/service-worker';
 import { authClient } from '@/lib/auth-client';
 import { Button } from '@/components/ui/button';
 import {
@@ -20,6 +21,8 @@ export function UserMenu({ user }: { user: SessionUser }) {
 
   async function signOut() {
     await authClient.signOut();
+    // Cached pages must not stay readable on a shared device.
+    await clearOfflineCaches();
     router.push('/anmelden');
     router.refresh();
   }
