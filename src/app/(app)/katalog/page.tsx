@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
+import { BarcodeScannerButton } from '@/components/katalog/barcode-scanner';
 import { CatalogFilters } from '@/components/katalog/catalog-filters';
 import { CatalogGrid } from '@/components/katalog/catalog-grid';
 import { Pagination } from '@/components/katalog/pagination';
@@ -60,12 +61,15 @@ export default async function KatalogPage({ searchParams }: { searchParams: Sear
               : 'Alle bekannten Sets – unabhängig davon, ob sie schon da sind.'}
           </p>
         </div>
-        <Button asChild size="lg" className="shrink-0">
-          <Link href="/katalog/neu">
-            <Plus />
-            <span className="hidden sm:inline">Set anlegen</span>
-          </Link>
-        </Button>
+        <div className="flex shrink-0 gap-2">
+          <BarcodeScannerButton />
+          <Button asChild size="lg">
+            <Link href="/katalog/neu">
+              <Plus />
+              <span className="hidden sm:inline">Set anlegen</span>
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <CatalogFilters options={{ manufacturers, themes, years: listSetYears() }} />
