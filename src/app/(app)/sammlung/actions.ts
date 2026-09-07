@@ -1,9 +1,9 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { db } from '@/db';
-import { collectionItem, set } from '@/db/schema';
+import { collectionItem, missingPart, set } from '@/db/schema';
 import {
   actionData,
   actionError,
@@ -13,7 +13,7 @@ import {
 } from '@/lib/action-result';
 import { reconcileFulfilledWishlistItems } from '@/lib/queries/wishlists';
 import { requireUser } from '@/lib/session';
-import { collectionItemSchema } from '@/lib/validation';
+import { collectionItemSchema, missingPartSchema } from '@/lib/validation';
 import type { Condition } from '@/db/types';
 
 function now() {
@@ -101,5 +101,125 @@ export async function deleteCollectionItem(id: string): Promise<ActionResult> {
   reconcileFulfilledWishlistItems();
 
   revalidateCollection(existing.setId);
+  return actionOk();
+}
+
+// ---------------------------------------------------------------------------
+// Missing parts
+// ---------------------------------------------------------------------------
+
+/**
+ * Keeps `completeness` honest without ever fighting the user.
+ *
+ * The moment a part is reported missing the item is not complete any more, and
+ * once the last open entry is resolved it is complete again. A deliberate
+ * "unknown" is left alone in the second direction only.
+ */
+function syncCompleteness(collectionItemId: string): void {
+  const open = db
+    .select({ id: missingPart.id })
+    .from(missingPart)
+    .where(and(eq(missingPart.collectionItemId, collectionItemId), eq(missingPart.resolved, false)))
+    .all();
+
+  const item = db
+    .select({ completeness: collectionItem.completeness })
+    .from(collectionItem)
+    .where(eq(collectionItem.id, collectionItemId))
+    .get();
+  if (!item) return;
+
+  if (open.length > 0 && item.completeness !== 'missing_parts') {
+    db.update(collectionItem)
+      .set({ completeness: 'missing_parts', updatedAt: now() })
+      .where(eq(collectionItem.id, collectionItemId))
+      .run();
+    return;
+  }
+
+  if (open.length === 0 && item.completeness === 'missing_parts') {
+    db.update(collectionItem)
+      .set({ completeness: 'complete', updatedAt: now() })
+      .where(eq(collectionItem.id, collectionItemId))
+      .run();
+  }
+}
+
+function loadItemSetId(collectionItemId: string): string | null {
+  const row = db
+    .select({ setId: collectionItem.setId })
+    .from(collectionItem)
+    .where(eq(collectionItem.id, collectionItemId))
+    .get();
+  return row?.setId ?? null;
+}
+
+export async function addMissingPart(
+  collectionItemId: string,
+  input: unknown,
+): Promise<ActionResult> {
+  await requireUser();
+
+  const parsed = parseForm(missingPartSchema, input);
+  if (!parsed.ok) return parsed;
+
+  const setId = loadItemSetId(collectionItemId);
+  if (!setId) return actionError('Diesen Sammlungseintrag gibt es nicht mehr.');
+
+  db.insert(missingPart)
+    .values({
+      id: crypto.randomUUID(),
+      collectionItemId,
+      partNumber: parsed.data.partNumber,
+      colorName: parsed.data.colorName,
+      quantity: parsed.data.quantity,
+      resolved: false,
+      notes: parsed.data.notes,
+      createdAt: now(),
+    })
+    .run();
+
+  syncCompleteness(collectionItemId);
+  revalidateCollection(setId);
+  return actionOk();
+}
+
+export async function setMissingPartResolved(
+  missingPartId: string,
+  resolved: boolean,
+): Promise<ActionResult> {
+  await requireUser();
+
+  const row = db
+    .select({ collectionItemId: missingPart.collectionItemId })
+    .from(missingPart)
+    .where(eq(missingPart.id, missingPartId))
+    .get();
+  if (!row) return actionOk();
+
+  db.update(missingPart)
+    .set({ resolved })
+    .where(eq(missingPart.id, missingPartId))
+    .run();
+
+  syncCompleteness(row.collectionItemId);
+  revalidateCollection(loadItemSetId(row.collectionItemId) ?? undefined);
+  return actionOk();
+}
+
+export async function deleteMissingPart(missingPartId: string): Promise<ActionResult> {
+  await requireUser();
+
+  const row = db
+    .select({ collectionItemId: missingPart.collectionItemId })
+    .from(missingPart)
+    .where(eq(missingPart.id, missingPartId))
+    .get();
+  if (!row) return actionOk();
+
+  db.delete(missingPart).where(eq(missingPart.id, missingPartId)).run();
+
+  syncCompleteness(row.collectionItemId);
+  revalidateCollection(loadItemSetId(row.collectionItemId) ?? undefined);
   return actionOk();
 }
