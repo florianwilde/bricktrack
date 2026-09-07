@@ -29,6 +29,9 @@ du per Link mit Familie und Freunden teilst. Die reservieren dort ihr Geschenk
 | **Fotos** | Eigene Bilder je Set – direkt aus der Handykamera |
 | **Wunschlisten** | Mehrfachauswahl aus den fehlenden Sets, Priorität, Reihenfolge, Termin |
 | **Teilen** | Öffentlicher Link ohne Anmeldung, Reservierung mit Namen, Storno-Link, Überraschungsmodus |
+| **Mehrere Kinder** | Gemeinsamer Katalog, getrennte Sammlungen und Wunschlisten – sichtbar erst ab dem zweiten Sammler |
+| **Preise** | Notierte Preise je Set, Wertentwicklung gegen die UVP |
+| **Erinnerungen** | E-Mail, wenn ein Termin näher rückt und noch Wünsche offen sind (SMTP optional) |
 | **Anmeldung** | E-Mail und Passwort oder Passkey (WebAuthn), mehrere Geräte je Konto |
 
 Mobil zuerst gebaut: Die App wird im Laden und im Kinderzimmer benutzt, nicht
@@ -81,7 +84,9 @@ Alle Werte kommen aus `.env` (Vorlage: `.env.example`).
 | `TZ` | nein | `Europe/Berlin` | Zeitzone des Containers. |
 | `BIND_ADDRESS` | nein | `127.0.0.1` | Auf welcher Host-Adresse der Container lauscht. `0.0.0.0`, wenn der Proxy auf einem anderen Host läuft. |
 | `HOST_PORT` | nein | `3000` | Port auf dem Host, falls 3000 belegt ist. |
-| `REBRICKABLE_API_KEY` | nein | – | Ab Version 0.2.0: Lego-Import. Ohne Key läuft alles manuell. |
+| `REBRICKABLE_API_KEY` | nein | – | Lego-Import. Ohne Key läuft alles manuell. |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM` | nein | – | Mailversand für Wunschlisten-Erinnerungen. Ohne `SMTP_HOST` und `SMTP_FROM` ist die Funktion aus. |
+| `REMINDER_DAYS_BEFORE` | nein | `14` | Wie viele Tage vor dem Termin erinnert wird. |
 
 ### Reverse Proxy
 
@@ -207,6 +212,10 @@ sind zwei Einträge. Daraus folgt die zentrale Regel:
 Ein verkauftes Exemplar zählt also nicht mehr als Besitz – das Set taucht
 wieder unter „fehlt noch" auf und darf zurück auf eine Wunschliste. Diese
 Regel steht an genau einer Stelle im Code: `src/lib/ownership.ts`.
+
+Gibt es mehrere **Sammler**, bekommt die Frage ein „für wen": Der Katalog ist
+gemeinsam, der Besitz nicht. Ein Set, das nur das Geschwisterkind hat, fehlt
+dem anderen weiterhin.
 
 Das vollständige Modell inklusive aller Tabellen: [CLAUDE.md](CLAUDE.md#datenmodell).
 

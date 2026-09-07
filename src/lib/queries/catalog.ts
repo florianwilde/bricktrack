@@ -1,7 +1,15 @@
 import 'server-only';
 import { and, asc, desc, eq, like, not, or, sql, type SQL } from 'drizzle-orm';
 import { db } from '@/db';
-import { collectionItem, instruction, manufacturer, photo, set, theme } from '@/db/schema';
+import {
+  collectionItem,
+  instruction,
+  manufacturer,
+  photo,
+  pricePoint,
+  set,
+  theme,
+} from '@/db/schema';
 import { ownedCopiesSql, wishlistCountSql, type OwnershipFilter } from '@/lib/ownership';
 
 export const CATALOG_PAGE_SIZE = 48;
@@ -14,6 +22,8 @@ export type CatalogFilters = {
   ownership?: OwnershipFilter;
   /** Hides sets that are already on this wishlist (for "aus fehlenden Sets hinzufügen"). */
   excludeWishlistId?: string;
+  /** Scopes "owned" and "on a wishlist" to one collector. */
+  collectorId?: string;
   page?: number;
 };
 
@@ -52,7 +62,7 @@ function buildWhere(filters: CatalogFilters): SQL | undefined {
   if (filters.themeId) conditions.push(eq(set.themeId, filters.themeId));
   if (filters.year !== undefined) conditions.push(eq(set.year, filters.year));
 
-  const owned = ownedCopiesSql(set.id);
+  const owned = ownedCopiesSql(set.id, filters.collectorId);
   switch (filters.ownership) {
     case 'sammlung':
       conditions.push(sql`${owned} > 0`);
@@ -61,7 +71,7 @@ function buildWhere(filters: CatalogFilters): SQL | undefined {
       conditions.push(sql`${owned} = 0`);
       break;
     case 'wunschliste':
-      conditions.push(sql`${wishlistCountSql(set.id)} > 0`);
+      conditions.push(sql`${wishlistCountSql(set.id, filters.collectorId)} > 0`);
       break;
     default:
       break;
@@ -95,8 +105,8 @@ export function listSets(filters: CatalogFilters): { rows: CatalogRow[]; total: 
       retailPriceCents: set.retailPriceCents,
       manufacturerName: manufacturer.name,
       themeName: theme.name,
-      ownedCopies: ownedCopiesSql(set.id).mapWith(Number),
-      wishlistCount: wishlistCountSql(set.id).mapWith(Number),
+      ownedCopies: ownedCopiesSql(set.id, filters.collectorId).mapWith(Number),
+      wishlistCount: wishlistCountSql(set.id, filters.collectorId).mapWith(Number),
     })
     .from(set)
     .innerJoin(manufacturer, eq(manufacturer.id, set.manufacturerId))
@@ -126,7 +136,7 @@ export function listSetIds(filters: CatalogFilters): string[] {
     .map((row) => row.id);
 }
 
-export function getSetById(id: string) {
+export function getSetById(id: string, collectorId?: string) {
   const row = db
     .select({
       id: set.id,
@@ -148,8 +158,8 @@ export function getSetById(id: string) {
       notes: set.notes,
       createdAt: set.createdAt,
       updatedAt: set.updatedAt,
-      ownedCopies: ownedCopiesSql(set.id).mapWith(Number),
-      wishlistCount: wishlistCountSql(set.id).mapWith(Number),
+      ownedCopies: ownedCopiesSql(set.id, collectorId).mapWith(Number),
+      wishlistCount: wishlistCountSql(set.id, collectorId).mapWith(Number),
     })
     .from(set)
     .innerJoin(manufacturer, eq(manufacturer.id, set.manufacturerId))
@@ -224,4 +234,29 @@ export function listSetYears(): number[] {
     .orderBy(desc(set.year))
     .all()
     .flatMap((row) => (row.year === null ? [] : [row.year]));
+}
+
+export type PricePointRow = {
+  id: string;
+  priceCents: number;
+  condition: 'new' | 'used';
+  source: string | null;
+  observedAt: Date;
+  note: string | null;
+};
+
+export function listPricePoints(setId: string): PricePointRow[] {
+  return db
+    .select({
+      id: pricePoint.id,
+      priceCents: pricePoint.priceCents,
+      condition: pricePoint.condition,
+      source: pricePoint.source,
+      observedAt: pricePoint.observedAt,
+      note: pricePoint.note,
+    })
+    .from(pricePoint)
+    .where(eq(pricePoint.setId, setId))
+    .orderBy(desc(pricePoint.observedAt))
+    .all();
 }

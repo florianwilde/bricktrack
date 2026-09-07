@@ -2,6 +2,8 @@ import { relations } from 'drizzle-orm';
 import { passkey, session, user } from './auth';
 import { instruction, manufacturer, set, setTag, tag, theme } from './catalog';
 import { collectionItem, location, missingPart, photo } from './collection';
+import { collector } from './collector';
+import { pricePoint } from './prices';
 import { wishlist, wishlistItem } from './wishlist';
 
 export const userRelations = relations(user, ({ many }) => ({
@@ -48,6 +50,11 @@ export const setRelations = relations(set, ({ one, many }) => ({
   photos: many(photo),
   setTags: many(setTag),
   wishlistItems: many(wishlistItem),
+  pricePoints: many(pricePoint),
+}));
+
+export const pricePointRelations = relations(pricePoint, ({ one }) => ({
+  set: one(set, { fields: [pricePoint.setId], references: [set.id] }),
 }));
 
 export const tagRelations = relations(tag, ({ many }) => ({
@@ -73,8 +80,17 @@ export const locationRelations = relations(location, ({ one, many }) => ({
   collectionItems: many(collectionItem),
 }));
 
+export const collectorRelations = relations(collector, ({ many }) => ({
+  collectionItems: many(collectionItem),
+  wishlists: many(wishlist),
+}));
+
 export const collectionItemRelations = relations(collectionItem, ({ one, many }) => ({
   set: one(set, { fields: [collectionItem.setId], references: [set.id] }),
+  collector: one(collector, {
+    fields: [collectionItem.collectorId],
+    references: [collector.id],
+  }),
   location: one(location, {
     fields: [collectionItem.locationId],
     references: [location.id],
@@ -100,6 +116,10 @@ export const photoRelations = relations(photo, ({ one }) => ({
 
 export const wishlistRelations = relations(wishlist, ({ one, many }) => ({
   owner: one(user, { fields: [wishlist.ownerUserId], references: [user.id] }),
+  collector: one(collector, {
+    fields: [wishlist.collectorId],
+    references: [collector.id],
+  }),
   items: many(wishlistItem),
 }));
 

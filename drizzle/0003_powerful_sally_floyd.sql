@@ -1,0 +1,1 @@
+ALTER TABLE `wishlist` ADD `last_reminder_at` integer;

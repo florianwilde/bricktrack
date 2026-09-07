@@ -88,6 +88,22 @@ export const locationSchema = z.object({
   parentLocationId: optionalId,
 });
 
+export const collectorColorEnum = z.enum([
+  'blue',
+  'green',
+  'amber',
+  'rose',
+  'violet',
+  'slate',
+]);
+
+export const collectorSchema = z.object({
+  name: z.string().trim().min(1, 'Bitte einen Namen angeben.').max(60),
+  color: collectorColorEnum.default('blue'),
+  birthday: optionalDate,
+  notes: optionalText(500),
+});
+
 // ---------------------------------------------------------------------------
 // Catalog
 // ---------------------------------------------------------------------------
@@ -127,6 +143,7 @@ export const conditionEnum = z.enum(['new_sealed', 'like_new', 'good', 'used', '
 
 export const collectionItemSchema = z.object({
   setId: z.string().trim().min(1),
+  collectorId: optionalId,
   status: collectionStatusEnum.default('owned'),
   completeness: completenessEnum.default('unknown'),
   condition: z
@@ -171,6 +188,7 @@ export const occasionEnum = z.enum(['christmas', 'birthday', 'easter', 'other'])
 
 export const wishlistSchema = z.object({
   title: z.string().trim().min(1, 'Bitte einen Titel angeben.').max(80),
+  collectorId: optionalId,
   occasion: occasionEnum.default('other'),
   eventDate: optionalDate,
   note: optionalText(1000),
@@ -205,3 +223,4 @@ export type LocationInput = z.infer<typeof locationSchema>;
 export type SetInput = z.infer<typeof setSchema>;
 export type CollectionItemInput = z.infer<typeof collectionItemSchema>;
 export type WishlistInput = z.infer<typeof wishlistSchema>;
+export type CollectorInput = z.infer<typeof collectorSchema>;

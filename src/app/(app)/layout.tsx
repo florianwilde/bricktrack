@@ -1,8 +1,13 @@
 import { AppHeader } from '@/components/layout/app-header';
 import { BottomNav } from '@/components/layout/bottom-nav';
+import { ensureReminderScheduler } from '@/lib/reminder-job';
 import { requireUser } from '@/lib/session';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
+  // Second entry point besides the healthcheck, in case someone turns that
+  // off. The call is idempotent.
+  ensureReminderScheduler();
+
   const user = await requireUser();
 
   return (

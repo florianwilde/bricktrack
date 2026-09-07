@@ -45,6 +45,20 @@ Commit-Spalte verweist auf den Stand am Ende des Schritts.
 
 **Summe Phase 2: 0:55**
 
+## Phase 3 – Nice to have (v0.3.0)
+
+### 07.09.2026
+
+| Von | Bis | Dauer | Schritt | Ergebnis | Commit |
+|---|---|---|---|---|---|
+| 08:35 | 09:00 | 0:25 | Mehrere Sammler | Neue Tabelle, Migration mit Nachziehen der Bestandsdaten, Besitzlogik um eine Dimension erweitert, Umschalter in Katalog und Sammlung, Zuordnung in Sammlungseintrag und Wunschliste | `c23b754` |
+| 09:00 | 09:13 | 0:13 | Dublettenprüfung | Ähnlichkeitsvergleich mit konservativer Schwelle, Warndialog mit Links, E2E-Test | `87131b8` |
+| 09:13 | 09:17 | 0:04 | Preisbeobachtung | Preisreihe je Set, Wertentwicklung gegen die UVP, Kachel „Aktueller Wert" | `91fb66b` |
+| 09:17 | 09:22 | 0:05 | Erinnerungen | SMTP optional, stündliche Prüfung, Sperrfrist je Liste, Verwaltungsseite mit Testfunktionen | `0d08df0` |
+| 09:22 | 09:50 | 0:28 | Verifikation und Dokumentation | Docker-Build, Smoke-Test, Screenshots, Changelog 0.3.0, Anleitung | folgt |
+
+**Summe Phase 3: 1:15**
+
 ---
 
 ## Notizen und Entscheidungen
@@ -120,6 +134,21 @@ Commit-Spalte verweist auf den Stand am Ende des Schritts.
   Konfliktregeln für jede Tabelle und wäre im Ergebnis nicht vorhersagbar.
   Der Import ersetzt deshalb – dafür mit getipptem `ERSETZEN` als Bremse.
 
+### Phase 3
+
+- **Migration mit Bestandsdaten**: Die generierte SQL-Datei wurde von Hand um
+  drei Anweisungen ergänzt, die einen Sammler anlegen und alles Vorhandene
+  zuordnen. Ohne das wären nach dem Update alle Sammlungseinträge ohne
+  Besitzer gewesen.
+- **Instrumentation und native Module**: Der Zeitplan für Erinnerungen liess
+  sich nicht aus Next' `instrumentation.ts` starten – die Datei wird auch für
+  die Edge-Runtime übersetzt, und das native SQLite-Modul bricht dort den
+  Build. Der Zeitplan startet jetzt aus dem Healthcheck heraus, den der
+  Container ohnehin alle 30 Sekunden aufruft.
+- **BrickLink bewusst weggelassen**: OAuth1 mit einer pro Nutzer registrierten
+  Anwendung ist viel Apparat für eine Zahl, die man in zehn Sekunden eintippt.
+  Im Plan war der Punkt als optional vermerkt.
+
 ### Beim Testen gefunden und behoben
 
 - Eine spontan aus dem Katalog angelegte Wunschliste war **nicht teilbar**:
@@ -130,3 +159,8 @@ Commit-Spalte verweist auf den Stand am Ende des Schritts.
   `required` des Eingabefeldes.
 - In der Mehrfachauswahl verdeckte die Aktionsleiste die letzte Kachelreihe;
   das Raster bekommt im Auswahlmodus zusätzliches Polster nach unten.
+- Die Sperrfrist der Erinnerungen rechnete mit umgedrehtem Vorzeichen und
+  hätte jede Erinnerung dauerhaft unterdrückt. Der Test dafür war zuerst da.
+- Der Screenshot-Lauf wählte plötzlich die falschen Kacheln aus: Der neue
+  Sammler-Umschalter benutzt ebenfalls `aria-pressed`. Die Auswahlkacheln
+  tragen jetzt ein eigenes `data-set-card`.

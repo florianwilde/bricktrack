@@ -46,12 +46,25 @@ Laeuft vollstaendig im Docker-Stack.
       Sammlung zusaetzlich als CSV
 - [x] PWA: Manifest, Service Worker, Katalog offline lesbar
 
-## Phase 3 - Nice to have (Ziel: v0.3.0)
+## Phase 3 - Nice to have (v0.3.0, abgeschlossen am 07.09.2026)
 
-- [ ] Mehrere Sammler mit eigener Sammlung und eigenen Wunschlisten,
+- [x] Mehrere Sammler mit eigener Sammlung und eigenen Wunschlisten,
       gemeinsamer Katalog
-- [ ] Preisbeobachtung und Wertentwicklung (manuell gepflegt,
-      optional BrickLink-Preisfuehrer)
-- [ ] E-Mail-Erinnerung (SMTP), wenn ein Wunschlisten-Termin naeher
+- [x] Preisbeobachtung und Wertentwicklung (manuell gepflegt).
+      Der BrickLink-Preisfuehrer war als optional vermerkt und wurde
+      bewusst weggelassen: er verlangt OAuth1 mit einer pro Nutzer
+      registrierten Anwendung - viel Apparat fuer eine Zahl, die sich in
+      zehn Sekunden eintippen laesst. Die Datenstruktur ist offen dafuer.
+- [x] E-Mail-Erinnerung (SMTP), wenn ein Wunschlisten-Termin naeher
       rueckt und Eintraege unreserviert sind
-- [ ] Dublettenpruefung beim Anlegen von Sets
+- [x] Dublettenpruefung beim Anlegen von Sets
+
+## Danach
+
+Phase 1 bis 3 sind umgesetzt. Was noch offen ist, steht hier - ohne Termin
+und ohne Anspruch auf Vollstaendigkeit:
+
+- [ ] BrickLink-Preisfuehrer anbinden, falls der Aufwand sich doch lohnt
+- [ ] Mehrere Fotos je Sammlungseintrag (bisher nur je Set)
+- [ ] Anleitungen im PDF-Viewer durchsuchen
+- [ ] Statistik ueber die Zeit: was kam wann dazu

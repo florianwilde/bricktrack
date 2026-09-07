@@ -1,13 +1,28 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState, useTransition } from 'react';
+import { useRef, useState, useTransition } from 'react';
+import Link from 'next/link';
 import { Loader2, Save } from 'lucide-react';
 import { toast } from 'sonner';
 import { createSet, updateSet } from '@/app/(app)/katalog/actions';
+import {
+  findDuplicateCandidates,
+  type DuplicateCandidate,
+} from '@/app/(app)/katalog/duplicate-actions';
 import { centsToInput } from '@/lib/money';
 import { setImageSrc } from '@/lib/images';
 import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Field } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
@@ -46,6 +61,8 @@ export function SetForm({ manufacturers, themes, set, defaultEan }: Props) {
   const [manufacturerId, setManufacturerId] = useState(
     set?.manufacturerId ?? manufacturers[0]?.id ?? '',
   );
+  const [duplicates, setDuplicates] = useState<DuplicateCandidate[] | null>(null);
+  const pendingForm = useRef<FormData | null>(null);
 
   const existingImage = set ? setImageSrc(set) : null;
   const availableThemes = themes.filter((theme) => theme.manufacturerId === manufacturerId);
@@ -54,32 +71,70 @@ export function SetForm({ manufacturers, themes, set, defaultEan }: Props) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
 
-    startTransition(async () => {
-      if (set) {
-        const result = await updateSet(set.id, formData);
-        if (!result.ok) {
-          toast.error(result.error);
+    // Ask before creating something that already exists. Editing skips this:
+    // there the entry is the one we would be warning about.
+    if (!set) {
+      startTransition(async () => {
+        const check = await findDuplicateCandidates({
+          manufacturerId: String(formData.get('manufacturerId') ?? ''),
+          setNumber: String(formData.get('setNumber') ?? ''),
+          name: String(formData.get('name') ?? ''),
+        });
+
+        if (check.ok && check.data.candidates.length > 0) {
+          pendingForm.current = formData;
+          setDuplicates(check.data.candidates);
           return;
         }
-        toast.success('Set gespeichert.');
-        router.push(`/katalog/${set.id}`);
-        router.refresh();
-        return;
-      }
 
-      const result = await createSet(formData);
-      if (!result.ok) {
-        toast.error(result.error);
-        return;
-      }
-      toast.success('Set angelegt.');
-      router.push(`/katalog/${result.data.id}`);
-      router.refresh();
+        await save(formData);
+      });
+      return;
+    }
+
+    startTransition(() => save(formData));
+  }
+
+  async function save(formData: FormData) {
+    return new Promise<void>((resolve) => {
+      startTransition(async () => {
+        if (set) {
+          const result = await updateSet(set.id, formData);
+          if (!result.ok) {
+            toast.error(result.error);
+            resolve();
+            return;
+          }
+          toast.success('Set gespeichert.');
+          router.push(`/katalog/${set.id}`);
+          router.refresh();
+          resolve();
+          return;
+        }
+
+        const result = await createSet(formData);
+        if (!result.ok) {
+          toast.error(result.error);
+          resolve();
+          return;
+        }
+        toast.success('Set angelegt.');
+        router.push(`/katalog/${result.data.id}`);
+        router.refresh();
+        resolve();
+      });
     });
   }
 
+  const REASON_LABELS: Record<DuplicateCandidate['reason'], string> = {
+    'same-number': 'Gleiche Setnummer beim gleichen Hersteller',
+    'similar-name': 'Sehr ähnlicher Name',
+    'number-elsewhere': 'Gleiche Setnummer bei einem anderen Hersteller',
+  };
+
   return (
-    <form onSubmit={onSubmit} className="space-y-6">
+    <>
+      <form onSubmit={onSubmit} className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Hersteller" htmlFor="manufacturerId" required>
           <NativeSelect
@@ -243,6 +298,57 @@ export function SetForm({ manufacturers, themes, set, defaultEan }: Props) {
           Abbrechen
         </Button>
       </div>
-    </form>
+      </form>
+
+      <AlertDialog
+        open={duplicates !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setDuplicates(null);
+            pendingForm.current = null;
+          }
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Gibt es das vielleicht schon?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Diese Einträge sehen ähnlich aus. Schau kurz nach, bevor der Katalog zwei Mal
+              dasselbe Set enthält.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <ul className="divide-y divide-border rounded-lg border border-border">
+            {(duplicates ?? []).map((candidate) => (
+              <li key={candidate.id} className="p-3">
+                <Link
+                  href={`/katalog/${candidate.id}`}
+                  className="text-sm font-medium hover:underline"
+                >
+                  {candidate.setNumber} · {candidate.name}
+                </Link>
+                <p className="text-xs text-muted-foreground">
+                  {candidate.manufacturerName} — {REASON_LABELS[candidate.reason]}
+                </p>
+              </li>
+            ))}
+          </ul>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel>Zurück zum Formular</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                const formData = pendingForm.current;
+                setDuplicates(null);
+                pendingForm.current = null;
+                if (formData) void save(formData);
+              }}
+            >
+              Trotzdem anlegen
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }

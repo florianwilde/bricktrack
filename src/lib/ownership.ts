@@ -8,8 +8,9 @@ import type { CollectionStatus } from '@/db/types';
  * status is anything but `sold`. A sold copy is history, not ownership - so a
  * set that was sold shows up under "fehlt" again and can go back on a wishlist.
  *
- * Every query that asks about ownership goes through this module. If the rule
- * ever changes, it changes here.
+ * With more than one collector the question gains a "for whom": the catalog is
+ * shared, ownership is not. Every query that asks about ownership goes through
+ * this module, optionally scoped to one collector.
  */
 
 export const OWNED_STATUSES = ['owned', 'built', 'disassembled', 'lent_out'] as const;
@@ -17,6 +18,12 @@ export const OWNED_STATUSES = ['owned', 'built', 'disassembled', 'lent_out'] as 
 export const SOLD_STATUS: CollectionStatus = 'sold';
 
 export type OwnedStatus = (typeof OWNED_STATUSES)[number];
+
+/** One owned copy, as far as ownership is concerned. */
+export type OwnableCopy = {
+  status: CollectionStatus;
+  collectorId?: string | null;
+};
 
 /** Does a single collection item count towards ownership? */
 export function isOwningStatus(status: CollectionStatus): status is OwnedStatus {
@@ -37,22 +44,72 @@ export function countOwnedCopies(statuses: readonly CollectionStatus[]): number 
 }
 
 /**
- * SQL counterpart of `countOwnedCopies`, as a correlated subquery.
+ * Ownership from the point of view of one collector.
+ *
+ * Without a collector the question is "does anyone here have it", which is
+ * what a single-collector household asks anyway.
+ */
+export function countOwnedCopiesFor(
+  copies: readonly OwnableCopy[],
+  collectorId?: string | null,
+): number {
+  return copies.filter(
+    (copy) =>
+      isOwningStatus(copy.status) &&
+      (collectorId === undefined || collectorId === null || copy.collectorId === collectorId),
+  ).length;
+}
+
+export function isSetOwnedBy(
+  copies: readonly OwnableCopy[],
+  collectorId?: string | null,
+): boolean {
+  return countOwnedCopiesFor(copies, collectorId) > 0;
+}
+
+/**
+ * SQL counterpart of `countOwnedCopiesFor`, as a correlated subquery.
  *
  * A subquery instead of a join, because a set owned twice must not appear
  * twice in the catalog list.
  */
-export function ownedCopiesSql(setIdColumn: SQL | unknown): SQL<number> {
+export function ownedCopiesSql(
+  setIdColumn: SQL | unknown,
+  collectorId?: string | null,
+): SQL<number> {
+  if (!collectorId) {
+    return sql<number>`(
+      select count(*) from collection_item ci
+      where ci.set_id = ${setIdColumn} and ci.status <> ${SOLD_STATUS}
+    )`;
+  }
+
   return sql<number>`(
     select count(*) from collection_item ci
-    where ci.set_id = ${setIdColumn} and ci.status <> ${SOLD_STATUS}
+    where ci.set_id = ${setIdColumn}
+      and ci.status <> ${SOLD_STATUS}
+      and ci.collector_id = ${collectorId}
   )`;
 }
 
-/** How many wishlists this set is currently on. */
-export function wishlistCountSql(setIdColumn: SQL | unknown): SQL<number> {
+/**
+ * How many wishlists this set is on. Scoped to a collector where one is
+ * selected - a set on the other child's list is not "already wished for" here.
+ */
+export function wishlistCountSql(
+  setIdColumn: SQL | unknown,
+  collectorId?: string | null,
+): SQL<number> {
+  if (!collectorId) {
+    return sql<number>`(
+      select count(*) from wishlist_item wi where wi.set_id = ${setIdColumn}
+    )`;
+  }
+
   return sql<number>`(
-    select count(*) from wishlist_item wi where wi.set_id = ${setIdColumn}
+    select count(*) from wishlist_item wi
+    join wishlist w on w.id = wi.wishlist_id
+    where wi.set_id = ${setIdColumn} and w.collector_id = ${collectorId}
   )`;
 }
 

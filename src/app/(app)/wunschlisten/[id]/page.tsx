@@ -8,10 +8,12 @@ import { WishlistHeaderActions } from '@/components/wunschlisten/wishlist-header
 import { WishlistItems } from '@/components/wunschlisten/wishlist-items';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { collectorBadgeClass } from '@/lib/collector-colors';
 import { formatDate, pluralize } from '@/lib/format';
 import { occasionLabel } from '@/lib/labels';
 import { CATALOG_PAGE_SIZE, listSets, listSetYears } from '@/lib/queries/catalog';
 import { listManufacturers, listThemes } from '@/lib/queries/master-data';
+import { listCollectors } from '@/lib/queries/collectors';
 import { getWishlist, listWishlistItems } from '@/lib/queries/wishlists';
 import { requireUser } from '@/lib/session';
 
@@ -39,7 +41,9 @@ export default async function WunschlisteDetailPage({ params, searchParams }: Pr
   const list = getWishlist(id);
   if (!list || list.ownerUserId !== user.id) notFound();
 
-  const items = listWishlistItems(list.id);
+  const collectors = listCollectors();
+  const activeCollector = collectors.find((row) => row.id === list.collectorId) ?? null;
+  const items = listWishlistItems(list.id, list.collectorId);
 
   // The embedded picker: missing sets that are not on this list yet. It shares
   // the URL parameters with the catalog, so the filters behave identically.
@@ -52,6 +56,7 @@ export default async function WunschlisteDetailPage({ params, searchParams }: Pr
     year: yearParam ? Number(yearParam) : undefined,
     ownership: 'fehlt',
     excludeWishlistId: list.id,
+    collectorId: list.collectorId ?? undefined,
     page,
   });
 
@@ -63,6 +68,11 @@ export default async function WunschlisteDetailPage({ params, searchParams }: Pr
             <Badge variant="secondary">{occasionLabel(list.occasion)}</Badge>
             {list.eventDate ? <Badge variant="outline">{formatDate(list.eventDate)}</Badge> : null}
             {list.surpriseMode ? <Badge variant="outline">Überraschungsmodus</Badge> : null}
+            {collectors.length > 1 && activeCollector ? (
+              <Badge className={collectorBadgeClass(activeCollector.color)}>
+                für {activeCollector.name}
+              </Badge>
+            ) : null}
           </div>
           <h1 className="mt-2 truncate text-2xl font-semibold tracking-tight">{list.title}</h1>
           <p className="text-sm text-muted-foreground">
@@ -70,8 +80,10 @@ export default async function WunschlisteDetailPage({ params, searchParams }: Pr
           </p>
         </div>
         <WishlistHeaderActions
+          collectors={collectors.map((row) => ({ id: row.id, name: row.name }))}
           wishlist={{
             id: list.id,
+            collectorId: list.collectorId,
             title: list.title,
             occasion: list.occasion,
             eventDate: list.eventDate,
@@ -99,7 +111,9 @@ export default async function WunschlisteDetailPage({ params, searchParams }: Pr
         <CardHeader>
           <CardTitle>Aus fehlenden Sets hinzufügen</CardTitle>
           <CardDescription>
-            Nur Sets, die noch nicht in der Sammlung und noch nicht auf dieser Liste sind. Kachel
+            {activeCollector
+              ? `Nur Sets, die ${activeCollector.name} noch nicht hat und die noch nicht auf dieser Liste stehen.`
+              : 'Nur Sets, die noch nicht in der Sammlung und noch nicht auf dieser Liste sind.'}{' '} Kachel
             lange drücken oder „Auswählen“ tippen, dann mehrere auf einmal übernehmen.
           </CardDescription>
         </CardHeader>
@@ -124,6 +138,7 @@ export default async function WunschlisteDetailPage({ params, searchParams }: Pr
             sets={missing.rows}
             wishlists={[{ id: list.id, title: list.title }]}
             defaultWishlistId={list.id}
+            collectorId={list.collectorId ?? undefined}
             emptyState="Es fehlt gerade nichts, was noch nicht auf dieser Liste steht."
           />
 

@@ -12,6 +12,7 @@ import {
   type ActionResult,
 } from '@/lib/action-result';
 import { ownedCopiesSql } from '@/lib/ownership';
+import { defaultCollectorId } from '@/lib/queries/collectors';
 import {
   findExistingWishlistSetIds,
   getWishlist,
@@ -58,6 +59,7 @@ export async function createWishlist(input: unknown): Promise<ActionResult<{ id:
     .values({
       id,
       ownerUserId: user.id,
+      collectorId: parsed.data.collectorId ?? defaultCollectorId(),
       title: parsed.data.title,
       occasion: parsed.data.occasion,
       eventDate: parsed.data.eventDate,
@@ -83,6 +85,7 @@ export async function updateWishlist(id: string, input: unknown): Promise<Action
 
   db.update(wishlist)
     .set({
+      collectorId: parsed.data.collectorId,
       title: parsed.data.title,
       occasion: parsed.data.occasion,
       eventDate: parsed.data.eventDate,
@@ -153,7 +156,7 @@ export async function addSetsToWishlist(
       id: set.id,
       name: set.name,
       setNumber: set.setNumber,
-      ownedCopies: ownedCopiesSql(set.id).mapWith(Number),
+      ownedCopies: ownedCopiesSql(set.id, list.collectorId).mapWith(Number),
     })
     .from(set)
     .where(inArray(set.id, setIds))

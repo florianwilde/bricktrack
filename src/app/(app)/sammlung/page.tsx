@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Boxes, Euro, ImageOff, Layers, PackageSearch } from 'lucide-react';
+import { CollectorFilter } from '@/components/layout/collector-filter';
 import { CollectionFilters } from '@/components/sammlung/collection-filters';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { formatDate, formatNumber, pluralize } from '@/lib/format';
+import { collectorBadgeClass } from '@/lib/collector-colors';
 import { setImageSrc } from '@/lib/images';
 import { completenessLabel, statusLabel } from '@/lib/labels';
 import { formatEuro } from '@/lib/money';
@@ -15,6 +17,7 @@ import {
   listCollectionItems,
   type CollectionFilters as Filters,
 } from '@/lib/queries/collection';
+import { listCollectors, resolveCollectorId } from '@/lib/queries/collectors';
 import { listLocations, listManufacturers } from '@/lib/queries/master-data';
 import { requireUser } from '@/lib/session';
 import type { CollectionStatus, Completeness } from '@/db/types';
@@ -32,23 +35,33 @@ export default async function SammlungPage({ searchParams }: { searchParams: Sea
   await requireUser();
   const params = await searchParams;
 
+  const collectors = listCollectors();
+  const collectorId = resolveCollectorId(single(params.sammler));
+  const activeCollector = collectors.find((row) => row.id === collectorId) ?? null;
+
   const filters: Filters = {
     q: single(params.q),
     status: single(params.status) as CollectionStatus | undefined,
     completeness: single(params.zustand) as Completeness | undefined,
     locationId: single(params.standort),
     manufacturerId: single(params.hersteller),
+    collectorId,
   };
 
   const items = listCollectionItems(filters);
   const openParts = countOpenMissingParts(items.map((item) => item.id));
-  const stats = getCollectionStats();
-  const missing = countMissingSets();
+  const stats = getCollectionStats(collectorId);
+  const missing = countMissingSets(collectorId);
 
   const tiles = [
     { icon: Boxes, label: 'Sets', value: formatNumber(stats.setCount) },
     { icon: Layers, label: 'Teile gesamt', value: formatNumber(stats.pieceCount) },
-    { icon: Euro, label: 'Wert nach UVP', value: formatEuro(stats.retailValueCents) },
+    {
+      icon: Euro,
+      // Notierte Preise gehen vor, sonst die UVP.
+      label: stats.currentValueCents === stats.retailValueCents ? 'Wert nach UVP' : 'Aktueller Wert',
+      value: formatEuro(stats.currentValueCents),
+    },
     { icon: PackageSearch, label: 'Fehlt noch', value: formatNumber(missing) },
   ] as const;
 
@@ -56,8 +69,17 @@ export default async function SammlungPage({ searchParams }: { searchParams: Sea
     <div className="space-y-5">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Sammlung</h1>
-        <p className="text-sm text-muted-foreground">Alles, was tatsächlich da ist.</p>
+        <p className="text-sm text-muted-foreground">
+          {activeCollector
+            ? `Alles, was ${activeCollector.name} tatsächlich hat.`
+            : 'Alles, was tatsächlich da ist.'}
+        </p>
       </div>
+
+      <CollectorFilter
+        collectors={collectors.map((row) => ({ id: row.id, name: row.name, color: row.color }))}
+        allLabel="Alle zusammen"
+      />
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {tiles.map((tile) => (
@@ -133,6 +155,11 @@ export default async function SammlungPage({ searchParams }: { searchParams: Sea
                       </Badge>
                       {item.completeness !== 'unknown' ? (
                         <Badge variant="secondary">{completenessLabel(item.completeness)}</Badge>
+                      ) : null}
+                      {collectors.length > 1 && item.collectorName ? (
+                        <Badge className={collectorBadgeClass(item.collectorColor)}>
+                          {item.collectorName}
+                        </Badge>
                       ) : null}
                       {openParts.get(item.id) ? (
                         <Badge variant="outline">{openParts.get(item.id)} Fehlteile</Badge>

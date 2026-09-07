@@ -27,7 +27,11 @@ Kinderzimmer, nicht für den Schreibtisch.
 13. [Noch ein Konto für die Familie](#13-einladungen)
 14. [Daten sichern, umziehen, auswerten](#14-daten)
 15. [Auf den Startbildschirm legen](#15-startbildschirm)
-16. [Antworten auf die zwei wichtigen Fragen](#16-die-zwei-fragen)
+16. [Zwei Kinder, ein Katalog](#16-mehrere-sammler)
+17. [Was ein Set heute wert ist](#17-preise)
+18. [Erinnerung vor dem Termin](#18-erinnerungen)
+19. [Schutz vor doppelten Einträgen](#19-dubletten)
+20. [Antworten auf die zwei wichtigen Fragen](#20-die-zwei-fragen)
 
 ---
 
@@ -419,7 +423,115 @@ den Zwischenspeicher, damit auf einem geteilten Gerät nichts lesbar bleibt.
 
 ---
 
-## 16. Die zwei Fragen
+## 16. Mehrere Sammler
+
+![Sammler verwalten](bilder/21-sammler.png)
+
+Kommt ein zweites Kind dazu, wird aus „hat er das schon?" die Frage „hat
+**er** das schon?". Genau dafür gibt es Sammler.
+
+Der **Katalog bleibt gemeinsam**: Ein Set existiert einmal, unabhängig davon,
+wer es besitzt. **Sammlung und Wunschlisten** gehören dagegen je einem
+Sammler. Ein Set, das nur die Schwester hat, fällt für den Bruder wieder unter
+„fehlt noch" – und darf auf seine Wunschliste.
+
+> **Solange es nur einen Sammler gibt, siehst du davon nichts.** Kein
+> Umschalter, keine Abfrage, keine Farben. Die App bleibt genauso einfach wie
+> vorher. Erst der zweite Sammler schaltet all das frei – und dann willst du
+> es auch.
+
+Anlegen unter **Verwaltung → Sammler**. Jeder bekommt einen Namen und eine
+Farbe zur Unterscheidung.
+
+![Nach Sammler filtern](bilder/22-sammler-filter.png)
+
+Danach steht in Katalog und Sammlung oben ein Umschalter. „Alle zusammen"
+zeigt den Haushalt als Ganzes, ein Name zeigt genau dessen Sicht – inklusive
+der Frage, was **diesem** Kind noch fehlt.
+
+Beim Hinzufügen zur Sammlung fragt die App jetzt, wer das Set bekommt. Und
+beim Anlegen einer Wunschliste, für wen sie ist: Das bestimmt, wessen Sammlung
+als „hat er schon" zählt und wann ein Wunsch automatisch als erfüllt gilt.
+
+> Die Umstellung einer bestehenden Instanz macht nichts kaputt: Beim Update
+> entsteht ein Sammler namens „Sammlung", dem alles Vorhandene gehört.
+> Umbenennen unter **Verwaltung → Sammler**, fertig.
+
+---
+
+## 17. Preise
+
+![Preis und Wertentwicklung](bilder/23-preise.png)
+
+Auf jeder Set-Seite gibt es **„Preis notieren"**: Betrag, Zustand (neu oder
+gebraucht), wann und wo gesehen. Daraus wird eine Reihe – und damit eine
+Antwort auf die eigentlich interessante Frage: Was hat das Set seit dem Kauf
+gemacht?
+
+- **Ursprünglich** ist die UVP des Sets, sonst der älteste notierte Preis.
+- **Aktuell** ist der neueste notierte Preis.
+- **Entwicklung** ist die Differenz in Prozent.
+
+In der Sammlung wird die Kachel „Wert nach UVP" automatisch zu **„Aktueller
+Wert"**, sobald irgendwo ein Preis notiert ist.
+
+> Es wird **kein** Preisdienst abgefragt. Was hier steht, hast du selbst
+> eingetragen – das ist ehrlicher als eine Zahl, deren Herkunft niemand kennt,
+> und es geht nichts nach draußen.
+
+---
+
+## 18. Erinnerungen
+
+![Erinnerungen](bilder/24-erinnerungen.png)
+
+Wenn ein Wunschlisten-Termin näher rückt und **noch Wünsche offen sind**,
+schickt Bricktrack dir eine E-Mail – standardmäßig 14 Tage vorher, höchstens
+einmal pro Woche je Liste. Ist alles reserviert, bleibt es still: eine
+Erinnerung ohne Handlungsbedarf ist nur Lärm.
+
+Dafür braucht es einen SMTP-Zugang in der `.env`:
+
+```bash
+SMTP_HOST=mail.example.de
+SMTP_PORT=587
+SMTP_USER=bricktrack@example.de
+SMTP_PASSWORD=…
+SMTP_FROM=Bricktrack <bricktrack@example.de>
+
+# Optional, Standard ist 14:
+REMINDER_DAYS_BEFORE=14
+```
+
+Unter **Verwaltung → Erinnerungen** kannst du die Verbindung prüfen, dir eine
+Testnachricht schicken und die Prüfung sofort auslösen, statt auf die nächste
+Stunde zu warten. Dort steht auch, welche Listen einen Termin haben und wie
+viel dort noch offen ist.
+
+Ohne SMTP-Zugang ist die Funktion vollständig aus – alles andere funktioniert
+unverändert.
+
+---
+
+## 19. Dubletten
+
+Beim Anlegen eines neuen Sets schaut Bricktrack nach, ob es das schon gibt:
+
+- **gleiche Setnummer beim gleichen Hersteller** – dann ist es dasselbe Set,
+- **sehr ähnlicher Name** – meist ein Tippfehler oder eine andere Schreibweise,
+- **gleiche Nummer bei einem anderen Hersteller** – meist der falsche
+  Hersteller im Formular.
+
+Passt etwas, erscheint ein Hinweis mit Link zu den Verdächtigen. Von dort
+kommst du direkt zum vorhandenen Eintrag – oder legst mit „Trotzdem anlegen"
+weiter an, wenn es wirklich ein anderes Set ist.
+
+Die Erkennung ist bewusst zurückhaltend eingestellt: Tippfehler schlagen an,
+zwei echte Sets desselben Themas nicht.
+
+---
+
+## 20. Die zwei Fragen
 
 Dafür ist die ganze App gebaut:
 
@@ -428,7 +540,8 @@ Dafür ist die ganze App gebaut:
 
 **„Welche Sets hat er noch nicht?"**
 → Katalog, Filter „Fehlt noch". Von dort in zwei Handgriffen auf eine
-Wunschliste und per Link zu Oma.
+Wunschliste und per Link zu Oma. Bei mehreren Kindern beantwortet der
+Umschalter oben die Frage für jedes einzeln.
 
 Im Laden vor dem Regal: Scanner öffnen, Strichcode einlesen. Steht ein grüner
 Haken dran, habt ihr es schon.

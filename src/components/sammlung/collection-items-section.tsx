@@ -8,6 +8,7 @@ import { deleteCollectionItem, updateCollectionItem } from '@/app/(app)/sammlung
 import type { MissingPartRow } from '@/lib/queries/collection';
 import { MissingPartsDialog } from './missing-parts-dialog';
 import type { CollectionStatus, Completeness, Condition } from '@/db/types';
+import { collectorBadgeClass } from '@/lib/collector-colors';
 import { formatDate, toDateInputValue } from '@/lib/format';
 import {
   COMPLETENESS_LABELS,
@@ -58,14 +59,19 @@ export type CollectionItemRow = {
   notes: string | null;
   setName: string;
   missingParts: MissingPartRow[];
+  collectorId: string | null;
+  collectorName: string | null;
+  collectorColor: string | null;
 };
 
 export function CollectionItemsSection({
   items,
   locations,
+  collectors,
 }: {
   items: CollectionItemRow[];
   locations: Array<{ id: string; name: string }>;
+  collectors: Array<{ id: string; name: string }>;
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -126,6 +132,11 @@ export function CollectionItemsSection({
           <li key={item.id} className="flex items-start gap-3 p-3">
             <div className="min-w-0 flex-1 space-y-1">
               <div className="flex flex-wrap items-center gap-2">
+                {collectors.length > 1 && item.collectorName ? (
+                  <Badge className={collectorBadgeClass(item.collectorColor)}>
+                    {item.collectorName}
+                  </Badge>
+                ) : null}
                 <Badge variant={item.status === 'sold' ? 'outline' : 'default'}>
                   {statusLabel(item.status)}
                 </Badge>
@@ -194,6 +205,22 @@ export function CollectionItemsSection({
 
           <form id="collection-item-form" onSubmit={submit} className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
+              {collectors.length > 1 ? (
+                <Field label="Sammler" htmlFor="collectorId" className="sm:col-span-2">
+                  <NativeSelect
+                    id="collectorId"
+                    name="collectorId"
+                    defaultValue={editing?.collectorId ?? collectors[0]?.id ?? 'none'}
+                  >
+                    {collectors.map((entry) => (
+                      <option key={entry.id} value={entry.id}>
+                        {entry.name}
+                      </option>
+                    ))}
+                  </NativeSelect>
+                </Field>
+              ) : null}
+
               <Field label="Status" htmlFor="status">
                 <NativeSelect id="status" name="status" defaultValue={editing?.status ?? 'owned'}>
                   {Object.entries(STATUS_LABELS).map(([value, label]) => (

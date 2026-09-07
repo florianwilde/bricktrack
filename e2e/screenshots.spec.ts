@@ -66,7 +66,8 @@ test('Screenshots fuer die Anleitung', async ({ page, browser }) => {
 
   await page.getByRole('button', { name: 'Auswählen' }).click();
   await expect(page.getByText('Tippe die Sets an')).toBeVisible();
-  const cards = page.locator('button[aria-pressed]');
+  // data-set-card, not aria-pressed: the collector switcher uses that too.
+  const cards = page.locator('button[data-set-card]');
   await cards.nth(0).click();
   await cards.nth(1).click();
   await expect(page.getByText('2 ausgewählt')).toBeVisible();
@@ -160,4 +161,33 @@ test('Screenshots fuer die Anleitung', async ({ page, browser }) => {
   await visit(page, '/verwaltung/daten');
   await expect(page.getByText('Alles als ZIP')).toBeVisible();
   await shoot(page, '20-daten');
+
+  // --- 16. collectors -------------------------------------------------------
+  await visit(page, '/verwaltung/sammler');
+  await expect(page.getByText('Der Katalog ist gemeinsam')).toBeVisible();
+  await shoot(page, '21-sammler');
+
+  // The switcher only exists because the seed created two collectors.
+  await visit(page, '/katalog?besitz=fehlt');
+  await expect(page.getByRole('button', { name: /Max/ })).toBeVisible();
+  await page.getByRole('button', { name: /Max/ }).click();
+  await expect(page.getByText('Sets, die Max noch nicht hat')).toBeVisible();
+  await shoot(page, '22-sammler-filter');
+
+  // --- 17. prices -----------------------------------------------------------
+  await visit(page, '/katalog?q=60398');
+  await page.getByText('Familienhaus und Elektroauto').first().click();
+  await expect(page.getByText('Preis und Wertentwicklung')).toBeVisible();
+  await page.getByRole('button', { name: 'Preis notieren' }).click();
+  // Role, not label: the label text carries the required marker.
+  await page.getByRole('textbox', { name: 'Preis', exact: true }).fill('79,99');
+  await page.getByLabel('Wo').fill('Amazon');
+  await page.getByRole('button', { name: 'Speichern' }).click();
+  await expect(page.getByText('Amazon')).toBeVisible();
+  await shoot(page, '23-preise');
+
+  // --- 18. reminders --------------------------------------------------------
+  await visit(page, '/verwaltung/erinnerungen');
+  await expect(page.getByText('Erinnerungen').first()).toBeVisible();
+  await shoot(page, '24-erinnerungen');
 });

@@ -5,10 +5,12 @@ import { usePathname } from 'next/navigation';
 import { cn } from 'cn';
 
 const tabs = [
+  { href: '/verwaltung/sammler', label: 'Sammler', adminOnly: false },
   { href: '/verwaltung/hersteller', label: 'Hersteller', adminOnly: false },
   { href: '/verwaltung/themen', label: 'Themen', adminOnly: false },
   { href: '/verwaltung/standorte', label: 'Standorte', adminOnly: false },
   { href: '/verwaltung/einladungen', label: 'Einladungen', adminOnly: true },
+  { href: '/verwaltung/erinnerungen', label: 'Erinnerungen', adminOnly: true },
   { href: '/verwaltung/daten', label: 'Daten', adminOnly: true },
 ] as const;
 

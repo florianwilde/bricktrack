@@ -26,6 +26,7 @@ import { Textarea } from '@/components/ui/textarea';
 
 export type WishlistFormValues = {
   id: string;
+  collectorId: string | null;
   title: string;
   occasion: Occasion;
   eventDate: Date | null;
@@ -36,10 +37,13 @@ export type WishlistFormValues = {
 
 export function WishlistFormDialog({
   wishlist,
+  collectors = [],
   open,
   onOpenChange,
 }: {
   wishlist?: WishlistFormValues;
+  /** Only asked about when there is more than one. */
+  collectors?: Array<{ id: string; name: string }>;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
@@ -98,6 +102,27 @@ export function WishlistFormDialog({
                 placeholder="Weihnachten 2026"
               />
             </Field>
+
+            {collectors.length > 1 ? (
+              <Field
+                label="Für wen"
+                htmlFor="collectorId"
+                hint="Bestimmt, wessen Sammlung als „hat er schon“ zählt."
+              >
+                <NativeSelect
+                  id="collectorId"
+                  name="collectorId"
+                  defaultValue={wishlist?.collectorId ?? 'none'}
+                >
+                  <option value="none">– alle zusammen –</option>
+                  {collectors.map((entry) => (
+                    <option key={entry.id} value={entry.id}>
+                      {entry.name}
+                    </option>
+                  ))}
+                </NativeSelect>
+              </Field>
+            ) : null}
 
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Anlass" htmlFor="occasion">
@@ -180,7 +205,11 @@ export function WishlistFormDialog({
 }
 
 /** Button plus dialog, for the wishlist overview page. */
-export function NewWishlistButton() {
+export function NewWishlistButton({
+  collectors = [],
+}: {
+  collectors?: Array<{ id: string; name: string }>;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -189,7 +218,7 @@ export function NewWishlistButton() {
         <Plus />
         Neue Wunschliste
       </Button>
-      <WishlistFormDialog open={open} onOpenChange={setOpen} />
+      <WishlistFormDialog collectors={collectors} open={open} onOpenChange={setOpen} />
     </>
   );
 }
