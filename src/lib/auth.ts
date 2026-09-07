@@ -6,6 +6,7 @@ import { nextCookies } from 'better-auth/next-js';
 import { count } from 'drizzle-orm';
 import { db, schema } from '@/db';
 import { env } from '@/env';
+import { currentInviteGrant } from './invites';
 
 /**
  * Returns true while the instance has no user at all.
@@ -90,15 +91,22 @@ export const auth = betterAuth({
     user: {
       create: {
         before: async (user) => {
-          const firstRun = isFirstRun();
-          if (!firstRun) {
-            // Phase 2 opens this up again for invited users.
+          // The very first account owns the instance.
+          if (isFirstRun()) {
+            return { data: { ...user, role: 'admin' as const } };
+          }
+
+          // Everyone after that needs an invitation. The grant is set by the
+          // server action that verified the link token, never by the client.
+          const grant = currentInviteGrant();
+          if (!grant) {
             throw new APIError('FORBIDDEN', {
               message:
                 'Die Registrierung ist geschlossen. Bitte lass dir vom Administrator einen Einladungslink schicken.',
             });
           }
-          return { data: { ...user, role: 'admin' as const } };
+
+          return { data: { ...user, role: grant.role } };
         },
       },
     },

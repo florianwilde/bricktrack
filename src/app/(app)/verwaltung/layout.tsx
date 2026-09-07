@@ -5,7 +5,7 @@ import { requireUser } from '@/lib/session';
 export const metadata: Metadata = { title: 'Verwaltung' };
 
 export default async function VerwaltungLayout({ children }: { children: React.ReactNode }) {
-  await requireUser();
+  const user = await requireUser();
 
   return (
     <div className="space-y-6">
@@ -15,7 +15,7 @@ export default async function VerwaltungLayout({ children }: { children: React.R
           Stammdaten, die im Katalog und in der Sammlung ausgewählt werden.
         </p>
       </div>
-      <VerwaltungNav />
+      <VerwaltungNav isAdmin={user.role === 'admin'} />
       {children}
     </div>
   );
