@@ -23,6 +23,8 @@ next-env.d.ts
 /data-shots
 /data-docker
 /backups
+/data-test
+/data-test-export
 
 # production
 *.tsbuildinfo
