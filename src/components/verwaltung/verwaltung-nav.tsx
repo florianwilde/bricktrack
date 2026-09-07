@@ -10,6 +10,7 @@ const tabs = [
   { href: '/verwaltung/themen', label: 'Themen', adminOnly: false },
   { href: '/verwaltung/standorte', label: 'Standorte', adminOnly: false },
   { href: '/verwaltung/einladungen', label: 'Einladungen', adminOnly: true },
+  { href: '/verwaltung/erinnerungen', label: 'Erinnerungen', adminOnly: true },
   { href: '/verwaltung/daten', label: 'Daten', adminOnly: true },
 ] as const;
 

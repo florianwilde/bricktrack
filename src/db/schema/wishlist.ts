@@ -29,6 +29,8 @@ export const wishlist = sqliteTable(
     surpriseMode: integer('surprise_mode', { mode: 'boolean' }).notNull().default(false),
     /** Message shown to the gift givers, e.g. "Bitte keine Doppelungen". */
     note: text('note'),
+    /** When the owner was last reminded - keeps a nag from becoming a flood. */
+    lastReminderAt: integer('last_reminder_at', { mode: 'timestamp' }),
     createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
     updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
   },

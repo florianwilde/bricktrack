@@ -27,8 +27,26 @@ const schema = z.object({
   /** Upload size limit per file, in megabytes. */
   MAX_UPLOAD_MB: z.coerce.number().int().positive().max(200).default(25),
 
-  /** Optional, phase 2: Rebrickable set import. Import stays disabled without it. */
+  /** Optional: Rebrickable set import. Import stays disabled without it. */
   REBRICKABLE_API_KEY: z.string().min(1).optional(),
+
+  /**
+   * Optional: outgoing mail for wishlist reminders. Without SMTP_HOST the
+   * whole reminder feature stays switched off - nothing is scheduled, nothing
+   * is sent.
+   */
+  SMTP_HOST: z.string().min(1).optional(),
+  SMTP_PORT: z.coerce.number().int().min(1).max(65535).default(587),
+  SMTP_SECURE: z
+    .enum(['true', 'false'])
+    .default('false')
+    .transform((value) => value === 'true'),
+  SMTP_USER: z.string().min(1).optional(),
+  SMTP_PASSWORD: z.string().min(1).optional(),
+  SMTP_FROM: z.string().min(1).optional(),
+
+  /** How many days before the event a reminder goes out. */
+  REMINDER_DAYS_BEFORE: z.coerce.number().int().min(1).max(90).default(14),
 });
 
 /**
@@ -82,6 +100,9 @@ export const env = {
   MAX_UPLOAD_BYTES: raw.MAX_UPLOAD_MB * 1024 * 1024,
 
   isProduction: raw.NODE_ENV === 'production',
+
+  /** Reminders need a host and a sender; everything else has a default. */
+  isMailConfigured: Boolean(raw.SMTP_HOST && raw.SMTP_FROM),
 } as const;
 
 export type Env = typeof env;
