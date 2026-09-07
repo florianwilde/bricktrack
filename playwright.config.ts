@@ -1,28 +1,29 @@
+import path from 'node:path';
 import { defineConfig, devices } from '@playwright/test';
 
 /**
  * Smoke test setup.
  *
- * Runs against its own data directory (./data-e2e) so a test never touches the
- * real database. The global setup wipes and migrates it before each run.
+ * Runs against the production container with its own data directory
+ * (./data-e2e), so a test never touches the real database and never depends on
+ * the dev server compiling fast enough.
  */
 const PORT = 3210;
 const BASE_URL = `http://localhost:${PORT}`;
+
+// Docker wants forward slashes, also on Windows.
+const dataDir = path.resolve(process.cwd(), 'data-e2e').replace(/\\/g, '/');
 
 export default defineConfig({
   testDir: './e2e',
   // The screenshot run has its own config, its own server and its own data
   // directory - it must never join the smoke run.
   testMatch: 'smoke.spec.ts',
-  globalSetup: './e2e/global-setup.ts',
   fullyParallel: false,
   workers: 1,
   retries: 0,
-  // Generous: the dev server compiles each route on first visit.
-  timeout: 240_000,
-  // A first navigation to a route the dev server has not compiled yet can
-  // take well over ten seconds on a cold cache.
-  expect: { timeout: 30_000 },
+  timeout: 90_000,
+  expect: { timeout: 15_000 },
   reporter: process.env.CI ? 'github' : 'list',
   use: {
     baseURL: BASE_URL,
@@ -38,18 +39,20 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: `pnpm exec next dev -p ${PORT}`,
+    command: [
+      'docker run --rm --name bricktrack-e2e',
+      `-p ${PORT}:3000`,
+      `-e BASE_URL=${BASE_URL}`,
+      '-e BETTER_AUTH_SECRET=playwright-smoke-test-secret-0123456789abcdef',
+      '-e TZ=Europe/Berlin',
+      '-e MAX_UPLOAD_MB=25',
+      `-v "${dataDir}:/data"`,
+      'bricktrack:e2e',
+    ].join(' '),
     url: `${BASE_URL}/api/health`,
     reuseExistingServer: false,
     timeout: 180_000,
     stdout: 'pipe',
     stderr: 'pipe',
-    env: {
-      NODE_ENV: 'development',
-      DATA_DIR: './data-e2e',
-      BASE_URL,
-      BETTER_AUTH_SECRET: 'playwright-smoke-test-secret-0123456789abcdef',
-      MAX_UPLOAD_MB: '25',
-    },
   },
 });

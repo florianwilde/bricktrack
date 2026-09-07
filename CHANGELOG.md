@@ -7,6 +7,65 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-09-07
+
+Phase 2: die Handgriffe, die den Alltag schneller machen.
+
+### Hinzugefuegt
+
+**Lego-Import (Rebrickable)**
+- Auf "Neues Set" reicht die Setnummer von der Packung: Name, Jahr, Teile,
+  Minifiguren und Thema werden uebernommen, das Bild lokal gespeichert.
+- Hersteller und Thema werden bei Bedarf angelegt, ein Oberthema inklusive.
+- Alle Aufrufe laufen serverseitig. Ohne `REBRICKABLE_API_KEY` bleibt der
+  Import sichtbar, aber abgeschaltet - von Hand anlegen geht unveraendert.
+
+**Barcode-Scanner**
+- Knopf im Katalog: Strichcode mit der Handykamera scannen. Ist das Set
+  bekannt, oeffnet es sich; sonst das Formular mit ausgefuellter EAN.
+- Jeder Code wird gegen seine Pruefziffer geprueft; dekodiert wird im
+  Browser, nichts verlaesst das Geraet.
+
+**Fehlteile**
+- Fehlende Teile je Sammlungseintrag mit Teilenummer, Farbe, Anzahl und
+  Notiz, abhakbar wenn nachgekauft.
+- Die Vollstaendigkeit pflegt sich daraus selbst: der erste offene Eintrag
+  setzt "Teile fehlen", der letzte erledigte zurueck auf "vollstaendig".
+
+**Einladungen**
+- Der Admin erzeugt Registrierungslinks, die genau einmal funktionieren,
+  optional an eine E-Mail-Adresse gebunden, mit waehlbarer Rolle und
+  Gueltigkeit. In der Datenbank liegt nur der Hash des Tokens.
+
+**Export und Import**
+- Alles als ZIP (Daten plus hochgeladene Dateien), nur die Daten als JSON,
+  die Sammlung als CSV mit Semikolon und BOM fuer deutsches Excel.
+- Import ersetzt die Anwendungsdaten in einer Transaktion, nur fuer
+  Administratoren und nur nach getipptem ERSETZEN.
+- Nicht im Export: Konten, Passwoerter, Passkeys, Reservierungen und
+  Teilen-Links.
+
+**PWA**
+- Manifest, Icons und Service Worker: installierbar auf dem Startbildschirm,
+  mit Verknuepfungen zu "Fehlende Sets" und zur Sammlung.
+- Einmal geladene Seiten bleiben ohne Verbindung lesbar; Set-Bilder und
+  Build-Dateien kommen aus dem Cache. Beim Abmelden wird der Cache geraeumt.
+
+### Geaendert
+
+- `src/env.ts` behandelt leere Werte wie nicht gesetzt: ein `BASE_URL=` in der
+  `.env` fuehrte bisher zum Start-Abbruch statt zum Standardwert.
+- Unit-Tests koennen jetzt auch Server-Module laden (`server-only` wird in der
+  Testumgebung durch ein leeres Modul ersetzt).
+
+### Bekannte Einschraenkungen
+
+- Rebrickable liefert keine Anleitungsdateien. Der Import legt stattdessen
+  einen Link auf die LEGO-Serviceseite zur Setnummer an.
+- Der Barcode-Scanner braucht wie Passkeys HTTPS.
+- Beim Import wandern Wunschlisten an den importierenden Admin und sind
+  zunaechst nicht geteilt.
+
 ## [0.1.0] - 2026-09-07
 
 Erste lauffaehige Fassung: Phase 1 vollstaendig, im Docker-Stack verifiziert.
@@ -88,5 +147,6 @@ Erste lauffaehige Fassung: Phase 1 vollstaendig, im Docker-Stack verifiziert.
 - Unter Windows scheitert `pnpm build` an fehlenden Symlink-Rechten. Der
   Docker-Build unter Linux ist davon nicht betroffen.
 
-[Unreleased]: https://git.wilde-server.de/florian.wilde/bricktrack/compare/v0.1.0...HEAD
+[Unreleased]: https://git.wilde-server.de/florian.wilde/bricktrack/compare/v0.2.0...HEAD
+[0.2.0]: https://git.wilde-server.de/florian.wilde/bricktrack/releases/tag/v0.2.0
 [0.1.0]: https://git.wilde-server.de/florian.wilde/bricktrack/releases/tag/v0.1.0

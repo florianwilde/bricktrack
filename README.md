@@ -172,10 +172,16 @@ pnpm dev                   # http://localhost:3000
 | `pnpm build` | Produktionsbuild (standalone) |
 | `pnpm lint` / `pnpm typecheck` | ESLint / TypeScript – beide müssen sauber sein |
 | `pnpm test` | Unit-Tests (Vitest) |
-| `pnpm test:e2e` | Playwright-Smoke-Test gegen ein eigenes `./data-e2e` |
+| `pnpm test:e2e` | Playwright-Smoke-Test gegen das Docker-Image (eigenes `./data-e2e`) |
 | `pnpm db:generate` | SQL-Migration aus dem Drizzle-Schema erzeugen |
 | `pnpm db:migrate` | Migrationen anwenden |
 | `pnpm db:studio` | Drizzle Studio |
+| `pnpm screenshots` | Bilder für `docs/ANLEITUNG.md` neu erzeugen |
+
+`pnpm test:e2e` und `pnpm screenshots` bauen jeweils das Docker-Image und
+fahren es hoch. Sie brauchen also einen laufenden Docker-Daemon, testen dafür
+aber genau das Artefakt, das später auch deployt wird – der Dev-Server hat
+unter der Last eines ganzen Durchlaufs reproduzierbar Chunks verloren.
 
 > **Unter Windows** schlägt `pnpm build` mit `EPERM … symlink` fehl: der
 > Standalone-Output legt Symlinks an, wofür Windows den Entwicklermodus oder

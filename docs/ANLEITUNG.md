@@ -22,7 +22,12 @@ Kinderzimmer, nicht für den Schreibtisch.
 8. [Wunschlisten](#8-wunschlisten)
 9. [Teilen – so sehen es Oma und Tante Anne](#9-teilen)
 10. [Passkeys einrichten](#10-passkeys-einrichten)
-11. [Antworten auf die zwei wichtigen Fragen](#11-die-zwei-fragen)
+11. [Sets im Schnellverfahren: Import und Scanner](#11-import-und-scanner)
+12. [Fehlteile](#12-fehlteile)
+13. [Noch ein Konto für die Familie](#13-einladungen)
+14. [Daten sichern, umziehen, auswerten](#14-daten)
+15. [Auf den Startbildschirm legen](#15-startbildschirm)
+16. [Antworten auf die zwei wichtigen Fragen](#16-die-zwei-fragen)
 
 ---
 
@@ -291,7 +296,130 @@ gib ihnen sprechende Namen.
 
 ---
 
-## 11. Die zwei Fragen
+## 11. Import und Scanner
+
+Sets von Hand einzutippen ist der langsame Weg. Für Lego gibt es zwei
+schnellere.
+
+### Lego-Import über die Setnummer
+
+![Lego-Import](bilder/17-lego-import.png)
+
+Auf **Katalog → Set anlegen** steht oben das Feld für den Import. Setnummer
+von der Packung eintippen, „Holen" – und Name, Jahr, Teile, Minifiguren und
+Thema stehen drin. Das Bild wird **lokal gespeichert**, funktioniert also auch
+weiter, wenn die Quelle es irgendwann austauscht. Fehlen Hersteller oder
+Thema noch, legt der Import sie an.
+
+Dafür braucht es einen kostenlosen API-Key von
+[rebrickable.com/api](https://rebrickable.com/api/), eingetragen als
+`REBRICKABLE_API_KEY` in der `.env`. Ohne Key steht an derselben Stelle ein
+Hinweis, und alles andere funktioniert unverändert weiter.
+
+> Anleitungsdateien liefert Rebrickable nicht. Der Import legt stattdessen
+> einen Link auf die LEGO-Serviceseite zur Setnummer an – von dort kommst du
+> zum PDF, das du dann hochladen kannst.
+
+### Barcode scannen
+
+Im Katalog sitzt neben „Set anlegen" ein Scanner-Symbol. Strichcode der
+Packung ins Bild halten:
+
+- **Set schon im Katalog** → es öffnet sich direkt. Genau das, was man im
+  Laden vor dem Regal wissen will.
+- **Noch unbekannt** → das Formular „Neues Set" öffnet sich mit
+  ausgefüllter EAN.
+
+Gelesen wird ausschließlich im Browser, es geht nichts an einen fremden
+Dienst. Jeder Code wird gegen seine Prüfziffer geprüft – verlesene Ziffern
+landen so gar nicht erst im Katalog. Die Kamera braucht wie Passkeys HTTPS.
+
+---
+
+## 12. Fehlteile
+
+![Fehlteile](bilder/18-fehlteile.png)
+
+Beim Aufbauen fehlt ein Stein. Auf der Set-Detailseite hat jeder
+Sammlungseintrag ein Puzzle-Symbol: dort trägst du ein, was fehlt – mit
+Teilenummer und Farbe, wenn du sie kennst, sonst reicht eine Notiz wie
+„Dachstein vorne links".
+
+Ist das Teil nachgekauft, hakst du es ab. Die **Vollständigkeit pflegt sich
+dabei selbst**: Der erste offene Eintrag setzt den Sammlungseintrag auf
+„Teile fehlen", der letzte erledigte zurück auf „vollständig". Der Filter in
+der Sammlung stimmt damit, ohne dass du daran denken musst.
+
+---
+
+## 13. Einladungen
+
+![Einladungen](bilder/19-einladungen.png)
+
+Die Registrierung ist nach dem ersten Konto geschlossen – sonst könnte sich
+jeder, der die Adresse kennt, ein Konto anlegen. Für den zweiten Elternteil
+gibt es deshalb **Verwaltung → Einladungen**:
+
+1. „Einladung erstellen", optional an eine E-Mail-Adresse gebunden, mit Rolle
+   und Gültigkeit.
+2. Den Link kopieren und weitergeben. Er wird **nur einmal angezeigt** – in
+   der Datenbank liegt nur sein Hash.
+3. Die eingeladene Person legt darüber ihr Konto an. Danach ist der Link
+   verbraucht.
+
+„Mitglied" darf die Sammlung pflegen und Wunschlisten anlegen; „Administrator"
+zusätzlich einladen und Daten exportieren.
+
+---
+
+## 14. Daten
+
+![Daten](bilder/20-daten.png)
+
+Unter **Verwaltung → Daten** gibt es drei Downloads:
+
+| | Wofür |
+|---|---|
+| **Alles als ZIP** | Umziehen auf einen anderen Server, zweites Netz |
+| **Nur Daten (JSON)** | Zum Reinschauen oder Weiterverarbeiten |
+| **Sammlung als CSV** | Für Excel oder LibreOffice, Semikolon-getrennt |
+
+**Nicht im Export:** Konten, Passwörter und Passkeys. Ein Export voller
+Passwort-Hashes im Download-Ordner wäre ein Risiko, kein Backup. Ebenso außen
+vor: Reservierungen und Teilen-Links – die gehören zu der Instanz, auf der sie
+entstanden sind.
+
+> **Das richtige Backup bleibt `./data`.** Ein Verzeichnis, Datenbank und
+> Dateien darin. Siehe [README](../README.md#backup-und-restore).
+
+Der **Import** liest ein solches ZIP wieder ein – und **ersetzt dabei alle
+vorhandenen Daten**. Zusammenführen zweier Sammlungen ist bewusst nicht
+möglich: Es bräuchte Konfliktregeln für jede Tabelle, und das Ergebnis wäre
+nicht vorhersagbar. Deshalb muss man zur Bestätigung `ERSETZEN` eintippen.
+Wunschlisten gehören danach dir und sind zunächst nicht geteilt.
+
+---
+
+## 15. Startbildschirm
+
+Bricktrack lässt sich wie eine App installieren:
+
+- **iPhone/iPad (Safari):** Teilen-Symbol → „Zum Home-Bildschirm".
+- **Android (Chrome):** Menü → „App installieren" bzw. „Zum Startbildschirm
+  hinzufügen".
+
+Danach startet Bricktrack ohne Browserleiste, und langes Drücken auf das Symbol
+springt direkt zu „Fehlende Sets" oder zur Sammlung.
+
+**Ohne Verbindung** bleibt lesbar, was du schon einmal geöffnet hast – der
+Katalog also, wenn du ihn vorher im WLAN durchgeblättert hast. Ändern lässt
+sich offline nichts: Eine Reservierung, die nur auf deinem Gerät liegt, wäre
+für alle anderen unsichtbar und damit eine Lüge. Beim Abmelden räumt die App
+den Zwischenspeicher, damit auf einem geteilten Gerät nichts lesbar bleibt.
+
+---
+
+## 16. Die zwei Fragen
 
 Dafür ist die ganze App gebaut:
 
@@ -302,8 +430,8 @@ Dafür ist die ganze App gebaut:
 → Katalog, Filter „Fehlt noch". Von dort in zwei Handgriffen auf eine
 Wunschliste und per Link zu Oma.
 
-Im Laden vor dem Regal: Katalog öffnen, Setnummer von der Packung eintippen.
-Steht ein grüner Haken dran, habt ihr es schon.
+Im Laden vor dem Regal: Scanner öffnen, Strichcode einlesen. Steht ein grüner
+Haken dran, habt ihr es schon.
 
 ---
 

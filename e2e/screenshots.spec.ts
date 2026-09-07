@@ -127,4 +127,37 @@ test('Screenshots fuer die Anleitung', async ({ page, browser }) => {
   await visit(page, '/konto');
   await expect(page.getByText('Passkeys', { exact: true })).toBeVisible();
   await shoot(page, '16-konto-passkeys');
+
+  // --- 12. Lego import ------------------------------------------------------
+  // The screenshot container runs with a placeholder API key so the manual
+  // shows the form, not the "not configured" hint. Nothing is submitted.
+  await visit(page, '/katalog/neu');
+  await expect(page.getByText('Lego-Import')).toBeVisible();
+  await shoot(page, '17-lego-import');
+
+  // --- 13. missing parts ----------------------------------------------------
+  await visit(page, '/katalog?q=60398');
+  await page.getByText('Familienhaus und Elektroauto').first().click();
+  await expect(page.getByRole('heading', { name: 'Familienhaus und Elektroauto' })).toBeVisible();
+  await page.getByRole('button', { name: 'Fehlteile' }).first().click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await page.getByLabel('Teilenummer').fill('3001');
+  await page.getByLabel('Farbe').fill('Rot');
+  await page.getByRole('button', { name: 'Hinzufügen' }).click();
+  await expect(page.getByText('3001')).toBeVisible();
+  await page.screenshot({ path: shotPath('18-fehlteile') });
+  await page.getByRole('button', { name: 'Fertig' }).click();
+
+  // --- 14. invitations ------------------------------------------------------
+  await visit(page, '/verwaltung/einladungen');
+  await expect(page.getByRole('button', { name: 'Einladung erstellen' })).toBeVisible();
+  await page.getByRole('button', { name: 'Einladung erstellen' }).click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await page.screenshot({ path: shotPath('19-einladungen') });
+  await page.getByRole('button', { name: 'Abbrechen' }).click();
+
+  // --- 15. export and import ------------------------------------------------
+  await visit(page, '/verwaltung/daten');
+  await expect(page.getByText('Alles als ZIP')).toBeVisible();
+  await shoot(page, '20-daten');
 });

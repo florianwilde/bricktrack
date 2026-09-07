@@ -71,7 +71,11 @@ export function CollectionItemsSection({
   const [pending, startTransition] = useTransition();
   const [editing, setEditing] = useState<CollectionItemRow | null>(null);
   const [deleting, setDeleting] = useState<CollectionItemRow | null>(null);
-  const [parts, setParts] = useState<CollectionItemRow | null>(null);
+  // Only the id, never a snapshot: the dialog shows a live list, and a copy
+  // taken when it opened would not show a part that was just added.
+  const [partsItemId, setPartsItemId] = useState<string | null>(null);
+
+  const partsItem = items.find((item) => item.id === partsItemId) ?? null;
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -155,7 +159,7 @@ export function CollectionItemsSection({
               size="icon-sm"
               aria-label="Fehlteile"
               title="Fehlteile"
-              onClick={() => setParts(item)}
+              onClick={() => setPartsItemId(item.id)}
               disabled={pending}
             >
               <PuzzleIcon />
@@ -303,13 +307,13 @@ export function CollectionItemsSection({
         </DialogContent>
       </Dialog>
 
-      {parts ? (
+      {partsItem ? (
         <MissingPartsDialog
-          collectionItemId={parts.id}
-          setName={parts.setName}
-          parts={parts.missingParts}
+          collectionItemId={partsItem.id}
+          setName={partsItem.setName}
+          parts={partsItem.missingParts}
           open
-          onOpenChange={(open) => !open && setParts(null)}
+          onOpenChange={(open) => !open && setPartsItemId(null)}
         />
       ) : null}
 

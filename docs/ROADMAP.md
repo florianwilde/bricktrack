@@ -34,17 +34,17 @@ Laeuft vollstaendig im Docker-Stack.
 - [x] Dokumentation: README, QUICKSTART, bebilderte Anleitung,
       update.sh, Nginx-Proxy-Manager-Konfiguration
 
-## Phase 2 - Komfort (Ziel: v0.2.0)
+## Phase 2 - Komfort (v0.2.0, abgeschlossen am 07.09.2026)
 
-- [ ] Rebrickable-Import: Setnummer eingeben, Metadaten und Bild
+- [x] Rebrickable-Import: Setnummer eingeben, Metadaten und Bild
       uebernehmen, Bild lokal cachen. Ohne API-Key bleibt alles manuell.
-- [ ] Barcode-Scanner (EAN) per Handykamera, Suche nach EAN, bei
+- [x] Barcode-Scanner (EAN) per Handykamera, Suche nach EAN, bei
       Unbekanntem direkt ins Formular "Neues Set"
-- [ ] Fehlteile je Sammlungseintrag pflegen
-- [ ] Einladungslinks durch den Admin
-- [ ] Export/Import: gesamte Datenbank als JSON, Dateien als ZIP,
+- [x] Fehlteile je Sammlungseintrag pflegen
+- [x] Einladungslinks durch den Admin
+- [x] Export/Import: gesamte Datenbank als JSON, Dateien als ZIP,
       Sammlung zusaetzlich als CSV
-- [ ] PWA: Manifest, Service Worker, Katalog offline lesbar
+- [x] PWA: Manifest, Service Worker, Katalog offline lesbar
 
 ## Phase 3 - Nice to have (Ziel: v0.3.0)
 

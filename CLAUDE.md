@@ -19,6 +19,9 @@ teilbare Wunschlisten.
 | Validierung | zod (serverseitig, immer) | |
 | Bilder | sharp (nur serverseitig, Thumbnails) | |
 | Tests | Vitest (Unit), Playwright (E2E, Screenshots) | |
+| PDF | pdfjs-dist, lokal gebuendelt | kein CDN |
+| Barcode | @zxing/browser, lazy geladen | nur beim Scannen |
+| Archive | fflate | Export/Import als ZIP |
 | Paketmanager | pnpm 10 | |
 
 Bewusst **kein** Prisma (Standalone-Build im Container), **keine**
@@ -43,6 +46,20 @@ Bild-URLs, die der Nutzer selbst hinterlegt hat.
 - Commits: Conventional Commits, Betreff auf Deutsch, Imperativ,
   erste Zeile <= 72 Zeichen.
 
+## Wichtige Module
+
+| Datei | Zustaendig fuer |
+|---|---|
+| `src/lib/ownership.ts` | die eine Definition von "hat er" / "hat er nicht" |
+| `src/lib/wishlist-logic.ts` | Mehrfachauswahl, Dubletten, Prioritaeten (rein, testbar) |
+| `src/lib/tokens.ts` | Share-, Storno- und Einladungs-Token |
+| `src/lib/invites.ts` | Einladungen inklusive der Freigabe fuer die Registrierung |
+| `src/lib/rebrickable.ts` | Lego-Import, ausschliesslich serverseitig |
+| `src/lib/set-number.ts`, `src/lib/ean.ts` | Setnummern und Barcodes (rein, testbar) |
+| `src/lib/uploads.ts` | Datei-Uploads, Magic Bytes, Thumbnails |
+| `src/lib/export.ts` | Export und Import des gesamten Bestands |
+| `src/lib/money.ts`, `src/lib/format.ts` | Cent-Umrechnung, dd.MM.yyyy |
+
 ## Befehle
 
 ```bash
@@ -58,7 +75,21 @@ pnpm db:studio      # Drizzle Studio
 pnpm test           # Vitest
 pnpm test:e2e       # Playwright
 pnpm screenshots    # Screenshots fuer docs/ANLEITUNG.md erzeugen
+
+node scripts/generate-icons.mjs   # PWA-Icons aus der SVG-Quelle rendern
 ```
+
+### Testkonventionen
+
+- Unit-Tests liegen in `tests/unit`, laufen unter Node und duerfen auch
+  Server-Module laden: `server-only` ist in `vitest.config.mts` auf einen
+  leeren Stub gemappt.
+- `tests/setup-env.ts` setzt Platzhalter fuer die Umgebung. `BASE_URL` wird
+  dort **immer** ueberschrieben, weil Vite denselben Namen fuer seinen
+  Public-Base-Path benutzt und ihn auf `/` setzt.
+- Der Playwright-Smoke-Test nutzt `./data-e2e`, der Screenshot-Lauf
+  `./data-shots` gegen das Produktions-Image. Beide Verzeichnisse werden vor
+  jedem Lauf geleert und liegen nie im Git.
 
 ## Datenmodell
 
@@ -145,13 +176,19 @@ Session.
    serverseitig.
 5. Session-Cookies: `httpOnly`, `secure`, `sameSite=lax`.
    Rate-Limiting auf den Login-Endpunkten.
+6. Der Export enthaelt **keine** Konten, Passwoerter oder Passkeys - und
+   keine Reservierungen oder Teilen-Token. Das Backup ist `./data`, nicht der
+   Export.
+7. Der Service Worker beantwortet nur GET-Anfragen aus dem Cache und niemals
+   `/api/auth`, `/api/export` oder den Healthcheck. Beim Abmelden wird der
+   Cache geleert.
 
 ## Phasenplan
 
 - **Phase 1 (MVP)** - Auth mit Passkeys, Stammdaten, Katalog, Sammlung,
-  Wunschlisten inkl. oeffentlicher Ansicht, Docker-Stack.
+  Wunschlisten inkl. oeffentlicher Ansicht, Docker-Stack. *Fertig in 0.1.0.*
 - **Phase 2 (Komfort)** - Rebrickable-Import, Barcode-Scanner, Fehlteile,
-  Einladungen, Export/Import, PWA.
+  Einladungen, Export/Import, PWA. *Fertig in 0.2.0.*
 - **Phase 3 (Nice to have)** - mehrere Sammler, Preisbeobachtung,
   E-Mail-Erinnerungen, Dublettenpruefung.
 

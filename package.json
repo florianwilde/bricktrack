@@ -19,7 +19,7 @@
     "db:studio": "drizzle-kit studio",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "node scripts/reset-e2e.mjs && playwright test",
+    "test:e2e": "node scripts/e2e-prepare.mjs && playwright test",
     "screenshots": "node scripts/screenshots-prepare.mjs && playwright test --config=playwright.screenshots.config.ts"
   },
   "dependencies": {
