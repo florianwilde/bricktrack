@@ -17,6 +17,13 @@ fs.mkdirSync(path.join(dataDir, 'db'), { recursive: true });
 fs.mkdirSync(path.join(dataDir, 'files'), { recursive: true });
 console.log(`[e2e] ${dataDir} zurueckgesetzt.`);
 
+// A container left behind by an aborted run would hold the port.
+try {
+  execFileSync('docker', ['rm', '-f', 'bricktrack-e2e'], { stdio: 'ignore' });
+} catch {
+  // Nothing to remove - the normal case.
+}
+
 console.log('[e2e] Image wird gebaut (bricktrack:e2e) …');
 execFileSync('docker', ['build', '-t', 'bricktrack:e2e', '.'], { stdio: 'inherit' });
 console.log('[e2e] Image ist bereit.');

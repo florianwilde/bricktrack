@@ -7,6 +7,53 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-09-07
+
+Phase 3: mehrere Kinder, Wertentwicklung, Erinnerungen und ein Schutz vor
+doppelten Katalogeintraegen.
+
+### Hinzugefuegt
+
+**Mehrere Sammler**
+- Der Katalog bleibt gemeinsam, Sammlung und Wunschlisten gehoeren je einem
+  Sammler. "Hat er das schon?" beantwortet damit die Frage fuer *ihn*: ein Set,
+  das nur die Schwester besitzt, faellt fuer den Bruder unter "fehlt noch".
+- Umschalter in Katalog und Sammlung, Farbmarkierung je Sammler, Zuordnung im
+  Sammlungseintrag und je Wunschliste.
+- Solange es nur einen Sammler gibt, ist davon nichts zu sehen - die App
+  bleibt genauso einfach wie vorher.
+
+**Preisbeobachtung**
+- Notierte Preise je Set mit Betrag, Zustand, Datum, Quelle und Notiz.
+- Wertentwicklung gegen die UVP, in der Sammlung als Kachel "Aktueller Wert".
+
+**Erinnerungen**
+- E-Mail an den Besitzer, wenn der Termin einer Wunschliste naeher rueckt und
+  noch Wuensche offen sind - standardmaessig 14 Tage vorher, hoechstens einmal
+  pro Woche je Liste.
+- Verwaltungsseite mit Verbindungstest, Testnachricht und sofortiger Pruefung.
+- Ohne SMTP-Konfiguration bleibt die Funktion vollstaendig aus.
+
+**Dublettenpruefung**
+- Vor dem Anlegen eines Sets warnt die App vor gleicher Setnummer beim
+  gleichen Hersteller, sehr aehnlichem Namen und gleicher Nummer bei einem
+  anderen Hersteller - mit Link zum Verdaechtigen und der Moeglichkeit,
+  trotzdem anzulegen.
+
+### Geaendert
+
+- Die Migration legt einen Sammler "Sammlung" an und ordnet ihm alle
+  vorhandenen Sammlungseintraege und Wunschlisten zu. Umbenennen unter
+  Verwaltung -> Sammler.
+- Der Smoke-Test laeuft gegen das Docker-Image statt gegen den Dev-Server.
+
+### Nicht umgesetzt
+
+- Der BrickLink-Preisfuehrer war im Plan als optional vermerkt und wurde
+  bewusst weggelassen: OAuth1 mit einer pro Nutzer registrierten Anwendung ist
+  viel Apparat fuer eine Zahl, die sich in zehn Sekunden eintippen laesst. Das
+  Feld "Wo" nimmt jede Quelle auf, die Datenstruktur bleibt offen.
+
 ## [0.2.0] - 2026-09-07
 
 Phase 2: die Handgriffe, die den Alltag schneller machen.
@@ -147,6 +194,7 @@ Erste lauffaehige Fassung: Phase 1 vollstaendig, im Docker-Stack verifiziert.
 - Unter Windows scheitert `pnpm build` an fehlenden Symlink-Rechten. Der
   Docker-Build unter Linux ist davon nicht betroffen.
 
-[Unreleased]: https://git.wilde-server.de/florian.wilde/bricktrack/compare/v0.2.0...HEAD
+[Unreleased]: https://git.wilde-server.de/florian.wilde/bricktrack/compare/v0.3.0...HEAD
+[0.3.0]: https://git.wilde-server.de/florian.wilde/bricktrack/releases/tag/v0.3.0
 [0.2.0]: https://git.wilde-server.de/florian.wilde/bricktrack/releases/tag/v0.2.0
 [0.1.0]: https://git.wilde-server.de/florian.wilde/bricktrack/releases/tag/v0.1.0

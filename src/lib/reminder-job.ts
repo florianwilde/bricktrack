@@ -108,6 +108,21 @@ export async function runReminderJob(now = new Date()): Promise<ReminderRun> {
 const HOUR_MS = 60 * 60 * 1000;
 
 /**
+ * Started lazily from the first server render or healthcheck rather than from
+ * Next's instrumentation hook: that hook is compiled for the edge runtime too,
+ * and pulling the native SQLite driver into that bundle breaks the build.
+ * Cached on globalThis so the dev server's module reloading cannot stack up
+ * several schedulers.
+ */
+const globalForScheduler = globalThis as unknown as { bricktrackReminders?: boolean };
+
+export function ensureReminderScheduler(): void {
+  if (globalForScheduler.bricktrackReminders) return;
+  globalForScheduler.bricktrackReminders = true;
+  startReminderScheduler();
+}
+
+/**
  * Starts the hourly check.
  *
  * Hourly rather than daily so a restart cannot skip a day, and the per-list

@@ -208,6 +208,7 @@ export function CatalogGrid({
             <button
               key={item.id}
               type="button"
+              data-set-card
               disabled={owned}
               aria-pressed={isSelected}
               onClick={() => toggle(item.id)}

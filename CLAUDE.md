@@ -57,6 +57,10 @@ Bild-URLs, die der Nutzer selbst hinterlegt hat.
 | `src/lib/rebrickable.ts` | Lego-Import, ausschliesslich serverseitig |
 | `src/lib/set-number.ts`, `src/lib/ean.ts` | Setnummern und Barcodes (rein, testbar) |
 | `src/lib/uploads.ts` | Datei-Uploads, Magic Bytes, Thumbnails |
+| `src/lib/similarity.ts` | Namensvergleich fuer die Dublettenpruefung (rein) |
+| `src/lib/prices.ts` | Wertentwicklung aus notierten Preisen (rein) |
+| `src/lib/reminders.ts` | Regeln, wann eine Erinnerung faellig ist (rein) |
+| `src/lib/reminder-job.ts`, `src/lib/mailer.ts` | Versand und Zeitplan |
 | `src/lib/export.ts` | Export und Import des gesamten Bestands |
 | `src/lib/money.ts`, `src/lib/format.ts` | Cent-Umrechnung, dd.MM.yyyy |
 
@@ -114,8 +118,16 @@ Diese Bedingung steht an genau einer Stelle: `src/lib/ownership.ts`.
 
 ### Besitz
 
+Mehrere **Sammler** teilen sich den Katalog, nicht den Besitz: `collector`
+haelt Name und Farbe, `collection_item.collector_id` und
+`wishlist.collector_id` ordnen zu. Solange nur ein Sammler existiert, blendet
+die Oberflaeche das Thema vollstaendig aus - Umschalter, Abfragen und Badges
+erscheinen erst ab dem zweiten.
+
 | Tabelle | Zweck | Wichtige Felder |
 |---|---|---|
+| `collector` | ein Kind | `name`, `color`, `birthday`, `sort_order` |
+| `price_point` | beobachteter Preis je Set | `price_cents`, `condition`, `observed_at`, `source` |
 | `collection_item` | ein besessenes Exemplar | `status` = `owned` / `built` / `disassembled` / `lent_out` / `sold`, `completeness`, `condition`, `location_id`, `acquired_*`, `gifted_by` |
 | `location` | Aufbewahrungsort, hierarchisch | `parent_location_id` |
 | `missing_part` | Fehlteile je Exemplar | `part_number`, `color_name`, `quantity`, `resolved` |
@@ -190,7 +202,7 @@ Session.
 - **Phase 2 (Komfort)** - Rebrickable-Import, Barcode-Scanner, Fehlteile,
   Einladungen, Export/Import, PWA. *Fertig in 0.2.0.*
 - **Phase 3 (Nice to have)** - mehrere Sammler, Preisbeobachtung,
-  E-Mail-Erinnerungen, Dublettenpruefung.
+  E-Mail-Erinnerungen, Dublettenpruefung. *Fertig in 0.3.0.*
 
 Details und Stand: `docs/ROADMAP.md`. Zeitaufwaende: `docs/DEVLOG.md`.
 
