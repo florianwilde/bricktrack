@@ -88,8 +88,25 @@ export type StoredImage = {
  */
 export async function storeImage(file: File, kind: UploadKind, ownerId: string): Promise<StoredImage> {
   assertSize(file);
+  return storeImageBytes(Buffer.from(await file.arrayBuffer()), kind, ownerId);
+}
 
-  const bytes = Buffer.from(await file.arrayBuffer());
+/**
+ * Same as `storeImage`, but for bytes we already hold - for instance an image
+ * the server fetched from an import source. The size limit still applies.
+ */
+export async function storeImageBytes(
+  bytes: Buffer,
+  kind: UploadKind,
+  ownerId: string,
+): Promise<StoredImage> {
+  if (bytes.byteLength === 0) throw new UploadError('Die Datei ist leer.');
+  if (bytes.byteLength > env.MAX_UPLOAD_BYTES) {
+    throw new UploadError(
+      `Das Bild ist größer als ${env.MAX_UPLOAD_MB} MB und wurde nicht übernommen.`,
+    );
+  }
+
   const mime = detectMimeType(bytes);
   if (!mime || !IMAGE_MIME_TYPES.includes(mime as (typeof IMAGE_MIME_TYPES)[number])) {
     throw new UploadError('Erlaubt sind nur JPEG-, PNG- und WebP-Bilder.');

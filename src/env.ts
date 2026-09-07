@@ -31,8 +31,23 @@ const schema = z.object({
   REBRICKABLE_API_KEY: z.string().min(1).optional(),
 });
 
+/**
+ * An empty value counts as "not set".
+ *
+ * A line like `BASE_URL=` in a .env file is a common slip, and so is an empty
+ * variable injected by a container runtime. Falling back to the default beats
+ * failing to start with "Invalid URL".
+ */
+function withoutEmptyValues(source: NodeJS.ProcessEnv): Record<string, string> {
+  const result: Record<string, string> = {};
+  for (const [key, value] of Object.entries(source)) {
+    if (typeof value === 'string' && value.trim() !== '') result[key] = value;
+  }
+  return result;
+}
+
 function parseEnv() {
-  const parsed = schema.safeParse(process.env);
+  const parsed = schema.safeParse(withoutEmptyValues(process.env));
   if (!parsed.success) {
     const issues = parsed.error.issues
       .map((issue) => `  - ${issue.path.join('.')}: ${issue.message}`)

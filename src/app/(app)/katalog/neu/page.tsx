@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { RebrickableImport } from '@/components/katalog/rebrickable-import';
 import { SetForm } from '@/components/katalog/set-form';
 import { Button } from '@/components/ui/button';
 import { listManufacturers, listThemes } from '@/lib/queries/master-data';
+import { isRebrickableEnabled } from '@/lib/rebrickable';
 import { requireUser } from '@/lib/session';
 
 export const metadata: Metadata = { title: 'Neues Set' };
@@ -21,12 +23,19 @@ export default async function NeuesSetPage({ searchParams }: { searchParams: Sea
     manufacturerId: row.manufacturerId,
   }));
 
+  const importEnabled = isRebrickableEnabled();
+
   if (manufacturers.length === 0) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-6">
         <h1 className="text-2xl font-semibold tracking-tight">Neues Set</h1>
+
+        {/* The Lego import creates its manufacturer itself, so it works even
+            on a completely empty instance. */}
+        <RebrickableImport enabled={importEnabled} />
+
         <p className="rounded-lg border border-dashed border-border p-6 text-sm text-muted-foreground">
-          Jedes Set gehört zu einem Hersteller. Leg zuerst einen an – Lego, Playmobil, Cobi oder
+          Für ein Set von Hand brauchst du zuerst einen Hersteller – Lego, Playmobil, Cobi oder
           was auch immer im Kinderzimmer steht.
         </p>
         <Button asChild size="lg">
@@ -45,6 +54,14 @@ export default async function NeuesSetPage({ searchParams }: { searchParams: Sea
           Sammlung hinzufügen“ fest.
         </p>
       </div>
+      <RebrickableImport enabled={importEnabled} />
+
+      <div className="flex items-center gap-3 text-xs text-muted-foreground">
+        <span className="h-px flex-1 bg-border" />
+        oder von Hand
+        <span className="h-px flex-1 bg-border" />
+      </div>
+
       <SetForm manufacturers={manufacturers} themes={themes} defaultEan={ean} />
     </div>
   );
