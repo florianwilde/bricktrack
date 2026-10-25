@@ -538,25 +538,27 @@ schickt Bricktrack dir eine E-Mail – standardmäßig 14 Tage vorher, höchsten
 einmal pro Woche je Liste. Ist alles reserviert, bleibt es still: eine
 Erinnerung ohne Handlungsbedarf ist nur Lärm.
 
-Dafür braucht es einen SMTP-Zugang in der `.env`:
+Dafür braucht es einen Mailserver (SMTP). Den trägst du direkt in der App ein:
+**Mehr → Erinnerungen → Mailserver**. Die Angaben – Server, Port,
+Verschlüsselung, Benutzername, Passwort und Absender – findest du bei deinem
+Mail-Anbieter unter „SMTP" oder „Postausgangsserver". Ein Neustart ist nicht
+nötig.
 
-```bash
-SMTP_HOST=mail.example.de
-SMTP_PORT=587
-SMTP_USER=bricktrack@example.de
-SMTP_PASSWORD=…
-SMTP_FROM=Bricktrack <bricktrack@example.de>
+Das Passwort wird verschlüsselt gespeichert und nie wieder angezeigt; zum
+Ändern einfach ein neues eintragen. Es landet auch nicht im Export.
 
-# Optional, Standard ist 14:
-REMINDER_DAYS_BEFORE=14
-```
+> Wer lieber mit der `.env` arbeitet, kann den Mailserver weiterhin dort
+> eintragen (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`,
+> `SMTP_FROM`). Dann hat die `.env` Vorrang, und die App zeigt die Werte nur
+> an. Wie viele Tage vorher erinnert wird, steht in `REMINDER_DAYS_BEFORE`
+> (Standard 14).
 
-Unter **Mehr → Erinnerungen** kannst du die Verbindung prüfen, dir eine
+Unter **Mehr → Erinnerungen** kannst du außerdem die Verbindung prüfen, dir eine
 Testnachricht schicken und die Prüfung sofort auslösen, statt auf die nächste
 Stunde zu warten. Dort steht auch, welche Listen einen Termin haben und wie
 viel dort noch offen ist.
 
-Ohne SMTP-Zugang ist die Funktion vollständig aus – alles andere funktioniert
+Ohne Mailserver ist die Funktion vollständig aus – alles andere funktioniert
 unverändert.
 
 ---
