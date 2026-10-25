@@ -63,6 +63,8 @@ Bild-URLs, die der Nutzer selbst hinterlegt hat.
 | `src/lib/reminder-job.ts`, `src/lib/mailer.ts` | Versand und Zeitplan |
 | `src/lib/export.ts` | Export und Import des gesamten Bestands |
 | `src/lib/money.ts`, `src/lib/format.ts` | Cent-Umrechnung, dd.MM.yyyy |
+| `src/components/layout/more-items.ts` | Eintraege der Seite „Mehr" (Konto, Design, Stammdaten), auch Titel der Verwaltungsseiten |
+| `src/lib/collector-choice.ts` | Aktiver Sammler: `?sammler=` vor Cookie aus dem Umschalter „Fuer wen?" |
 | `src/lib/link-import.ts` | Set-Daten aus Link und Seite lesen (rein, testbar) |
 | `src/lib/safe-fetch.ts`, `src/lib/net-guard.ts` | Abruf fremder URLs nur an oeffentliche Adressen |
 | `src/lib/design.ts`, `src/app/designs.css` | Designs: Namen und Cookie bzw. Tokens je `data-design` |
