@@ -1,6 +1,14 @@
 import type { Metadata, Viewport } from 'next';
+import { cookies } from 'next/headers';
+import '@fontsource-variable/archivo';
+import '@fontsource-variable/bricolage-grotesque';
+import '@fontsource-variable/fredoka';
+import '@fontsource-variable/inter';
+import '@fontsource-variable/nunito';
+import '@fontsource-variable/outfit';
 import { ServiceWorkerRegistration } from '@/components/layout/service-worker';
 import { Toaster } from '@/components/ui/sonner';
+import { DESIGN_COOKIE, DESIGN_INFO, resolveDesign } from '@/lib/design';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -25,19 +33,30 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  viewportFit: 'cover',
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#0a0a0a' },
-  ],
-};
+async function currentDesign() {
+  return resolveDesign((await cookies()).get(DESIGN_COOKIE)?.value);
+}
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export async function generateViewport(): Promise<Viewport> {
+  const design = await currentDesign();
+  return {
+    width: 'device-width',
+    initialScale: 1,
+    viewportFit: 'cover',
+    themeColor: DESIGN_INFO[design].themeColor,
+  };
+}
+
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const design = await currentDesign();
+
   return (
-    <html lang="de" suppressHydrationWarning>
+    <html
+      lang="de"
+      data-design={design}
+      className={DESIGN_INFO[design].dark ? 'dark' : undefined}
+      suppressHydrationWarning
+    >
       <body className="min-h-dvh bg-background text-foreground antialiased">
         {children}
         <Toaster position="top-center" richColors closeButton />

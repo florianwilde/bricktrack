@@ -1,10 +1,12 @@
 'use client';
 
 import { useEffect, useState, useTransition } from 'react';
-import { Check, ExternalLink, Gift, ImageOff, Loader2, Undo2 } from 'lucide-react';
+import { Check, ExternalLink, Gift, Loader2, Undo2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cancelReservation, reserveItem } from '@/app/w/actions';
 import { setImageSrc } from '@/lib/images';
+import { SetPlaceholder } from '@/components/brick/set-placeholder';
+import { Studs } from '@/components/brick/studs';
 import { formatEuro } from '@/lib/money';
 import { priorityLabel } from '@/lib/wishlist-logic';
 import { Badge } from '@/components/ui/badge';
@@ -125,90 +127,92 @@ export function PublicWishlist({
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-5 pt-2">
       {items.map((item) => {
         const image = setImageSrc(item);
         const mine = Boolean(tokens[item.id]);
 
         return (
-          <article
-            key={item.id}
-            className="flex gap-3 rounded-xl border border-border bg-card p-3"
-          >
-            <div className="size-20 shrink-0 overflow-hidden rounded-lg border border-border bg-muted sm:size-28">
-              {image ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={image} alt="" loading="lazy" className="size-full object-contain" />
-              ) : (
-                <div className="flex size-full items-center justify-center text-muted-foreground">
-                  <ImageOff className="size-6" aria-hidden />
-                </div>
-              )}
-            </div>
-
-            <div className="min-w-0 flex-1 space-y-2">
-              <div>
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <Badge variant="outline" className="font-mono text-xs">
-                    {item.setNumber}
-                  </Badge>
-                  <Badge variant="secondary">{item.manufacturerName}</Badge>
-                  {item.priority === 1 ? <Badge>{priorityLabel(1)}</Badge> : null}
-                </div>
-                <h2 className="mt-1 font-medium">{item.setName}</h2>
-                <p className="text-xs text-muted-foreground">
-                  {[
-                    item.themeName,
-                    item.year,
-                    item.pieceCount ? `${item.pieceCount} Teile` : null,
-                    item.retailPriceCents !== null ? formatEuro(item.retailPriceCents) : null,
-                  ]
-                    .filter(Boolean)
-                    .join(' · ')}
-                </p>
-                {item.note ? <p className="mt-1 text-sm">{item.note}</p> : null}
+          <article key={item.id} className="relative">
+            {/* Studs turn green once someone has taken the wish. */}
+            <Studs count={3} studClassName={mine || item.isReserved ? 'bg-owned' : undefined} />
+            <div className="brick flex gap-3 rounded-xl bg-card p-3">
+              <div className="size-20 shrink-0 overflow-hidden rounded-lg border-[length:max(1px,var(--edge-w))] border-edge bg-muted sm:size-28">
+                {image ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={image} alt="" loading="lazy" className="size-full object-contain" />
+                ) : (
+                  <SetPlaceholder
+                    setNumber={item.setNumber}
+                    manufacturerName={item.manufacturerName}
+                  />
+                )}
               </div>
 
-              <div className="flex flex-wrap items-center gap-2">
-                {mine ? (
-                  <>
-                    <Badge className="gap-1 bg-emerald-600 text-white hover:bg-emerald-600">
-                      <Check className="size-3" aria-hidden />
-                      Das schenkst du
+              <div className="min-w-0 flex-1 space-y-2">
+                <div>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <Badge variant="outline" className="font-mono text-xs">
+                      {item.setNumber}
                     </Badge>
-                    <Button variant="ghost" size="sm" onClick={() => undo(item)} disabled={pending}>
-                      <Undo2 />
-                      Doch nicht
-                    </Button>
-                  </>
-                ) : item.isReserved ? (
-                  <Badge variant="secondary">
-                    {item.reservedByName
-                      ? `Übernimmt ${item.reservedByName}`
-                      : 'Schon reserviert'}
-                  </Badge>
-                ) : (
-                  <Button
-                    size="sm"
-                    onClick={() => {
-                      setReserving(item);
-                      setCancelLink(null);
-                    }}
-                    disabled={pending}
-                  >
-                    <Gift />
-                    Das schenke ich
-                  </Button>
-                )}
+                    <Badge variant="secondary">{item.manufacturerName}</Badge>
+                    {item.priority === 1 ? <Badge>{priorityLabel(1)}</Badge> : null}
+                  </div>
+                  <h2 className="mt-1 font-medium">{item.setName}</h2>
+                  <p className="text-xs text-muted-foreground">
+                    {[
+                      item.themeName,
+                      item.year,
+                      item.pieceCount ? `${item.pieceCount} Teile` : null,
+                      item.retailPriceCents !== null ? formatEuro(item.retailPriceCents) : null,
+                    ]
+                      .filter(Boolean)
+                      .join(' · ')}
+                  </p>
+                  {item.note ? <p className="mt-1 text-sm">{item.note}</p> : null}
+                </div>
 
-                {item.manufacturerWebsite ? (
-                  <Button asChild variant="link" size="sm" className="px-0">
-                    <a href={item.manufacturerWebsite} target="_blank" rel="noreferrer noopener">
-                      Zum Shop
-                      <ExternalLink />
-                    </a>
-                  </Button>
-                ) : null}
+                <div className="flex flex-wrap items-center gap-2">
+                  {mine ? (
+                    <>
+                      <Badge className="gap-1 bg-owned text-owned-foreground">
+                        <Check className="size-3" aria-hidden />
+                        Das schenkst du
+                      </Badge>
+                      <Button variant="ghost" size="sm" onClick={() => undo(item)} disabled={pending}>
+                        <Undo2 />
+                        Doch nicht
+                      </Button>
+                    </>
+                  ) : item.isReserved ? (
+                    <Badge variant="secondary">
+                      {item.reservedByName
+                        ? `Übernimmt ${item.reservedByName}`
+                        : 'Schon reserviert'}
+                    </Badge>
+                  ) : (
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        setReserving(item);
+                        setCancelLink(null);
+                      }}
+                      disabled={pending}
+                    >
+                      <Gift />
+                      Das schenke ich
+                    </Button>
+                  )}
+
+                  {item.manufacturerWebsite ? (
+                    <Button asChild variant="link" size="sm" className="px-0">
+                      <a href={item.manufacturerWebsite} target="_blank" rel="noreferrer noopener">
+                        Zum Shop
+                        <ExternalLink />
+                      </a>
+                    </Button>
+                  ) : null}
+                </div>
               </div>
             </div>
           </article>

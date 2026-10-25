@@ -18,7 +18,7 @@ export function BottomNav() {
   return (
     <nav
       aria-label="Hauptnavigation"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 border-t-[length:max(1px,var(--edge-w))] border-border bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
     >
       <ul className="mx-auto flex max-w-lg">
         {items.map((item) => {
@@ -30,10 +30,22 @@ export function BottomNav() {
                 aria-current={active ? 'page' : undefined}
                 className={cn(
                   'flex h-16 flex-col items-center justify-center gap-1 text-xs transition-colors',
-                  active ? 'text-primary' : 'text-muted-foreground hover:text-foreground',
+                  active
+                    ? 'font-bold text-foreground'
+                    : 'font-medium text-muted-foreground hover:text-foreground',
                 )}
               >
-                <item.icon className="size-5" aria-hidden />
+                {/* The active tab sits on a small plate, like a tile on a baseplate. */}
+                <span
+                  className={cn(
+                    'flex h-7 w-12 items-center justify-center rounded-[calc(var(--radius)*0.6)] border-[length:var(--edge-w)]',
+                    active
+                      ? 'border-edge bg-secondary text-secondary-foreground'
+                      : 'border-transparent',
+                  )}
+                >
+                  <item.icon className="size-5" aria-hidden />
+                </span>
                 {item.label}
               </Link>
             </li>
@@ -59,7 +71,7 @@ export function DesktopNav() {
             className={cn(
               'flex h-10 items-center gap-2 rounded-lg px-3 text-sm font-medium transition-colors',
               active
-                ? 'bg-muted text-foreground'
+                ? 'border-[length:var(--edge-w)] border-edge bg-secondary text-secondary-foreground'
                 : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground',
             )}
           >

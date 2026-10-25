@@ -1,12 +1,16 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { headers } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { z } from 'zod';
+import { env } from '@/env';
 import { auth } from '@/lib/auth';
+import { DESIGN_COOKIE, DESIGNS } from '@/lib/design';
+import { requireUser } from '@/lib/session';
 
 const idSchema = z.object({ id: z.string().min(1) });
 const renameSchema = idSchema.extend({ name: z.string().trim().min(1).max(60) });
+const designSchema = z.object({ design: z.enum(DESIGNS) });
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
 
@@ -41,5 +45,28 @@ export async function renamePasskeyAction(input: unknown): Promise<ActionResult>
   }
 
   revalidatePath('/konto');
+  return { ok: true };
+}
+
+/**
+ * The design is a per-device choice: a cookie, not a column on the user. That
+ * way it also covers the login page and lets two children's tablets look
+ * different.
+ */
+export async function setDesignAction(input: unknown): Promise<ActionResult> {
+  await requireUser();
+
+  const parsed = designSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: 'Unbekanntes Design.' };
+
+  (await cookies()).set(DESIGN_COOKIE, parsed.data.design, {
+    httpOnly: true,
+    secure: env.isProduction,
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 60 * 60 * 24 * 365,
+  });
+
+  revalidatePath('/', 'layout');
   return { ok: true };
 }

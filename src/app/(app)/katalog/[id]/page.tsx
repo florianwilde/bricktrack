@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Check, ExternalLink, Gift, ImageOff, Pencil } from 'lucide-react';
+import { Check, ExternalLink, Gift, Pencil } from 'lucide-react';
+import { SetPlaceholder } from '@/components/brick/set-placeholder';
+import { Studs } from '@/components/brick/studs';
 import { InstructionsSection } from '@/components/katalog/instructions-section';
 import { PhotosSection } from '@/components/katalog/photos-section';
 import { PriceSection } from '@/components/katalog/price-section';
@@ -114,15 +116,21 @@ export default async function SetDetailPage({ params, searchParams }: Props) {
       </div>
 
       <div className="grid gap-6 md:grid-cols-[minmax(0,320px)_1fr]">
-        <div className="overflow-hidden rounded-xl border border-border bg-muted">
-          {image ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={image} alt="" className="aspect-square w-full object-contain p-3" />
-          ) : (
-            <div className="flex aspect-square items-center justify-center text-muted-foreground">
-              <ImageOff className="size-10" aria-hidden />
-            </div>
-          )}
+        <div className="relative self-start">
+          <Studs count={4} />
+          <div className="brick overflow-hidden rounded-xl bg-muted">
+            {image ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={image} alt="" className="aspect-square w-full object-contain p-3" />
+            ) : (
+              <SetPlaceholder
+                setNumber={set.setNumber}
+                manufacturerName={set.manufacturerName}
+                size="lg"
+                className="aspect-square"
+              />
+            )}
+          </div>
         </div>
 
         <div className="space-y-4">
