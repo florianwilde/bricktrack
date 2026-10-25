@@ -3,6 +3,7 @@ import { eq, sql } from 'drizzle-orm';
 import { db } from '@/db';
 import { user, wishlist } from '@/db/schema';
 import { env } from '@/env';
+import { isMailConfigured } from './mail-settings';
 import { sendMail } from './mailer';
 import {
   reminderSubject,
@@ -59,7 +60,7 @@ function loadCandidates(): Candidate[] {
 
 export async function runReminderJob(now = new Date()): Promise<ReminderRun> {
   const result: ReminderRun = { checked: 0, sent: 0, skipped: 0, failures: [] };
-  if (!env.isMailConfigured) return result;
+  if (!isMailConfigured()) return result;
 
   const candidates = loadCandidates();
   result.checked = candidates.length;
@@ -129,13 +130,12 @@ export function ensureReminderScheduler(): void {
  * cooldown keeps that from turning into repeated mail.
  */
 export function startReminderScheduler(): void {
-  if (!env.isMailConfigured) {
-    console.log('[reminders] Kein SMTP konfiguriert - Erinnerungen sind aus.');
-    return;
-  }
-
+  // Always scheduled: the mail server can be set up in the app at any time,
+  // and each run checks whether one is configured.
   console.log(
-    `[reminders] Aktiv: Erinnerung ${env.REMINDER_DAYS_BEFORE} Tage vor dem Termin, stuendliche Pruefung.`,
+    isMailConfigured()
+      ? `[reminders] Aktiv: Erinnerung ${env.REMINDER_DAYS_BEFORE} Tage vor dem Termin, stuendliche Pruefung.`
+      : '[reminders] Noch kein SMTP-Server eingerichtet - Erinnerungen starten, sobald es einen gibt.',
   );
 
   const tick = () => {

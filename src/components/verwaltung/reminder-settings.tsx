@@ -98,17 +98,10 @@ export function ReminderSettings({
           ) : (
             <div className="space-y-2 rounded-lg border border-dashed border-border p-4 text-sm text-muted-foreground">
               <p>
-                Es ist kein Mailversand eingerichtet – Erinnerungen sind damit aus, alles andere
+                Es ist noch kein Mailserver eingerichtet – Erinnerungen sind damit aus, alles andere
                 funktioniert unverändert.
               </p>
-              <p>Zum Aktivieren in die .env eintragen und den Container neu starten:</p>
-              <pre className="overflow-x-auto rounded-md bg-muted p-3 font-mono text-xs">
-{`SMTP_HOST=mail.example.de
-SMTP_PORT=587
-SMTP_USER=bricktrack@example.de
-SMTP_PASSWORD=…
-SMTP_FROM=Bricktrack <bricktrack@example.de>`}
-              </pre>
+              <p>Trag ihn unten unter „Mailserver“ ein. Ein Neustart ist nicht nötig.</p>
             </div>
           )}
         </CardContent>

@@ -3,10 +3,12 @@ import { eq, sql } from 'drizzle-orm';
 import { db } from '@/db';
 import { wishlist } from '@/db/schema';
 import { env } from '@/env';
+import { MailSettingsForm } from '@/components/verwaltung/mail-settings-form';
 import {
   ReminderSettings,
   type ReminderListRow,
 } from '@/components/verwaltung/reminder-settings';
+import { getMailSettingsView } from '@/lib/mail-settings';
 import { daysUntil } from '@/lib/reminders';
 import { requireAdmin } from '@/lib/session';
 
@@ -41,11 +43,16 @@ export default async function ErinnerungenPage() {
     }))
     .sort((a, b) => (a.daysLeft ?? 0) - (b.daysLeft ?? 0));
 
+  const mail = getMailSettingsView();
+
   return (
-    <ReminderSettings
-      configured={env.isMailConfigured}
-      daysBefore={env.REMINDER_DAYS_BEFORE}
-      lists={lists}
-    />
+    <div className="space-y-6">
+      <ReminderSettings
+        configured={mail.source !== null}
+        daysBefore={env.REMINDER_DAYS_BEFORE}
+        lists={lists}
+      />
+      <MailSettingsForm view={mail} />
+    </div>
   );
 }

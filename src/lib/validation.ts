@@ -219,6 +219,39 @@ export const reservationSchema = z.object({
 
 export type ManufacturerInput = z.infer<typeof manufacturerSchema>;
 export type ThemeInput = z.infer<typeof themeSchema>;
+// ---------------------------------------------------------------------------
+// Mail (reminders)
+// ---------------------------------------------------------------------------
+
+export const mailSecurityEnum = z.enum(['starttls', 'tls', 'none']);
+
+export const mailSettingsSchema = z.object({
+  host: z
+    .string()
+    .trim()
+    .min(1, 'Bitte den SMTP-Server angeben.')
+    .max(255)
+    .regex(/^[a-z0-9.-]+$/i, 'Nur der Servername, z. B. mail.example.de – ohne https:// und Port.'),
+  port: z.coerce.number().int().min(1, 'Ungültiger Port.').max(65535, 'Ungültiger Port.').default(587),
+  security: mailSecurityEnum.default('starttls'),
+  user: optionalText(255),
+  /** Empty keeps the stored password; see clearPassword to remove it. Not trimmed. */
+  password: z
+    .string()
+    .max(500)
+    .nullish()
+    .transform((value) => (value ? value : null)),
+  clearPassword: checkbox,
+  from: z
+    .string()
+    .trim()
+    .min(3, 'Bitte einen Absender angeben.')
+    .max(255)
+    .refine((value) => /@[^@\s>]+\.[^@\s>]+/.test(value), 'Der Absender braucht eine E-Mail-Adresse.'),
+});
+
+export type MailSettingsInput = z.infer<typeof mailSettingsSchema>;
+
 export type LocationInput = z.infer<typeof locationSchema>;
 export type SetInput = z.infer<typeof setSchema>;
 export type CollectionItemInput = z.infer<typeof collectionItemSchema>;
