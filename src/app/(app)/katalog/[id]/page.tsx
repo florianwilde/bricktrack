@@ -23,7 +23,8 @@ import {
   listPricePoints,
 } from '@/lib/queries/catalog';
 import { listMissingParts } from '@/lib/queries/collection';
-import { listCollectors, resolveCollectorId } from '@/lib/queries/collectors';
+import { activeCollectorId } from '@/lib/collector-choice';
+import { listCollectors } from '@/lib/queries/collectors';
 import { listLocations } from '@/lib/queries/master-data';
 import { listWishlistsForSet, listWishlistTargets } from '@/lib/queries/wishlists';
 import { requireUser } from '@/lib/session';
@@ -47,7 +48,7 @@ export default async function SetDetailPage({ params, searchParams }: Props) {
   // Keeps the "vorhanden / fehlt" badge in step with the collector the user
   // was looking at in the catalog.
   const rawCollector = Array.isArray(query.sammler) ? query.sammler[0] : query.sammler;
-  const collectorId = resolveCollectorId(rawCollector);
+  const collectorId = await activeCollectorId(rawCollector);
   const collectors = listCollectors();
 
   const set = getSetById(id, collectorId);

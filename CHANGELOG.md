@@ -7,6 +7,24 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unreleased]
 
+### Geändert
+
+- **Neue Navigation**: unten Start, Katalog, Sammlung, Wünsche und in der
+  Mitte ein ＋-Stein mit allen Wegen zu einem neuen Set (Scannen, aus Link,
+  Lego-Nummer, von Hand).
+- **„Mehr" statt Konto-Menü und Verwaltungsreitern**: Konto, Design,
+  Sammler, Einladungen, Erinnerungen, Hersteller, Themen, Standorte und
+  Export/Import als Kacheln in Gruppen, oben rechts hinter den Initialen.
+- **„Für wen?" in der Kopfzeile**: Bei mehreren Sammlern wird das Kind einmal
+  oben gewählt und gilt für Startseite, Katalog und Sammlung. Jedes Gerät
+  merkt sich die Wahl; ein `?sammler=` im Link hat weiterhin Vorrang.
+
+### Behoben
+
+- Mitglieder (nicht Admin) kamen nicht an Sammler, Hersteller, Themen und
+  Standorte heran, obwohl sie diese pflegen dürfen: Der Eintrag
+  „Verwaltung" stand nur im Menü des Administrators.
+
 ### Hinzugefügt
 
 - **Set aus einem Link übernehmen**, für alle Hersteller: Amazon, idealo,

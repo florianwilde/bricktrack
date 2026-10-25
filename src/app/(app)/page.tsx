@@ -4,6 +4,7 @@ import { cn } from 'cn';
 import { Studs } from '@/components/brick/studs';
 import { Button } from '@/components/ui/button';
 import { brickRow } from '@/lib/brick-row';
+import { activeCollectorId } from '@/lib/collector-choice';
 import { collectorDotClass } from '@/lib/collector-colors';
 import { formatDate, formatNumber, pluralize } from '@/lib/format';
 import { formatEuro } from '@/lib/money';
@@ -19,22 +20,31 @@ function daysLabel(days: number): string {
   return `in ${days} Tagen`;
 }
 
-export default async function DashboardPage() {
-  const user = await requireUser();
+type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
-  const stats = getCollectionStats();
-  const missing = countMissingSets();
+export default async function DashboardPage({ searchParams }: { searchParams: SearchParams }) {
+  const user = await requireUser();
+  const params = await searchParams;
+  const rawCollector = Array.isArray(params.sammler) ? params.sammler[0] : params.sammler;
+
+  // With a child chosen in the header, the start page is about that child.
+  const collectorId = await activeCollectorId(rawCollector);
+  const stats = getCollectionStats(collectorId);
+  const missing = countMissingSets(collectorId);
   const totalSets = stats.setCount + missing;
 
   const collectors = listCollectors();
+  const activeCollector = collectors.find((entry) => entry.id === collectorId) ?? null;
   const perCollector = countItemsPerCollector();
-  const showCollectors = collectors.length > 1;
+  const showCollectors = collectors.length > 1 && !activeCollector;
   const bricks = brickRow(
     stats.setCount,
     totalSets,
-    showCollectors
-      ? collectors.map((entry) => ({ key: entry.id, count: perCollector.get(entry.id) ?? 0 }))
-      : [],
+    activeCollector
+      ? [{ key: activeCollector.id, count: 1 }]
+      : showCollectors
+        ? collectors.map((entry) => ({ key: entry.id, count: perCollector.get(entry.id) ?? 0 }))
+        : [],
   );
   const colorById = new Map(collectors.map((entry) => [entry.id, entry.color]));
 
@@ -53,7 +63,9 @@ export default async function DashboardPage() {
         <Studs count={3} />
         <div className="brick rounded-xl bg-card p-4 text-card-foreground">
           <div className="flex items-baseline justify-between gap-3">
-            <h2 className="text-lg font-semibold">Unsere Sammlung</h2>
+            <h2 className="text-lg font-semibold">
+              {activeCollector ? `Sammlung von ${activeCollector.name}` : 'Unsere Sammlung'}
+            </h2>
             <p className="text-sm font-semibold text-muted-foreground">
               {formatNumber(stats.setCount)} von {pluralize(totalSets, 'Set', 'Sets')}
             </p>

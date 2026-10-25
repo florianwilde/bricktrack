@@ -63,7 +63,21 @@ Die Startseite zeigt auf einen Blick, wo die Sammlung steht:
 | **Abkürzungen** | Direkt zu den fehlenden Sets, zu den Wunschlisten oder zu einem neuen Set |
 
 Unten am Bildschirmrand liegt die Navigation – auf dem Handy mit dem Daumen
-erreichbar. Der aktive Bereich sitzt auf einer kleinen Platte.
+erreichbar: **Start, Katalog, Sammlung, Wünsche** und in der Mitte der rote
+**＋-Stein**. Der aktive Bereich sitzt auf einer kleinen Platte.
+
+![Das Plus-Menü](bilder/26-plus-menue.png)
+
+Das **＋** bündelt alle Wege, wie ein Set in den Katalog kommt: Strichcode
+scannen, aus einem Link übernehmen, Lego-Nummer holen oder von Hand eintragen.
+
+![Die Mehr-Seite](bilder/27-mehr.png)
+
+Alles, was man nicht täglich braucht, liegt hinter dem Kästchen mit deinen
+Initialen oben rechts – der Seite **Mehr**: Konto und Passkeys, Design,
+Sammler, Einladungen, Erinnerungen, Hersteller, Themen, Standorte sowie
+Export und Import. Was nur der Administrator darf, sehen Mitglieder dort gar
+nicht erst.
 
 Sets ohne Bild bekommen einen farbigen Platzhalter mit der Setnummer. Jeder
 Hersteller hat seine eigene Farbe – Lego gelb, Playmobil blau, Cobi grün.
@@ -74,8 +88,9 @@ Hersteller hat seine eigene Farbe – Lego gelb, Playmobil blau, Cobi grün.
 
 ![Hersteller verwalten](bilder/03-verwaltung-hersteller.png)
 
-Bevor du Sets anlegst, brauchst du mindestens einen **Hersteller**. Zu finden
-über das Konto-Menü oben rechts → **Verwaltung**.
+Bevor du Sets von Hand anlegst, brauchst du mindestens einen **Hersteller**.
+Zu finden unter **Mehr → Hersteller**. Der Lego-Import und die Übernahme aus
+einem Link legen fehlende Hersteller selbst an.
 
 Drei Arten von Stammdaten:
 
@@ -117,7 +132,7 @@ Die Kacheln zeigen auf einen Blick:
 - **„Auf Wunschliste"** – steht auf mindestens einer Liste
 - Setnummer, Hersteller, Thema, Jahr und UVP
 
-Mit **„Set anlegen"** oben rechts kommt ein neues Set dazu. Pflicht sind nur
+Über das **＋** in der Navigation kommt ein neues Set dazu. Pflicht sind nur
 Hersteller, Setnummer und Name; alles andere kannst du nachtragen. Ein Bild
 lädst du entweder hoch (es wird verkleinert und lokal gespeichert) oder du
 hinterlegst eine Bild-URL.
@@ -286,7 +301,7 @@ zweites Mal.
 
 ![Konto und Passkeys](bilder/16-konto-passkeys.png)
 
-Unter **Konto → Passkeys → Passkey hinzufügen** hinterlegst du Fingerabdruck,
+Unter **Mehr → Konto & Passkeys → Passkey hinzufügen** hinterlegst du Fingerabdruck,
 Gesichtserkennung oder die Geräte-PIN als Anmeldung. Danach reicht auf der
 Anmeldeseite ein Tipp auf „Mit Passkey anmelden" – auf vielen Geräten schlägt
 der Browser den Passkey sogar von selbst vor.
@@ -310,7 +325,7 @@ Sets von Hand einzutippen ist der langsame Weg. Es gibt drei schnellere.
 
 ### Aus einem Link übernehmen – für alle Hersteller
 
-Auf **Katalog → Set anlegen** steht das Feld „Aus einem Link übernehmen".
+Über **＋ → Aus Link** landest du im Feld „Aus einem Link übernehmen".
 Dort passt jeder Link zu einem Set hinein: Amazon, idealo, geizhals, der Shop
 des Herstellers oder eine Set-Datenbank wie
 [Brickfact](https://brickfact.com) (Lego) und
@@ -340,7 +355,7 @@ Katalog, kommt statt des Formulars ein Link zum vorhandenen Eintrag.
 
 ![Lego-Import](bilder/17-lego-import.png)
 
-Auf **Katalog → Set anlegen** steht oben das Feld für den Import. Setnummer
+Über **＋ → Lego-Nummer** landest du im Feld für den Import. Setnummer
 von der Packung eintippen, „Holen" – und Name, Jahr, Teile, Minifiguren und
 Thema stehen drin. Das Bild wird **lokal gespeichert**, funktioniert also auch
 weiter, wenn die Quelle es irgendwann austauscht. Fehlen Hersteller oder
@@ -393,7 +408,7 @@ der Sammlung stimmt damit, ohne dass du daran denken musst.
 
 Die Registrierung ist nach dem ersten Konto geschlossen – sonst könnte sich
 jeder, der die Adresse kennt, ein Konto anlegen. Für den zweiten Elternteil
-gibt es deshalb **Verwaltung → Einladungen**:
+gibt es deshalb **Mehr → Einladungen**:
 
 1. „Einladung erstellen", optional an eine E-Mail-Adresse gebunden, mit Rolle
    und Gültigkeit.
@@ -411,7 +426,7 @@ zusätzlich einladen und Daten exportieren.
 
 ![Daten](bilder/20-daten.png)
 
-Unter **Verwaltung → Daten** gibt es drei Downloads:
+Unter **Mehr → Export & Import** gibt es drei Downloads:
 
 | | Wofür |
 |---|---|
@@ -471,14 +486,16 @@ Sammler. Ein Set, das nur die Schwester hat, fällt für den Bruder wieder unter
 > vorher. Erst der zweite Sammler schaltet all das frei – und dann willst du
 > es auch.
 
-Anlegen unter **Verwaltung → Sammler**. Jeder bekommt einen Namen und eine
+Anlegen unter **Mehr → Sammler**. Jeder bekommt einen Namen und eine
 Farbe zur Unterscheidung.
 
 ![Nach Sammler filtern](bilder/22-sammler-filter.png)
 
-Danach steht in Katalog und Sammlung oben ein Umschalter. „Alle zusammen"
-zeigt den Haushalt als Ganzes, ein Name zeigt genau dessen Sicht – inklusive
-der Frage, was **diesem** Kind noch fehlt.
+Danach steht oben unter dem Logo der Umschalter **„Für wen?"**. „Alle"
+zeigt den Haushalt als Ganzes, ein Name zeigt genau dessen Sicht – auf der
+Startseite, im Katalog und in der Sammlung, inklusive der Frage, was
+**diesem** Kind noch fehlt. Die Wahl merkt sich jedes Gerät: Das Tablet im
+Kinderzimmer öffnet direkt bei Max.
 
 Beim Hinzufügen zur Sammlung fragt die App jetzt, wer das Set bekommt. Und
 beim Anlegen einer Wunschliste, für wen sie ist: Das bestimmt, wessen Sammlung
@@ -486,7 +503,7 @@ als „hat er schon" zählt und wann ein Wunsch automatisch als erfüllt gilt.
 
 > Die Umstellung einer bestehenden Instanz macht nichts kaputt: Beim Update
 > entsteht ein Sammler namens „Sammlung", dem alles Vorhandene gehört.
-> Umbenennen unter **Verwaltung → Sammler**, fertig.
+> Umbenennen unter **Mehr → Sammler**, fertig.
 
 ---
 
@@ -534,7 +551,7 @@ SMTP_FROM=Bricktrack <bricktrack@example.de>
 REMINDER_DAYS_BEFORE=14
 ```
 
-Unter **Verwaltung → Erinnerungen** kannst du die Verbindung prüfen, dir eine
+Unter **Mehr → Erinnerungen** kannst du die Verbindung prüfen, dir eine
 Testnachricht schicken und die Prüfung sofort auslösen, statt auf die nächste
 Stunde zu warten. Dort steht auch, welche Listen einen Termin haben und wie
 viel dort noch offen ist.
@@ -583,7 +600,7 @@ Haken dran, habt ihr es schon.
 
 ![Startseite im Design Nachtblau](bilder/25-design-nachtblau.png)
 
-Unter **Konto → Design** gibt es sechs Looks zur Auswahl:
+Unter **Mehr → Design** gibt es sechs Looks zur Auswahl:
 
 | Design | |
 |---|---|

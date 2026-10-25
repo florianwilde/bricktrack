@@ -52,6 +52,17 @@ test('Screenshots fuer die Anleitung', async ({ page, browser }) => {
   await visit(page, '/');
   await shoot(page, '02-start');
 
+  // The plus in the middle of the navigation, opened.
+  await page.getByRole('button', { name: 'Neues Set' }).click();
+  await expect(page.getByText('Was kommt dazu?')).toBeVisible();
+  await page.waitForTimeout(400); // let the sheet finish sliding in
+  await page.screenshot({ path: shotPath('26-plus-menue') });
+  await page.keyboard.press('Escape');
+
+  await visit(page, '/mehr');
+  await expect(page.getByText('Katalog pflegen')).toBeVisible();
+  await shoot(page, '27-mehr');
+
   // --- 3. master data -------------------------------------------------------
   await visit(page, '/verwaltung/hersteller');
   await expect(page.getByText('Lego', { exact: true })).toBeVisible();
@@ -186,10 +197,13 @@ test('Screenshots fuer die Anleitung', async ({ page, browser }) => {
 
   // The switcher only exists because the seed created two collectors.
   await visit(page, '/katalog?besitz=fehlt');
-  await expect(page.getByRole('button', { name: /Max/ })).toBeVisible();
-  await page.getByRole('button', { name: /Max/ }).click();
+  await expect(page.getByRole('radio', { name: /Max/ })).toBeVisible();
+  await page.getByRole('radio', { name: /Max/ }).click();
   await expect(page.getByText('Sets, die Max noch nicht hat')).toBeVisible();
   await shoot(page, '22-sammler-filter');
+  // Back to everybody, so the following pictures show the whole family.
+  await page.getByRole('radio', { name: /Alle/ }).click();
+  await expect(page.getByText('Sets, die noch nicht in der Sammlung sind')).toBeVisible();
 
   // --- 17. prices -----------------------------------------------------------
   await visit(page, '/katalog?q=60398');

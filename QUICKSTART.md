@@ -144,16 +144,16 @@ tut.
 
 ## 7. Passkey hinterlegen
 
-Unter **Konto → Passkeys → Passkey hinzufügen**. Ab dann meldest du dich per
+Unter **Mehr → Konto & Passkeys → Passkey hinzufügen** (das Kästchen mit deinen Initialen oben rechts). Ab dann meldest du dich per
 Fingerabdruck, Gesichtserkennung oder Geräte-PIN an. Für jedes Gerät ein
 eigener Passkey – Handy, Tablet, Laptop.
 
 ## 8. Loslegen
 
-1. **Verwaltung → Hersteller**: Lego, Playmobil, Cobi … anlegen.
-2. **Verwaltung → Themen**: „City", „Technic", „Novelmore" …
-3. **Verwaltung → Standorte**: „Regal Kinderzimmer", „Kiste Keller 3" …
-4. **Katalog → Set anlegen**: Setnummer, Name, Bild.
+1. **Mehr → Hersteller**: Lego, Playmobil, Cobi … anlegen.
+2. **Mehr → Themen**: „City", „Technic", „Novelmore" …
+3. **Mehr → Standorte**: „Regal Kinderzimmer", „Kiste Keller 3" …
+4. **＋ in der Navigation → Von Hand**: Setnummer, Name, Bild.
 5. Auf der Set-Seite **„Zur Sammlung hinzufügen"**, wenn das Set da ist.
 6. **Katalog → Filter „Fehlt noch"**: Kachel lange drücken, mehrere auswählen,
    **„Zur Wunschliste hinzufügen"**.
