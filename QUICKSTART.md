@@ -144,7 +144,7 @@ tut.
 
 ## 7. Passkey hinterlegen
 
-Unter **Mehr → Konto & Passkeys → Passkey hinzufügen** (das Kästchen mit deinen Initialen oben rechts). Ab dann meldest du dich per
+Unter **Mehr → Konto & Passkeys → Passkey hinzufügen** (der Button „Mehr" oben rechts). Ab dann meldest du dich per
 Fingerabdruck, Gesichtserkennung oder Geräte-PIN an. Für jedes Gerät ein
 eigener Passkey – Handy, Tablet, Laptop.
 

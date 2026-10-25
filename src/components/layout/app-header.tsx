@@ -1,15 +1,10 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
+import { Menu } from 'lucide-react';
 import { BrickLogo } from '@/components/brick/logo';
 import { DesktopNav } from './bottom-nav';
 import { CollectorSwitch, type CollectorOption } from './collector-switch';
 import type { SessionUser } from '@/lib/session';
-
-function initials(name: string): string {
-  const parts = name.trim().split(/\s+/);
-  const letters = (parts[0]?.[0] ?? '') + (parts.length > 1 ? (parts.at(-1)?.[0] ?? '') : '');
-  return letters.toUpperCase() || '?';
-}
 
 export function AppHeader({
   user,
@@ -35,13 +30,14 @@ export function AppHeader({
         <div className="flex-1" />
         <DesktopNav legoImport={legoImport} />
         {/* Account, design and master data: everything that is not daily use. */}
+        {/* Labelled on purpose: an initials-only box was not recognisable. */}
         <Link
           href="/mehr"
-          aria-label="Mehr: Konto, Design und Verwaltung"
-          title="Mehr"
-          className="flex size-10 items-center justify-center rounded-[calc(var(--radius)*0.7)] border-[length:max(1px,var(--edge-w))] border-edge bg-card text-sm font-bold shadow-(--lift-sm) outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+          title={`Mehr: Konto (${user.name}), Design und Verwaltung`}
+          className="flex h-10 items-center gap-2 rounded-[calc(var(--radius)*0.7)] border-[length:max(1px,var(--edge-w))] border-edge bg-card px-3 text-sm font-bold shadow-(--lift-sm) outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
         >
-          {initials(user.name)}
+          <Menu className="size-5" aria-hidden />
+          Mehr
         </Link>
       </div>
 

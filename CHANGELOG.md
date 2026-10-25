@@ -14,7 +14,7 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
   Lego-Nummer, von Hand).
 - **„Mehr" statt Konto-Menü und Verwaltungsreitern**: Konto, Design,
   Sammler, Einladungen, Erinnerungen, Hersteller, Themen, Standorte und
-  Export/Import als Kacheln in Gruppen, oben rechts hinter den Initialen.
+  Export/Import als Kacheln in Gruppen, hinter dem Button „Mehr" oben rechts.
 - **„Für wen?" in der Kopfzeile**: Bei mehreren Sammlern wird das Kind einmal
   oben gewählt und gilt für Startseite, Katalog und Sammlung. Jedes Gerät
   merkt sich die Wahl; ein `?sammler=` im Link hat weiterhin Vorrang.
