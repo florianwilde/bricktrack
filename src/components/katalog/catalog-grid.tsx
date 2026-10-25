@@ -217,7 +217,8 @@ export function CatalogGrid({
                 'relative rounded-xl text-left outline-none transition-opacity',
                 'focus-visible:ring-3 focus-visible:ring-ring/50',
                 owned && 'cursor-not-allowed opacity-50',
-                isSelected && '[&>div]:border-primary [&>div]:ring-2 [&>div]:ring-primary/40',
+                isSelected &&
+                  '[&_.brick]:outline-3 [&_.brick]:outline-offset-2 [&_.brick]:outline-primary',
               )}
             >
               <SetCardContent set={item} />

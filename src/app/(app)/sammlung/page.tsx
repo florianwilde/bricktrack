@@ -1,12 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Boxes, Euro, ImageOff, Layers, PackageSearch } from 'lucide-react';
+import { Boxes, Euro, Layers, PackageSearch } from 'lucide-react';
+import { SetPlaceholder } from '@/components/brick/set-placeholder';
+import { Studs } from '@/components/brick/studs';
 import { CollectorFilter } from '@/components/layout/collector-filter';
 import { CollectionFilters } from '@/components/sammlung/collection-filters';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { formatDate, formatNumber, pluralize } from '@/lib/format';
-import { collectorBadgeClass } from '@/lib/collector-colors';
+import { collectorBadgeClass, collectorDotClass } from '@/lib/collector-colors';
 import { setImageSrc } from '@/lib/images';
 import { completenessLabel, statusLabel } from '@/lib/labels';
 import { formatEuro } from '@/lib/money';
@@ -122,23 +124,31 @@ export default async function SammlungPage({ searchParams }: { searchParams: Sea
           </Link>
         </div>
       ) : (
-        <ul className="divide-y divide-border rounded-lg border border-border">
+        <ul className="space-y-5 pt-2">
           {items.map((item) => {
             const image = setImageSrc(item);
             return (
-              <li key={item.id}>
+              <li key={item.id} className="relative">
+                {/* The studs carry the collector's colour once there is more than one. */}
+                <Studs
+                  studClassName={
+                    collectors.length > 1 ? collectorDotClass(item.collectorColor) : undefined
+                  }
+                />
                 <Link
                   href={`/katalog/${item.setId}`}
-                  className="flex items-center gap-3 p-3 transition-colors hover:bg-muted/50"
+                  className="brick flex items-center gap-3 rounded-xl bg-card p-3 transition-colors hover:bg-muted/50"
                 >
-                  <div className="size-14 shrink-0 overflow-hidden rounded-lg border border-border bg-muted">
+                  <div className="size-16 shrink-0 overflow-hidden rounded-lg border-[length:max(1px,var(--edge-w))] border-edge bg-muted">
                     {image ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={image} alt="" loading="lazy" className="size-full object-contain" />
                     ) : (
-                      <div className="flex size-full items-center justify-center text-muted-foreground">
-                        <ImageOff className="size-5" aria-hidden />
-                      </div>
+                      <SetPlaceholder
+                        setNumber={item.setNumber}
+                        manufacturerName={item.manufacturerName}
+                        size="sm"
+                      />
                     )}
                   </div>
 
@@ -150,7 +160,11 @@ export default async function SammlungPage({ searchParams }: { searchParams: Sea
                         .join(' · ')}
                     </p>
                     <div className="mt-1 flex flex-wrap items-center gap-1">
-                      <Badge variant={item.status === 'sold' ? 'outline' : 'default'}>
+                      {/* Green like "Vorhanden" in the catalog; red stays for actions. */}
+                      <Badge
+                        variant={item.status === 'sold' ? 'outline' : 'default'}
+                        className={item.status === 'sold' ? undefined : 'bg-owned text-owned-foreground'}
+                      >
                         {statusLabel(item.status)}
                       </Badge>
                       {item.completeness !== 'unknown' ? (

@@ -19,6 +19,9 @@ function shotPath(name: string) {
 async function shoot(page: Page, name: string) {
   // Let fonts and images settle so the picture is not half-rendered.
   await page.waitForLoadState('networkidle');
+  // A fixed bottom bar would be painted where the first viewport ends, in the
+  // middle of a full-page picture. In flow it lands at the end, where it belongs.
+  await page.addStyleTag({ content: '.fixed.bottom-0 { position: static !important; }' });
   await page.screenshot({ path: shotPath(name), fullPage: true });
 }
 
@@ -117,6 +120,8 @@ test('Screenshots fuer die Anleitung', async ({ page, browser }) => {
   await visitor.getByRole('button', { name: 'Reservieren' }).click();
   await expect(visitor.getByText('Reservierung gespeichert')).toBeVisible();
   await visitor.getByRole('button', { name: 'Alles klar' }).click();
+  // Otherwise the picture catches the dialog halfway through fading out.
+  await expect(visitor.getByRole('dialog')).toBeHidden();
   await shoot(visitor, '14-reserviert');
   await visitorContext.close();
 
@@ -128,6 +133,18 @@ test('Screenshots fuer die Anleitung', async ({ page, browser }) => {
   await visit(page, '/konto');
   await expect(page.getByText('Passkeys', { exact: true })).toBeVisible();
   await shoot(page, '16-konto-passkeys');
+
+  // The same start page in the dark design, then back to the default.
+  await page.getByText('Nachtblau').click();
+  await expect(page.locator('html')).toHaveAttribute('data-design', 'nacht');
+  // The look switches at once; the cookie follows with the server action.
+  await page.waitForLoadState('networkidle');
+  await visit(page, '/');
+  await expect(page.locator('html')).toHaveAttribute('data-design', 'nacht');
+  await shoot(page, '25-design-nachtblau');
+  await visit(page, '/konto');
+  await page.getByText('Klemmbaustein').click();
+  await expect(page.locator('html')).toHaveAttribute('data-design', 'klemmbaustein');
 
   // --- 12. Lego import ------------------------------------------------------
   // The screenshot container runs with a placeholder API key so the manual

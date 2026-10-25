@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
-import { ArrowDown, ArrowUp, Check, ImageOff, Loader2, Trash2 } from 'lucide-react';
+import { ArrowDown, ArrowUp, Check, Loader2, Trash2 } from 'lucide-react';
+import { SetPlaceholder } from '@/components/brick/set-placeholder';
 import { toast } from 'sonner';
 import {
   removeWishlistItem,
@@ -122,15 +123,17 @@ export function WishlistItems({
 
             <Link
               href={`/katalog/${item.setId}`}
-              className="size-16 shrink-0 overflow-hidden rounded-lg border border-border bg-muted"
+              className="size-16 shrink-0 overflow-hidden rounded-lg border-[length:max(1px,var(--edge-w))] border-edge bg-muted"
             >
               {image ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={image} alt="" loading="lazy" className="size-full object-contain" />
               ) : (
-                <div className="flex size-full items-center justify-center text-muted-foreground">
-                  <ImageOff className="size-5" aria-hidden />
-                </div>
+                <SetPlaceholder
+                  setNumber={item.setNumber}
+                  manufacturerName={item.manufacturerName}
+                  size="sm"
+                />
               )}
             </Link>
 

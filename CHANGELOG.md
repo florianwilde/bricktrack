@@ -7,6 +7,29 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unreleased]
 
+Ein neues Gesicht: Bricktrack sieht jetzt aus wie das, was es verwaltet.
+
+### Hinzugefügt
+
+- **Designauswahl** unter Konto → Design: Klemmbaustein (neuer Standard),
+  Warm, Nachtblau (dunkel), Bonbon, Bauklotz und Schlicht (der bisherige
+  Look). Die Wahl gilt pro Gerät und wirkt sofort.
+- **Platzhalter für Sets ohne Bild**: Farbe des Herstellers, gezeichneter
+  Stein und Setnummer statt eines grauen „Bild fehlt".
+- **Startseite als Überblick**: Steinreihe für den Fortschritt (bei mehreren
+  Sammlern in deren Farben), Teile, Wert, nächster Wunschlisten-Termin mit
+  Countdown und Abkürzungen.
+- Neues Logo als Baustein, Schriften lokal gebündelt (kein CDN).
+
+### Geändert
+
+- Karten, Buttons und Badges tragen im Standard-Design Konturen, eine feste
+  Unterkante und Noppen. In der Sammlung und auf der öffentlichen
+  Wunschliste zeigen die Noppen den Sammler bzw. ob ein Wunsch reserviert ist.
+- Die öffentliche Wunschliste hat einen farbigen Kopf mit Anlass und Datum.
+- Screenshots der Anleitung zeigen die feste Navigation nicht mehr mitten
+  im Bild.
+
 ## [0.3.0] - 2026-09-07
 
 Phase 3: mehrere Kinder, Wertentwicklung, Erinnerungen und ein Schutz vor

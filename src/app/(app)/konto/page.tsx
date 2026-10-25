@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
-import { headers } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { PasskeyManager, type PasskeyRow } from '@/components/auth/passkey-manager';
+import { DesignPicker } from '@/components/konto/design-picker';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { auth } from '@/lib/auth';
+import { DESIGN_COOKIE, resolveDesign } from '@/lib/design';
 import { requireUser } from '@/lib/session';
 
 export const metadata: Metadata = { title: 'Konto' };
@@ -17,6 +19,7 @@ export default async function AccountPage() {
     name: passkey.name ?? null,
     createdAt: passkey.createdAt ? new Date(passkey.createdAt) : null,
   }));
+  const design = resolveDesign((await cookies()).get(DESIGN_COOKIE)?.value);
 
   return (
     <div className="space-y-6">
@@ -42,6 +45,18 @@ export default async function AccountPage() {
               {user.role === 'admin' ? 'Administrator' : 'Mitglied'}
             </Badge>
           </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Design</CardTitle>
+          <CardDescription>
+            Gilt für dieses Gerät. Öffentliche Wunschlisten sehen Gäste im Standard-Design.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <DesignPicker current={design} />
         </CardContent>
       </Card>
 

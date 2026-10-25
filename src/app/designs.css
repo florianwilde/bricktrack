@@ -1,0 +1,301 @@
+/*
+ * Selectable designs. Each one is a set of tokens under :root[data-design=...]
+ * (the attribute is set in the root layout from a cookie, see src/lib/design.ts).
+ * The neutral "schlicht" design uses the defaults from globals.css.
+ *
+ * Token additions on top of shadcn:
+ *   --font-display   headings and big numbers
+ *   --edge, --edge-w outline of cards, buttons and badges
+ *   --lift(-sm)      the hard bottom edge that makes a card look like a brick
+ *   --studs          "flex" shows the studs on top of cards, "none" hides them
+ *   --tone-1..5      placeholder colours for sets without an image
+ *   --owned          the "Vorhanden" badge
+ */
+
+/* --- Klemmbaustein (default) --------------------------------------------- */
+:root[data-design='klemmbaustein'] {
+  --font-sans: 'Nunito Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Fredoka Variable', ui-sans-serif, system-ui, sans-serif;
+  --radius: 1rem;
+
+  --background: #fff6e5;
+  --foreground: #24203f;
+  --card: #ffffff;
+  --card-foreground: #24203f;
+  --popover: #ffffff;
+  --popover-foreground: #24203f;
+  --primary: #d63a30;
+  --primary-foreground: #ffffff;
+  --secondary: #ffc93c;
+  --secondary-foreground: #24203f;
+  --muted: #f6ead0;
+  --muted-foreground: #5f5a78;
+  --accent: #ffe9b0;
+  --accent-foreground: #24203f;
+  --destructive: #c62828;
+  --border: rgb(36 32 63 / 0.16);
+  --input: #24203f;
+  --ring: #2f6bea;
+
+  --logo: #ffc93c;
+  --edge: #24203f;
+  --edge-w: 2px;
+  --lift: 0 4px 0 #24203f;
+  --lift-sm: 0 3px 0 #24203f;
+  --studs: flex;
+  --owned: #2ebd85;
+  --owned-foreground: #24203f;
+  --tone-ink: #24203f;
+  --tone-1: #ffe08a;
+  --tone-2: #bfd6ff;
+  --tone-3: #bdebd3;
+  --tone-4: #ffc9d9;
+  --tone-5: #e2d6ff;
+}
+
+/* --- Warm ---------------------------------------------------------------- */
+:root[data-design='warm'] {
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
+  --radius: 0.875rem;
+
+  --background: #f6f3ec;
+  --foreground: #1d1b17;
+  --card: #ffffff;
+  --card-foreground: #1d1b17;
+  --popover: #ffffff;
+  --popover-foreground: #1d1b17;
+  --primary: #c8381f;
+  --primary-foreground: #ffffff;
+  --secondary: #fbe3a6;
+  --secondary-foreground: #1d1b17;
+  --muted: #ece6da;
+  --muted-foreground: #5f594f;
+  --accent: #fbe3a6;
+  --accent-foreground: #1d1b17;
+  --destructive: #b42318;
+  --border: #e2dbcd;
+  --input: #d6cebf;
+  --ring: #c8381f;
+
+  --edge: transparent;
+  --edge-w: 0px;
+  --lift: 0 1px 2px rgb(29 27 23 / 0.06);
+  --lift-sm: none;
+  --studs: none;
+  --owned: #1f7a4d;
+  --owned-foreground: #ffffff;
+  --tone-ink: #1d1b17;
+  --tone-1: #fbe3a6;
+  --tone-2: #d6e6f5;
+  --tone-3: #dde8d2;
+  --tone-4: #f6d5cc;
+  --tone-5: #e5ddf0;
+}
+
+/* --- Nachtblau (dark) ---------------------------------------------------- */
+:root[data-design='nacht'] {
+  color-scheme: dark;
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Outfit Variable', ui-sans-serif, system-ui, sans-serif;
+  --radius: 1.125rem;
+
+  --background: #0e1422;
+  --foreground: #f2f4f8;
+  --card: #182136;
+  --card-foreground: #f2f4f8;
+  --popover: #1b2540;
+  --popover-foreground: #f2f4f8;
+  --primary: #ffc93c;
+  --primary-foreground: #1a1300;
+  --secondary: #222d45;
+  --secondary-foreground: #f2f4f8;
+  --muted: #222d45;
+  --muted-foreground: #a3adc2;
+  --accent: #2a3654;
+  --accent-foreground: #f2f4f8;
+  --destructive: #f87171;
+  --border: #2c3854;
+  --input: #34405e;
+  --ring: #ffc93c;
+
+  --edge: transparent;
+  --edge-w: 0px;
+  --lift: none;
+  --lift-sm: none;
+  --studs: none;
+  --owned: #1e4d3a;
+  --owned-foreground: #8fe3b8;
+  --tone-ink: #f2f4f8;
+  --tone-1: #3a3218;
+  --tone-2: #1b2c44;
+  --tone-3: #22331e;
+  --tone-4: #3d2230;
+  --tone-5: #2c2546;
+}
+
+/* --- Bonbon -------------------------------------------------------------- */
+:root[data-design='bonbon'] {
+  --font-sans: 'Nunito Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Fredoka Variable', ui-sans-serif, system-ui, sans-serif;
+  --radius: 1.5rem;
+
+  --background: #f4f0ff;
+  --foreground: #23194a;
+  --card: #ffffff;
+  --card-foreground: #23194a;
+  --popover: #ffffff;
+  --popover-foreground: #23194a;
+  --primary: #6d4aff;
+  --primary-foreground: #ffffff;
+  --secondary: #ede7ff;
+  --secondary-foreground: #4b2fc4;
+  --muted: #ede7ff;
+  --muted-foreground: #5e567c;
+  --accent: #ede7ff;
+  --accent-foreground: #23194a;
+  --destructive: #c62828;
+  --border: #e4ddf7;
+  --input: #d8cff3;
+  --ring: #6d4aff;
+
+  --edge: transparent;
+  --edge-w: 0px;
+  --lift: 0 8px 24px rgb(35 25 74 / 0.08);
+  --lift-sm: none;
+  --studs: none;
+  --owned: #157a57;
+  --owned-foreground: #ffffff;
+  --tone-ink: #23194a;
+  --tone-1: #fff1c7;
+  --tone-2: #dff0ff;
+  --tone-3: #ddf7ea;
+  --tone-4: #ffe1d1;
+  --tone-5: #ffddeb;
+}
+
+/* --- Bauklotz ------------------------------------------------------------ */
+:root[data-design='bauklotz'] {
+  --font-sans: 'Archivo Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Archivo Variable', ui-sans-serif, system-ui, sans-serif;
+  --radius: 0.75rem;
+
+  --background: #fffbef;
+  --foreground: #111111;
+  --card: #ffffff;
+  --card-foreground: #111111;
+  --popover: #ffffff;
+  --popover-foreground: #111111;
+  --primary: #1e5eff;
+  --primary-foreground: #ffffff;
+  --secondary: #ffd500;
+  --secondary-foreground: #111111;
+  --muted: #f3eedc;
+  --muted-foreground: #4a4a4a;
+  --accent: #ffd500;
+  --accent-foreground: #111111;
+  --destructive: #c62828;
+  --border: rgb(17 17 17 / 0.2);
+  --input: #111111;
+  --ring: #1e5eff;
+
+  --logo: #ffd500;
+  --edge: #111111;
+  --edge-w: 2.5px;
+  --lift: 4px 4px 0 #111111;
+  --lift-sm: 3px 3px 0 #111111;
+  --studs: none;
+  --owned: #111111;
+  --owned-foreground: #ffffff;
+  --tone-ink: #111111;
+  --tone-1: #ffd500;
+  --tone-2: #7fb2ff;
+  --tone-3: #8bd17c;
+  --tone-4: #ff8a7a;
+  --tone-5: #c9a7ff;
+}
+
+:root[data-design='bauklotz'] :is(h1, h2) {
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+}
+
+/*
+ * Surfaces. Unlayered on purpose: these must win over the utility classes of
+ * the shadcn components, which carry the neutral look. Focused elements keep
+ * their ring (also a box-shadow), so the lift steps aside for it.
+ */
+[data-slot='card'] {
+  border: var(--edge-w) solid var(--edge);
+  box-shadow: var(--lift);
+}
+
+:root:is([data-design='klemmbaustein'], [data-design='bauklotz']) {
+  & [data-slot='button']:is(
+      [data-variant='default'],
+      [data-variant='outline'],
+      [data-variant='secondary'],
+      [data-variant='destructive']
+    ) {
+    border-width: var(--edge-w);
+    border-color: var(--edge);
+    font-weight: 700;
+
+    &:not(:focus-visible) {
+      box-shadow: var(--lift-sm);
+    }
+
+    &:active:not(:disabled) {
+      translate: 0 2px;
+      box-shadow: none;
+    }
+  }
+
+  & [data-slot='badge'] {
+    border-width: 2px;
+    border-color: var(--edge);
+    border-radius: calc(var(--radius) * 0.5);
+    font-weight: 800;
+  }
+
+  & :is([data-slot='input'], [data-slot='textarea'], [data-slot='native-select'], [data-slot='select-trigger']) {
+    border-width: var(--edge-w);
+    border-color: var(--edge);
+  }
+
+  & :is([data-slot='dialog-content'], [data-slot='alert-dialog-content'], [data-slot='popover-content'], [data-slot='dropdown-menu-content'], [data-slot='select-content']) {
+    border: var(--edge-w) solid var(--edge);
+    box-shadow: var(--lift);
+  }
+}
+
+/* A surface outside the shadcn components (set tiles, list entries). */
+@utility brick {
+  border: var(--edge-w) solid var(--edge);
+  box-shadow: var(--lift);
+}
+
+/* --- Studs ---------------------------------------------------------------- */
+/* In a layer, so a utility class on a stud (collector colour) still wins. */
+@layer components {
+  .studs {
+    display: var(--studs);
+    position: absolute;
+    top: calc(var(--edge-w) - 10px);
+    left: 16px;
+    gap: 10px;
+    pointer-events: none;
+  }
+
+  .stud {
+    display: block;
+    width: 20px;
+    height: 10px;
+    box-sizing: border-box;
+    border: var(--edge-w) solid var(--edge);
+    border-bottom: 0;
+    border-radius: 7px 7px 0 0;
+    background: var(--card);
+  }
+}
