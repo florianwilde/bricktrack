@@ -306,8 +306,35 @@ gib ihnen sprechende Namen.
 
 ## 11. Import und Scanner
 
-Sets von Hand einzutippen ist der langsame Weg. Für Lego gibt es zwei
-schnellere.
+Sets von Hand einzutippen ist der langsame Weg. Es gibt drei schnellere.
+
+### Aus einem Link übernehmen – für alle Hersteller
+
+Auf **Katalog → Set anlegen** steht das Feld „Aus einem Link übernehmen".
+Dort passt jeder Link zu einem Set hinein: Amazon, idealo, geizhals, der Shop
+des Herstellers oder eine Set-Datenbank wie
+[Brickfact](https://brickfact.com) (Lego) und
+[Merlins Bricks](https://www.merlinsbricks.com) (BlueBrixx, Cobi und viele
+mehr). „Übernehmen" füllt das Formular darunter aus – **gespeichert wird erst,
+wenn du „Set anlegen" drückst**. Ein Blick auf Name und Nummer lohnt sich,
+denn Shops schreiben gern das halbe Sortiment in den Titel.
+
+Was dabei passiert:
+
+1. Bricktrack liest die Seite und übernimmt Name, Setnummer, EAN, Bild,
+   Teile und Jahr, soweit sie dort stehen.
+2. Manche Shops lassen sich nicht abfragen. Dann reicht oft schon der Link
+   selbst: In `amazon.de/LEGO-60398-Familienhaus-…` stecken Hersteller,
+   Nummer und Name.
+3. Mit Hersteller und Nummer ergänzt Bricktrack den Rest: Lego über
+   Rebrickable (mit API-Key), BlueBrixx und Cobi über Merlins Bricks.
+
+Das Bild wird beim Speichern lokal abgelegt, die Quelle steht in den Notizen.
+Gibt es den Hersteller noch nicht, wird er angelegt. Steht das Set schon im
+Katalog, kommt statt des Formulars ein Link zum vorhandenen Eintrag.
+
+> Bricktrack ruft dafür nur öffentliche Adressen ab. Links ins eigene Netz –
+> Router, NAS, andere Container – werden abgewiesen.
 
 ### Lego-Import über die Setnummer
 

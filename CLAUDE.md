@@ -63,6 +63,8 @@ Bild-URLs, die der Nutzer selbst hinterlegt hat.
 | `src/lib/reminder-job.ts`, `src/lib/mailer.ts` | Versand und Zeitplan |
 | `src/lib/export.ts` | Export und Import des gesamten Bestands |
 | `src/lib/money.ts`, `src/lib/format.ts` | Cent-Umrechnung, dd.MM.yyyy |
+| `src/lib/link-import.ts` | Set-Daten aus Link und Seite lesen (rein, testbar) |
+| `src/lib/safe-fetch.ts`, `src/lib/net-guard.ts` | Abruf fremder URLs nur an oeffentliche Adressen |
 | `src/lib/design.ts`, `src/app/designs.css` | Designs: Namen und Cookie bzw. Tokens je `data-design` |
 | `src/components/brick/` | Noppen, Logo, Platzhalter fuer Sets ohne Bild |
 
@@ -195,7 +197,9 @@ Session.
    nichts preis ausser den Wunschlisten-Daten - keine Nutzernamen,
    keine Sammlungsdaten, keine IDs anderer Objekte.
 4. Externe API-Aufrufe (Rebrickable, ab Phase 2) laufen ausschliesslich
-   serverseitig.
+   serverseitig. URLs, die ein Nutzer eingibt (Link-Import, Bild-Uebernahme),
+   werden nur ueber `safeFetch` abgerufen - nie mit `fetch` direkt, sonst
+   erreicht der Server auch Geraete im Heimnetz.
 5. Session-Cookies: `httpOnly`, `secure`, `sameSite=lax`.
    Rate-Limiting auf den Login-Endpunkten.
 6. Der Export enthaelt **keine** Konten, Passwoerter oder Passkeys - und

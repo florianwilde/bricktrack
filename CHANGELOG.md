@@ -7,6 +7,21 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unreleased]
 
+### Hinzugefügt
+
+- **Set aus einem Link übernehmen**, für alle Hersteller: Amazon, idealo,
+  geizhals, Hersteller-Shops, Brickfact oder Merlins Bricks. Bricktrack liest
+  Produktdaten (schema.org, Open Graph, bei Amazon die Produktseite) und, wenn
+  die Seite blockt, den Link selbst. Lego wird über Rebrickable ergänzt,
+  BlueBrixx und Cobi über Merlins Bricks. Das Ergebnis füllt das Formular vor,
+  das Bild wird beim Speichern lokal abgelegt.
+
+### Sicherheit
+
+- Abrufe im Auftrag eines Nutzers gehen nur an öffentliche Adressen: Jede
+  Adresse wird vor dem Verbindungsaufbau geprüft, Weiterleitungen ebenso,
+  Größe und Zeit sind begrenzt.
+
 ## [0.4.0] - 2026-10-25
 
 Ein neues Gesicht: Bricktrack sieht jetzt aus wie das, was es verwaltet.
