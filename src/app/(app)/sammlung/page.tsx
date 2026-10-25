@@ -160,7 +160,11 @@ export default async function SammlungPage({ searchParams }: { searchParams: Sea
                         .join(' · ')}
                     </p>
                     <div className="mt-1 flex flex-wrap items-center gap-1">
-                      <Badge variant={item.status === 'sold' ? 'outline' : 'default'}>
+                      {/* Green like "Vorhanden" in the catalog; red stays for actions. */}
+                      <Badge
+                        variant={item.status === 'sold' ? 'outline' : 'default'}
+                        className={item.status === 'sold' ? undefined : 'bg-owned text-owned-foreground'}
+                      >
                         {statusLabel(item.status)}
                       </Badge>
                       {item.completeness !== 'unknown' ? (
