@@ -1,32 +1,39 @@
 import 'server-only';
 import nodemailer, { type Transporter } from 'nodemailer';
-import { env } from '@/env';
+import { getMailConfig, type MailConfig } from '@/lib/mail-settings';
 
 /**
  * Outgoing mail.
  *
- * Entirely optional: without SMTP_HOST and SMTP_FROM nothing is scheduled and
+ * Entirely optional: without a server - in the .env or on the reminders page -
  * nothing is sent. The app never depends on mail working.
  */
 
-let transporter: Transporter | null = null;
+let cached: { key: string; transporter: Transporter; from: string } | null = null;
 
-function getTransporter(): Transporter | null {
-  if (!env.isMailConfigured) return null;
-  if (transporter) return transporter;
+function connectionKey(config: MailConfig): string {
+  return JSON.stringify([config.host, config.port, config.security, config.user, config.password]);
+}
 
-  transporter = nodemailer.createTransport({
-    host: env.SMTP_HOST,
-    port: env.SMTP_PORT,
+function getTransport(): { transporter: Transporter; from: string } | null {
+  const config = getMailConfig();
+  if (!config) return null;
+
+  // Settings can change at runtime now; a new connection follows them.
+  const key = connectionKey(config);
+  if (cached?.key === key) return { transporter: cached.transporter, from: config.from };
+
+  const transporter = nodemailer.createTransport({
+    host: config.host,
+    port: config.port,
     // Implicit TLS on 465, STARTTLS on 587 - the usual pair.
-    secure: env.SMTP_SECURE || env.SMTP_PORT === 465,
-    auth:
-      env.SMTP_USER && env.SMTP_PASSWORD
-        ? { user: env.SMTP_USER, pass: env.SMTP_PASSWORD }
-        : undefined,
+    secure: config.security === 'tls',
+    ignoreTLS: config.security === 'none',
+    auth: config.user && config.password ? { user: config.user, pass: config.password } : undefined,
   });
 
-  return transporter;
+  cached = { key, transporter, from: config.from };
+  return { transporter, from: config.from };
 }
 
 export type MailResult = { ok: true } | { ok: false; error: string };
@@ -36,14 +43,14 @@ export async function sendMail(input: {
   subject: string;
   text: string;
 }): Promise<MailResult> {
-  const transport = getTransporter();
+  const transport = getTransport();
   if (!transport) {
     return { ok: false, error: 'Es ist kein SMTP-Server konfiguriert.' };
   }
 
   try {
-    await transport.sendMail({
-      from: env.SMTP_FROM,
+    await transport.transporter.sendMail({
+      from: transport.from,
       to: input.to,
       subject: input.subject,
       text: input.text,
@@ -60,13 +67,13 @@ export async function sendMail(input: {
 
 /** Checks the connection without sending anything. */
 export async function verifyMailConnection(): Promise<MailResult> {
-  const transport = getTransporter();
+  const transport = getTransport();
   if (!transport) {
     return { ok: false, error: 'Es ist kein SMTP-Server konfiguriert.' };
   }
 
   try {
-    await transport.verify();
+    await transport.transporter.verify();
     return { ok: true };
   } catch (error) {
     return {

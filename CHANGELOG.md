@@ -7,8 +7,25 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unreleased]
 
+### Hinzugefügt
+
+- **Mailserver in der App einrichten**: Unter Mehr → Erinnerungen → Mailserver
+  lassen sich Server, Port, Verschlüsselung, Zugang und Absender eintragen –
+  ohne `.env` und ohne Neustart. Das Passwort wird verschlüsselt gespeichert
+  (AES-256-GCM, Schlüssel aus `BETTER_AUTH_SECRET`), nie wieder angezeigt und
+  nicht exportiert. Steht der Server in der `.env`, hat sie weiter Vorrang.
+- **Set aus einem Link übernehmen**, für alle Hersteller: Amazon, idealo,
+  geizhals, Hersteller-Shops, Brickfact oder Merlins Bricks. Bricktrack liest
+  Produktdaten (schema.org, Open Graph, bei Amazon die Produktseite) und, wenn
+  die Seite blockt, den Link selbst. Lego wird über Rebrickable ergänzt,
+  BlueBrixx und Cobi über Merlins Bricks. Das Ergebnis füllt das Formular vor,
+  das Bild wird beim Speichern lokal abgelegt.
+
 ### Geändert
 
+- Der Zeitplan für Erinnerungen läuft immer und prüft bei jedem Durchlauf, ob
+  ein Mailserver eingerichtet ist. Vorher wurde er nur gestartet, wenn SMTP
+  schon beim Containerstart in der `.env` stand.
 - **Neue Navigation**: unten Start, Katalog, Sammlung, Wünsche und in der
   Mitte ein ＋-Stein mit allen Wegen zu einem neuen Set (Scannen, aus Link,
   Lego-Nummer, von Hand).
@@ -24,15 +41,6 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
 - Mitglieder (nicht Admin) kamen nicht an Sammler, Hersteller, Themen und
   Standorte heran, obwohl sie diese pflegen dürfen: Der Eintrag
   „Verwaltung" stand nur im Menü des Administrators.
-
-### Hinzugefügt
-
-- **Set aus einem Link übernehmen**, für alle Hersteller: Amazon, idealo,
-  geizhals, Hersteller-Shops, Brickfact oder Merlins Bricks. Bricktrack liest
-  Produktdaten (schema.org, Open Graph, bei Amazon die Produktseite) und, wenn
-  die Seite blockt, den Link selbst. Lego wird über Rebrickable ergänzt,
-  BlueBrixx und Cobi über Merlins Bricks. Das Ergebnis füllt das Formular vor,
-  das Bild wird beim Speichern lokal abgelegt.
 
 ### Sicherheit
 
