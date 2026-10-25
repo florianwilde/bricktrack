@@ -73,8 +73,8 @@ scannen, aus einem Link übernehmen, Lego-Nummer holen oder von Hand eintragen.
 
 ![Die Mehr-Seite](bilder/27-mehr.png)
 
-Alles, was man nicht täglich braucht, liegt hinter dem Kästchen mit deinen
-Initialen oben rechts – der Seite **Mehr**: Konto und Passkeys, Design,
+Alles, was man nicht täglich braucht, liegt hinter dem Button
+**„Mehr"** oben rechts: Konto und Passkeys, Design,
 Sammler, Einladungen, Erinnerungen, Hersteller, Themen, Standorte sowie
 Export und Import. Was nur der Administrator darf, sehen Mitglieder dort gar
 nicht erst.
