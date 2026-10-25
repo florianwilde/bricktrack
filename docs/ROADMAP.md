@@ -59,7 +59,9 @@ Laeuft vollstaendig im Docker-Stack.
       rueckt und Eintraege unreserviert sind
 - [x] Dublettenpruefung beim Anlegen von Sets
 
-## Design (unveröffentlicht)
+## Design und Sicherheit (v0.4.0, abgeschlossen am 25.10.2026)
+
+- [x] Abhängigkeiten mit bekannten Sicherheitslücken aktualisiert
 
 - [x] Designauswahl pro Gerät, sechs Designs, Standard „Klemmbaustein"
 - [x] Platzhalter für Sets ohne Bild, neues Logo, Schriften lokal

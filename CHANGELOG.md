@@ -7,7 +7,24 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-25
+
 Ein neues Gesicht: Bricktrack sieht jetzt aus wie das, was es verwaltet.
+Dazu alle bekannten Sicherheitslücken in den Abhängigkeiten geschlossen.
+
+### Sicherheit
+
+- Next.js 15.5.28: schließt unter anderem eine Denial-of-Service-Lücke über
+  Server Actions und Cache-Poisoning bei selbst gehosteten Instanzen. Die
+  kritische Lücke in der Bildoptimierung war hier nicht ausnutzbar
+  (`images.unoptimized`), ist aber ebenfalls behoben.
+- nodemailer 10.2: mehrere Fehler im Adressparser (Erinnerungs-Mails).
+- better-auth 1.7.12, sharp 0.35.5 (librsvg), zod 4.6.7 (Speicherverbrauch
+  bei übergroßen Eingaben), drizzle-orm 0.45.4.
+- Entwicklungswerkzeuge: vitest, vite, postcss, Playwright und die
+  shadcn-CLI aktualisiert, transitive Pakete per `pnpm.overrides` angehoben.
+  Übrig bleibt ein mittlerer Fund in einem alten esbuild, das drizzle-kit
+  intern mitbringt - nur beim Entwickeln, nicht im Image.
 
 ### Hinzugefügt
 
@@ -217,7 +234,8 @@ Erste lauffaehige Fassung: Phase 1 vollstaendig, im Docker-Stack verifiziert.
 - Unter Windows scheitert `pnpm build` an fehlenden Symlink-Rechten. Der
   Docker-Build unter Linux ist davon nicht betroffen.
 
-[Unreleased]: https://git.wilde-server.de/florian.wilde/bricktrack/compare/v0.3.0...HEAD
+[Unreleased]: https://git.wilde-server.de/florian.wilde/bricktrack/compare/v0.4.0...HEAD
+[0.4.0]: https://git.wilde-server.de/florian.wilde/bricktrack/releases/tag/v0.4.0
 [0.3.0]: https://git.wilde-server.de/florian.wilde/bricktrack/releases/tag/v0.3.0
 [0.2.0]: https://git.wilde-server.de/florian.wilde/bricktrack/releases/tag/v0.2.0
 [0.1.0]: https://git.wilde-server.de/florian.wilde/bricktrack/releases/tag/v0.1.0

@@ -213,6 +213,8 @@ Session.
   Einladungen, Export/Import, PWA. *Fertig in 0.2.0.*
 - **Phase 3 (Nice to have)** - mehrere Sammler, Preisbeobachtung,
   E-Mail-Erinnerungen, Dublettenpruefung. *Fertig in 0.3.0.*
+- **Design und Sicherheit** - Designauswahl (Standard Klemmbaustein),
+  Abhaengigkeiten ohne bekannte Luecken. *Fertig in 0.4.0.*
 
 Details und Stand: `docs/ROADMAP.md`. Zeitaufwaende: `docs/DEVLOG.md`.
 
