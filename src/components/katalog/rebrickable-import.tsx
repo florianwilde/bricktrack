@@ -14,7 +14,7 @@ import { Input } from '@/components/ui/input';
  * One-field Lego import: type the number from the box, get a finished catalog
  * entry. Hidden entirely when no API key is configured.
  */
-export function RebrickableImport({ enabled }: { enabled: boolean }) {
+export function RebrickableImport({ enabled, autoFocus }: { enabled: boolean; autoFocus?: boolean }) {
   const router = useRouter();
   const [setNumber, setSetNumber] = useState('');
   const [pending, startTransition] = useTransition();
@@ -80,6 +80,7 @@ export function RebrickableImport({ enabled }: { enabled: boolean }) {
               onChange={(event) => setSetNumber(event.target.value)}
               placeholder="60398"
               inputMode="numeric"
+              autoFocus={autoFocus}
               maxLength={40}
               className="font-mono"
             />

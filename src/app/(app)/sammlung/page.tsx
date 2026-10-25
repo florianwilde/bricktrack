@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { Boxes, Euro, Layers, PackageSearch } from 'lucide-react';
 import { SetPlaceholder } from '@/components/brick/set-placeholder';
 import { Studs } from '@/components/brick/studs';
-import { CollectorFilter } from '@/components/layout/collector-filter';
 import { CollectionFilters } from '@/components/sammlung/collection-filters';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -19,7 +18,8 @@ import {
   listCollectionItems,
   type CollectionFilters as Filters,
 } from '@/lib/queries/collection';
-import { listCollectors, resolveCollectorId } from '@/lib/queries/collectors';
+import { activeCollectorId } from '@/lib/collector-choice';
+import { listCollectors } from '@/lib/queries/collectors';
 import { listLocations, listManufacturers } from '@/lib/queries/master-data';
 import { requireUser } from '@/lib/session';
 import type { CollectionStatus, Completeness } from '@/db/types';
@@ -38,7 +38,7 @@ export default async function SammlungPage({ searchParams }: { searchParams: Sea
   const params = await searchParams;
 
   const collectors = listCollectors();
-  const collectorId = resolveCollectorId(single(params.sammler));
+  const collectorId = await activeCollectorId(single(params.sammler));
   const activeCollector = collectors.find((row) => row.id === collectorId) ?? null;
 
   const filters: Filters = {
@@ -77,11 +77,6 @@ export default async function SammlungPage({ searchParams }: { searchParams: Sea
             : 'Alles, was tatsächlich da ist.'}
         </p>
       </div>
-
-      <CollectorFilter
-        collectors={collectors.map((row) => ({ id: row.id, name: row.name, color: row.color }))}
-        allLabel="Alle zusammen"
-      />
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {tiles.map((tile) => (

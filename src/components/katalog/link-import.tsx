@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { Link2, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { previewSetFromLink, type LinkPreview } from '@/app/(app)/katalog/link-actions';
@@ -35,11 +35,14 @@ export function NewSetEntry({
   manufacturers,
   themes,
   defaultEan,
+  focus,
   children,
 }: {
   manufacturers: Array<{ id: string; name: string }>;
   themes: Array<{ id: string; name: string; manufacturerId: string }>;
   defaultEan?: string;
+  /** Set by the plus menu: start in the link field or in the form. */
+  focus?: 'link' | 'hand';
   /** Shown instead of the form while there is no manufacturer yet. */
   children?: React.ReactNode;
 }) {
@@ -49,6 +52,13 @@ export function NewSetEntry({
   const [version, setVersion] = useState(0);
   const [existing, setExisting] = useState<{ id: string; label: string } | null>(null);
   const [pending, startTransition] = useTransition();
+
+  useEffect(() => {
+    if (focus !== 'hand') return;
+    const field = document.getElementById('setNumber');
+    field?.scrollIntoView({ block: 'center' });
+    field?.focus({ preventScroll: true });
+  }, [focus]);
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -114,6 +124,7 @@ export function NewSetEntry({
                 onChange={(event) => setUrl(event.target.value)}
                 placeholder="https://…"
                 maxLength={2000}
+                autoFocus={focus === 'link'}
               />
             </Field>
             <Button type="submit" size="lg" disabled={pending || url.trim().length === 0}>

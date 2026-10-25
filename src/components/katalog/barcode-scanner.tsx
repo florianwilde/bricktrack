@@ -25,13 +25,18 @@ type Controls = { stop: () => void };
  * loaded only when the scanner is opened - nothing leaves the device, and the
  * catalog pages stay light for everyone who never scans.
  */
-export function BarcodeScannerButton() {
+export function BarcodeScannerDialog({
+  open,
+  onOpenChange: setOpen,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
   const controlsRef = useRef<Controls | null>(null);
   const handledRef = useRef(false);
 
-  const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<'starting' | 'scanning' | 'checking' | 'error'>('starting');
   const [message, setMessage] = useState<string | null>(null);
 
@@ -68,7 +73,7 @@ export function BarcodeScannerButton() {
         router.refresh();
       });
     },
-    [router, stop],
+    [router, setOpen, stop],
   );
 
   useEffect(() => {
@@ -135,6 +140,61 @@ export function BarcodeScannerButton() {
   }, [open, onDetected, stop]);
 
   return (
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        if (!next) stop();
+        setOpen(next);
+      }}
+    >
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Barcode scannen</DialogTitle>
+          <DialogDescription>
+            Halte den Strichcode auf der Packung ins Bild. Kennt der Katalog das Set schon,
+            landest du direkt darauf – sonst im Formular mit ausgefüllter EAN.
+          </DialogDescription>
+        </DialogHeader>
+
+        {status === 'error' ? (
+          <p className="rounded-lg border border-dashed border-border p-4 text-sm text-muted-foreground">
+            {message}
+          </p>
+        ) : (
+          <div className="relative overflow-hidden rounded-lg bg-black">
+            <video
+              ref={videoRef}
+              className="aspect-[3/4] w-full object-cover"
+              muted
+              playsInline
+              aria-label="Kamerabild"
+            />
+            {/* A guide line makes people hold the box the right way round. */}
+            <div className="pointer-events-none absolute inset-x-6 top-1/2 h-0.5 -translate-y-1/2 bg-red-500/80" />
+
+            {status !== 'scanning' ? (
+              <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/60 text-sm text-white">
+                <Loader2 className="size-4 animate-spin" />
+                {status === 'checking' ? 'Im Katalog nachsehen …' : 'Kamera startet …'}
+              </div>
+            ) : null}
+          </div>
+        )}
+
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setOpen(false)}>
+            Abbrechen
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+export function BarcodeScannerButton() {
+  const [open, setOpen] = useState(false);
+
+  return (
     <>
       <Button
         variant="outline"
@@ -145,55 +205,7 @@ export function BarcodeScannerButton() {
       >
         <ScanLine />
       </Button>
-
-      <Dialog
-        open={open}
-        onOpenChange={(next) => {
-          if (!next) stop();
-          setOpen(next);
-        }}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Barcode scannen</DialogTitle>
-            <DialogDescription>
-              Halte den Strichcode auf der Packung ins Bild. Kennt der Katalog das Set schon,
-              landest du direkt darauf – sonst im Formular mit ausgefüllter EAN.
-            </DialogDescription>
-          </DialogHeader>
-
-          {status === 'error' ? (
-            <p className="rounded-lg border border-dashed border-border p-4 text-sm text-muted-foreground">
-              {message}
-            </p>
-          ) : (
-            <div className="relative overflow-hidden rounded-lg bg-black">
-              <video
-                ref={videoRef}
-                className="aspect-[3/4] w-full object-cover"
-                muted
-                playsInline
-                aria-label="Kamerabild"
-              />
-              {/* A guide line makes people hold the box the right way round. */}
-              <div className="pointer-events-none absolute inset-x-6 top-1/2 h-0.5 -translate-y-1/2 bg-red-500/80" />
-
-              {status !== 'scanning' ? (
-                <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/60 text-sm text-white">
-                  <Loader2 className="size-4 animate-spin" />
-                  {status === 'checking' ? 'Im Katalog nachsehen …' : 'Kamera startet …'}
-                </div>
-              ) : null}
-            </div>
-          )}
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setOpen(false)}>
-              Abbrechen
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <BarcodeScannerDialog open={open} onOpenChange={setOpen} />
     </>
   );
 }

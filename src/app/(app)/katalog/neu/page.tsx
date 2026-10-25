@@ -15,6 +15,8 @@ export default async function NeuesSetPage({ searchParams }: { searchParams: Sea
   await requireUser();
   const params = await searchParams;
   const ean = typeof params.ean === 'string' ? params.ean : undefined;
+  // Which way the plus menu chose: the matching field gets the cursor.
+  const way = typeof params.weg === 'string' ? params.weg : undefined;
 
   const manufacturers = listManufacturers().map((row) => ({ id: row.id, name: row.name }));
   const themes = listThemes().map((row) => ({
@@ -38,9 +40,14 @@ export default async function NeuesSetPage({ searchParams }: { searchParams: Sea
       </div>
       {/* The Lego import creates its manufacturer itself, so it works even
           on a completely empty instance. */}
-      <RebrickableImport enabled={importEnabled} />
+      <RebrickableImport enabled={importEnabled} autoFocus={way === 'lego'} />
 
-      <NewSetEntry manufacturers={manufacturers} themes={themes} defaultEan={ean}>
+      <NewSetEntry
+        manufacturers={manufacturers}
+        themes={themes}
+        defaultEan={ean}
+        focus={way === 'link' || way === 'hand' ? way : undefined}
+      >
         <p className="rounded-lg border border-dashed border-border p-6 text-sm text-muted-foreground">
           Für ein Set von Hand brauchst du zuerst einen Hersteller – Lego, Playmobil, Cobi oder
           was auch immer im Kinderzimmer steht.
