@@ -59,6 +59,14 @@ Laeuft vollstaendig im Docker-Stack.
       rueckt und Eintraege unreserviert sind
 - [x] Dublettenpruefung beim Anlegen von Sets
 
+## Design (unveröffentlicht)
+
+- [x] Designauswahl pro Gerät, sechs Designs, Standard „Klemmbaustein"
+- [x] Platzhalter für Sets ohne Bild, neues Logo, Schriften lokal
+- [x] Startseite als Überblick mit Steinreihe und nächstem Termin
+- [ ] Filter im Katalog als Reiter statt Auswahlfelder
+- [ ] Scan-Button mittig in der unteren Navigation
+
 ## Danach
 
 Phase 1 bis 3 sind umgesetzt. Was noch offen ist, steht hier - ohne Termin

@@ -32,6 +32,7 @@ Kinderzimmer, nicht für den Schreibtisch.
 18. [Erinnerung vor dem Termin](#18-erinnerungen)
 19. [Schutz vor doppelten Einträgen](#19-dubletten)
 20. [Antworten auf die zwei wichtigen Fragen](#20-die-zwei-fragen)
+21. [Ein anderes Design](#21-design)
 
 ---
 
@@ -52,17 +53,20 @@ gleich danach unter „Konto" (siehe [Abschnitt 10](#10-passkeys-einrichten)).
 
 ![Startseite](bilder/02-start.png)
 
-Die Startseite ist die Abzweigung zu den vier Bereichen:
+Die Startseite zeigt auf einen Blick, wo die Sammlung steht:
 
 | | |
 |---|---|
-| **Katalog** | Alle bekannten Sets – egal ob vorhanden oder nicht |
-| **Fehlende Sets** | Der direkte Weg zu allem, was noch fehlt |
-| **Sammlung** | Was tatsächlich da ist |
-| **Wunschlisten** | Zum Teilen mit Familie und Freunden |
+| **Steinreihe** | Zehn Plätze für den ganzen Katalog. Jeder volle Stein ist ein Zehntel, das schon da ist – bei mehreren Kindern in deren Farbe |
+| **Teile und Wert** | Alle verbauten Teile und was die Sammlung heute wert ist |
+| **Nächster Termin** | Die nächste Wunschliste mit Datum, wie viele Tage noch bleiben und wie viel offen ist |
+| **Abkürzungen** | Direkt zu den fehlenden Sets, zu den Wunschlisten oder zu einem neuen Set |
 
 Unten am Bildschirmrand liegt die Navigation – auf dem Handy mit dem Daumen
-erreichbar.
+erreichbar. Der aktive Bereich sitzt auf einer kleinen Platte.
+
+Sets ohne Bild bekommen einen farbigen Platzhalter mit der Setnummer. Jeder
+Hersteller hat seine eigene Farbe – Lego gelb, Playmobil blau, Cobi grün.
 
 ---
 
@@ -545,6 +549,27 @@ Umschalter oben die Frage für jedes einzeln.
 
 Im Laden vor dem Regal: Scanner öffnen, Strichcode einlesen. Steht ein grüner
 Haken dran, habt ihr es schon.
+
+---
+
+## 21. Design
+
+![Startseite im Design Nachtblau](bilder/25-design-nachtblau.png)
+
+Unter **Konto → Design** gibt es sechs Looks zur Auswahl:
+
+| Design | |
+|---|---|
+| **Klemmbaustein** | Der Standard: Karten mit Noppen, dunkle Konturen, kräftige Steinfarben |
+| **Warm** | Ruhiger Sandton mit Ziegelrot |
+| **Nachtblau** | Dunkel mit gelbem Akzent – angenehm am Abend |
+| **Bonbon** | Weiches Lila mit Pastellfarben |
+| **Bauklotz** | Primärfarben und dicke schwarze Konturen |
+| **Schlicht** | Neutrales Grau, so wie Bricktrack bis Version 0.3 aussah |
+
+Die Auswahl wirkt sofort und gilt **für das Gerät**, nicht für das Konto: Das
+Tablet im Kinderzimmer kann bunt sein, während das Handy dunkel bleibt.
+Öffentliche Wunschlisten sehen Gäste immer im Standard-Design.
 
 ---
 
