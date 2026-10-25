@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { NewSetEntry } from '@/components/katalog/link-import';
 import { RebrickableImport } from '@/components/katalog/rebrickable-import';
-import { SetForm } from '@/components/katalog/set-form';
 import { Button } from '@/components/ui/button';
 import { listManufacturers, listThemes } from '@/lib/queries/master-data';
 import { isRebrickableEnabled } from '@/lib/rebrickable';
@@ -25,26 +25,8 @@ export default async function NeuesSetPage({ searchParams }: { searchParams: Sea
 
   const importEnabled = isRebrickableEnabled();
 
-  if (manufacturers.length === 0) {
-    return (
-      <div className="space-y-6">
-        <h1 className="text-2xl font-semibold tracking-tight">Neues Set</h1>
-
-        {/* The Lego import creates its manufacturer itself, so it works even
-            on a completely empty instance. */}
-        <RebrickableImport enabled={importEnabled} />
-
-        <p className="rounded-lg border border-dashed border-border p-6 text-sm text-muted-foreground">
-          Für ein Set von Hand brauchst du zuerst einen Hersteller – Lego, Playmobil, Cobi oder
-          was auch immer im Kinderzimmer steht.
-        </p>
-        <Button asChild size="lg">
-          <Link href="/verwaltung/hersteller">Hersteller anlegen</Link>
-        </Button>
-      </div>
-    );
-  }
-
+  // One layout for both cases: the link import may create the first
+  // manufacturer, and its draft must survive the refresh that follows.
   return (
     <div className="space-y-6">
       <div>
@@ -54,15 +36,19 @@ export default async function NeuesSetPage({ searchParams }: { searchParams: Sea
           Sammlung hinzufügen“ fest.
         </p>
       </div>
+      {/* The Lego import creates its manufacturer itself, so it works even
+          on a completely empty instance. */}
       <RebrickableImport enabled={importEnabled} />
 
-      <div className="flex items-center gap-3 text-xs text-muted-foreground">
-        <span className="h-px flex-1 bg-border" />
-        oder von Hand
-        <span className="h-px flex-1 bg-border" />
-      </div>
-
-      <SetForm manufacturers={manufacturers} themes={themes} defaultEan={ean} />
+      <NewSetEntry manufacturers={manufacturers} themes={themes} defaultEan={ean}>
+        <p className="rounded-lg border border-dashed border-border p-6 text-sm text-muted-foreground">
+          Für ein Set von Hand brauchst du zuerst einen Hersteller – Lego, Playmobil, Cobi oder
+          was auch immer im Kinderzimmer steht.
+        </p>
+        <Button asChild size="lg">
+          <Link href="/verwaltung/hersteller">Hersteller anlegen</Link>
+        </Button>
+      </NewSetEntry>
     </div>
   );
 }

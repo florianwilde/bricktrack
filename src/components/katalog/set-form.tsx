@@ -47,19 +47,26 @@ export type SetFormValues = {
   notes: string | null;
 };
 
+/** A draft for a new set, e.g. from the link import. */
+export type SetPrefill = Partial<Omit<SetFormValues, 'id' | 'imagePath'>> & {
+  /** Download imageUrl on save and keep it locally. */
+  cacheImage?: boolean;
+};
+
 type Props = {
   manufacturers: Array<{ id: string; name: string }>;
   themes: Array<{ id: string; name: string; manufacturerId: string }>;
   set?: SetFormValues;
   /** Prefilled EAN coming from the barcode scanner (phase 2). */
   defaultEan?: string;
+  prefill?: SetPrefill;
 };
 
-export function SetForm({ manufacturers, themes, set, defaultEan }: Props) {
+export function SetForm({ manufacturers, themes, set, defaultEan, prefill }: Props) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [manufacturerId, setManufacturerId] = useState(
-    set?.manufacturerId ?? manufacturers[0]?.id ?? '',
+    set?.manufacturerId ?? prefill?.manufacturerId ?? manufacturers[0]?.id ?? '',
   );
   const [duplicates, setDuplicates] = useState<DuplicateCandidate[] | null>(null);
   const pendingForm = useRef<FormData | null>(null);
@@ -167,7 +174,7 @@ export function SetForm({ manufacturers, themes, set, defaultEan }: Props) {
           <Input
             id="setNumber"
             name="setNumber"
-            defaultValue={set?.setNumber ?? ''}
+            defaultValue={set?.setNumber ?? prefill?.setNumber ?? ''}
             required
             maxLength={40}
             placeholder="60398"
@@ -179,7 +186,7 @@ export function SetForm({ manufacturers, themes, set, defaultEan }: Props) {
           <Input
             id="name"
             name="name"
-            defaultValue={set?.name ?? ''}
+            defaultValue={set?.name ?? prefill?.name ?? ''}
             required
             maxLength={160}
             placeholder="Familienhaus und Elektroauto"
@@ -192,7 +199,7 @@ export function SetForm({ manufacturers, themes, set, defaultEan }: Props) {
             name="year"
             type="number"
             inputMode="numeric"
-            defaultValue={set?.year ?? ''}
+            defaultValue={set?.year ?? prefill?.year ?? ''}
             min={1930}
             max={new Date().getFullYear() + 5}
           />
@@ -204,7 +211,7 @@ export function SetForm({ manufacturers, themes, set, defaultEan }: Props) {
             name="pieceCount"
             type="number"
             inputMode="numeric"
-            defaultValue={set?.pieceCount ?? ''}
+            defaultValue={set?.pieceCount ?? prefill?.pieceCount ?? ''}
             min={0}
           />
         </Field>
@@ -215,7 +222,7 @@ export function SetForm({ manufacturers, themes, set, defaultEan }: Props) {
             name="minifigCount"
             type="number"
             inputMode="numeric"
-            defaultValue={set?.minifigCount ?? ''}
+            defaultValue={set?.minifigCount ?? prefill?.minifigCount ?? ''}
             min={0}
           />
         </Field>
@@ -235,7 +242,7 @@ export function SetForm({ manufacturers, themes, set, defaultEan }: Props) {
             id="ean"
             name="ean"
             inputMode="numeric"
-            defaultValue={set?.ean ?? defaultEan ?? ''}
+            defaultValue={set?.ean ?? prefill?.ean ?? defaultEan ?? ''}
             maxLength={20}
             className="font-mono"
           />
@@ -256,10 +263,18 @@ export function SetForm({ manufacturers, themes, set, defaultEan }: Props) {
           name="imageUrl"
           type="url"
           inputMode="url"
-          defaultValue={set?.imageUrl ?? ''}
+          defaultValue={set?.imageUrl ?? prefill?.imageUrl ?? ''}
           placeholder="https://…"
         />
       </Field>
+      {prefill?.cacheImage && prefill.imageUrl ? (
+        <>
+          <input type="hidden" name="cacheImage" value="on" />
+          <p className="-mt-4 text-xs text-muted-foreground">
+            Das Bild aus dem Link wird beim Speichern heruntergeladen und lokal abgelegt.
+          </p>
+        </>
+      ) : null}
 
       <div className="space-y-2">
         <Label htmlFor="image">Bild hochladen</Label>
@@ -286,7 +301,12 @@ export function SetForm({ manufacturers, themes, set, defaultEan }: Props) {
       </div>
 
       <Field label="Notizen" htmlFor="notes">
-        <Textarea id="notes" name="notes" defaultValue={set?.notes ?? ''} rows={4} />
+        <Textarea
+          id="notes"
+          name="notes"
+          defaultValue={set?.notes ?? prefill?.notes ?? ''}
+          rows={4}
+        />
       </Field>
 
       <div className="flex gap-3">
