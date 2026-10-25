@@ -5,8 +5,10 @@ import { and, eq, ne } from 'drizzle-orm';
 import { db } from '@/db';
 import { instruction, photo, set } from '@/db/schema';
 import { actionData, actionError, actionOk, formToObject, parseForm, type ActionResult } from '@/lib/action-result';
+import { env } from '@/env';
+import { safeFetch, SafeFetchError } from '@/lib/safe-fetch';
 import { requireUser } from '@/lib/session';
-import { deleteStoredFile, storeImage, storePdf, UploadError } from '@/lib/uploads';
+import { deleteStoredFile, storeImage, storeImageBytes, storePdf, UploadError } from '@/lib/uploads';
 import { optionalText, optionalUrl, setSchema } from '@/lib/validation';
 import { z } from 'zod';
 
@@ -18,6 +20,23 @@ function revalidateSet(id?: string) {
   revalidatePath('/katalog');
   revalidatePath('/sammlung');
   if (id) revalidatePath(`/katalog/${id}`);
+}
+
+async function cacheRemoteImage(url: string, setId: string): Promise<string | null> {
+  try {
+    const response = await safeFetch(url, {
+      accept: 'image/webp,image/png,image/jpeg;q=0.9,*/*;q=0.5',
+      maxBytes: env.MAX_UPLOAD_BYTES,
+    });
+    if (response.status !== 200) return null;
+    return (await storeImageBytes(response.body, 'set-image', setId)).filePath;
+  } catch (error) {
+    if (error instanceof SafeFetchError || error instanceof UploadError) {
+      console.error('[katalog] Bild konnte nicht übernommen werden', url, error.message);
+      return null;
+    }
+    throw error;
+  }
 }
 
 function fileFrom(formData: FormData, field: string): File | null {
@@ -60,12 +79,17 @@ export async function createSet(formData: FormData): Promise<ActionResult<{ id: 
       if (error instanceof UploadError) return actionError(error.message);
       throw error;
     }
+  } else if (formData.get('cacheImage') === 'on' && parsed.data.imageUrl) {
+    // A picture found by the link import is kept locally, like the Lego
+    // import does. If that fails, the URL stays as the fallback.
+    imagePath = await cacheRemoteImage(parsed.data.imageUrl, id);
   }
 
   db.insert(set)
     .values({
       id,
       ...parsed.data,
+      imageUrl: imagePath ? null : parsed.data.imageUrl,
       imagePath,
       createdAt: now(),
       updatedAt: now(),
