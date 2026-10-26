@@ -55,7 +55,7 @@ Details zu Stack, Konventionen und Datenmodell: [CLAUDE.md](CLAUDE.md).
 Ausführlich in [QUICKSTART.md](QUICKSTART.md). Die Kurzfassung:
 
 ```bash
-git clone https://git.wilde-server.de/florian.wilde/bricktrack.git
+git clone https://github.com/florianwilde/bricktrack.git
 cd bricktrack
 
 cp .env.example .env

@@ -223,6 +223,8 @@ Session.
   E-Mail-Erinnerungen, Dublettenpruefung. *Fertig in 0.3.0.*
 - **Design und Sicherheit** - Designauswahl (Standard Klemmbaustein),
   Abhaengigkeiten ohne bekannte Luecken. *Fertig in 0.4.0.*
+- **Alltag** - Set aus einem Link, neue Navigation mit „Mehr" und „Fuer
+  wen?", Mailserver in der App, `pnpm pruefe:umgebung`. *Fertig in 0.5.0.*
 
 Details und Stand: `docs/ROADMAP.md`. Zeitaufwaende: `docs/DEVLOG.md`.
 

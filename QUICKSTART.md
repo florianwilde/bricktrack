@@ -19,7 +19,7 @@ und eine Subdomain, die auf den Proxy zeigt.
 ```bash
 sudo mkdir -p /opt/bricktrack
 sudo chown "$USER" /opt/bricktrack
-git clone https://git.wilde-server.de/florian.wilde/bricktrack.git /opt/bricktrack
+git clone https://github.com/florianwilde/bricktrack.git /opt/bricktrack
 cd /opt/bricktrack
 ```
 

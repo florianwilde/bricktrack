@@ -7,6 +7,11 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-26
+
+Weniger Wege im Alltag: ein Set aus einem Link anlegen, alles Neue hinter
+einem ＋, die Verwaltung unter „Mehr“ und den Mailserver direkt in der App.
+
 ### Hinzugefügt
 
 - **Mailserver in der App einrichten**: Unter Mehr → Erinnerungen → Mailserver
@@ -20,7 +25,6 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
   die Seite blockt, den Link selbst. Lego wird über Rebrickable ergänzt,
   BlueBrixx und Cobi über Merlins Bricks. Das Ergebnis füllt das Formular vor,
   das Bild wird beim Speichern lokal abgelegt.
-
 - **`pnpm pruefe:umgebung`**: prüft vor dem Start Node- und pnpm-Version, ob
   SQLite lädt, die `.env` (mit derselben Validierung wie die App), den
   Beispiel-Secret, HTTPS für Passkeys, ob `DATA_DIR` beschreibbar ist und ob
@@ -28,6 +32,9 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
 
 ### Geändert
 
+- Das Repository liegt jetzt auf GitHub: https://github.com/florianwilde/bricktrack.
+  Ein bestehender Klon zieht um mit
+  `git remote set-url origin https://github.com/florianwilde/bricktrack.git`.
 - Der Zeitplan für Erinnerungen läuft immer und prüft bei jedem Durchlauf, ob
   ein Mailserver eingerichtet ist. Vorher wurde er nur gestartet, wenn SMTP
   schon beim Containerstart in der `.env` stand.
@@ -280,8 +287,9 @@ Erste lauffaehige Fassung: Phase 1 vollstaendig, im Docker-Stack verifiziert.
 - Unter Windows scheitert `pnpm build` an fehlenden Symlink-Rechten. Der
   Docker-Build unter Linux ist davon nicht betroffen.
 
-[Unreleased]: https://git.wilde-server.de/florian.wilde/bricktrack/compare/v0.4.0...HEAD
-[0.4.0]: https://git.wilde-server.de/florian.wilde/bricktrack/releases/tag/v0.4.0
-[0.3.0]: https://git.wilde-server.de/florian.wilde/bricktrack/releases/tag/v0.3.0
-[0.2.0]: https://git.wilde-server.de/florian.wilde/bricktrack/releases/tag/v0.2.0
-[0.1.0]: https://git.wilde-server.de/florian.wilde/bricktrack/releases/tag/v0.1.0
+[Unreleased]: https://github.com/florianwilde/bricktrack/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/florianwilde/bricktrack/releases/tag/v0.5.0
+[0.4.0]: https://github.com/florianwilde/bricktrack/releases/tag/v0.4.0
+[0.3.0]: https://github.com/florianwilde/bricktrack/releases/tag/v0.3.0
+[0.2.0]: https://github.com/florianwilde/bricktrack/releases/tag/v0.2.0
+[0.1.0]: https://github.com/florianwilde/bricktrack/releases/tag/v0.1.0
