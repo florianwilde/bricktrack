@@ -17,6 +17,7 @@
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",
     "db:studio": "drizzle-kit studio",
+    "pruefe:umgebung": "tsx scripts/check-env.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "node scripts/e2e-prepare.mjs && playwright test",

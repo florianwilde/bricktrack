@@ -91,6 +91,7 @@ pnpm db:generate    # SQL-Migration aus dem Schema erzeugen
 pnpm db:migrate     # Migrationen anwenden (auch im Container-Start)
 pnpm db:seed        # Beispieldaten einspielen
 pnpm db:studio      # Drizzle Studio
+pnpm pruefe:umgebung # Node, pnpm, .env und DATA_DIR pruefen
 pnpm test           # Vitest
 pnpm test:e2e       # Playwright
 pnpm screenshots    # Screenshots fuer docs/ANLEITUNG.md erzeugen
