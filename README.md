@@ -166,6 +166,7 @@ corepack enable pnpm       # pnpm 10
 pnpm install
 
 cp .env.example .env       # DATA_DIR=./data, BASE_URL=http://localhost:3000
+pnpm pruefe:umgebung       # Node, pnpm, .env und DATA_DIR prüfen
 pnpm db:migrate            # Datenbank anlegen
 pnpm db:seed               # Beispieldaten: 3 Hersteller, 10 Sets, 1 Wunschliste
 pnpm dev                   # http://localhost:3000
@@ -174,6 +175,7 @@ pnpm dev                   # http://localhost:3000
 | Befehl | Wirkung |
 |---|---|
 | `pnpm dev` | Entwicklungsserver |
+| `pnpm pruefe:umgebung` | Node, pnpm, Abhängigkeiten, `.env` und `DATA_DIR` prüfen; Exit-Code 1 bei Fehlern |
 | `pnpm build` | Produktionsbuild (standalone) |
 | `pnpm lint` / `pnpm typecheck` | ESLint / TypeScript – beide müssen sauber sein |
 | `pnpm test` | Unit-Tests (Vitest) |

@@ -21,6 +21,11 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
   BlueBrixx und Cobi über Merlins Bricks. Das Ergebnis füllt das Formular vor,
   das Bild wird beim Speichern lokal abgelegt.
 
+- **`pnpm pruefe:umgebung`**: prüft vor dem Start Node- und pnpm-Version, ob
+  SQLite lädt, die `.env` (mit derselben Validierung wie die App), den
+  Beispiel-Secret, HTTPS für Passkeys, ob `DATA_DIR` beschreibbar ist und ob
+  die SMTP-Angaben zusammenpassen. Bei Fehlern endet es mit Exit-Code 1.
+
 ### Geändert
 
 - Der Zeitplan für Erinnerungen läuft immer und prüft bei jedem Durchlauf, ob
