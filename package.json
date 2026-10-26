@@ -1,6 +1,6 @@
 {
   "name": "bricktrack",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "description": "Self-hosted Verwaltung fuer Spielzeug-Set-Sammlungen (Lego, Playmobil, Cobi, ...)",
   "packageManager": "pnpm@10.34.5",

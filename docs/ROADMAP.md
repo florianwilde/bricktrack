@@ -67,7 +67,16 @@ Laeuft vollstaendig im Docker-Stack.
 - [x] Platzhalter für Sets ohne Bild, neues Logo, Schriften lokal
 - [x] Startseite als Überblick mit Steinreihe und nächstem Termin
 - [ ] Filter im Katalog als Reiter statt Auswahlfelder
-- [ ] Scan-Button mittig in der unteren Navigation
+
+## Alltag (v0.5.0, abgeschlossen am 26.10.2026)
+
+- [x] Set aus einem Link übernehmen, für alle Hersteller
+- [x] ＋-Stein mittig in der unteren Navigation mit allen Wegen zu einem
+      neuen Set (ersetzt den geplanten Scan-Button)
+- [x] Seite „Mehr“ statt Konto-Menü und Verwaltungsreitern
+- [x] „Für wen?“ in der Kopfzeile bei mehreren Sammlern
+- [x] Mailserver in der App einrichten
+- [x] `pnpm pruefe:umgebung` prüft die Umgebung vor dem Start
 
 ## Danach
 
