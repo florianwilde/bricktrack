@@ -7,6 +7,15 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unreleased]
 
+### Geändert
+
+- **Katalogfilter als Reiter**: Besitzstatus und Hersteller stehen als Reiter
+  über den Sets statt in Auswahlfeldern – alle Möglichkeiten sichtbar, ein
+  Tipp zum Wechseln, auf dem Handy seitlich wischbar. Thema und Jahr bleiben
+  Auswahlfelder, weil es davon schnell Dutzende gibt. In „Aus fehlenden Sets
+  hinzufügen" auf einer Wunschliste fehlt der Besitzstatus jetzt ganz: Dort
+  stehen ohnehin nur fehlende Sets, die Auswahl hatte keine Wirkung.
+
 ## [0.5.0] - 2026-10-26
 
 Weniger Wege im Alltag: ein Set aus einem Link anlegen, alles Neue hinter

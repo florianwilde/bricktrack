@@ -119,6 +119,7 @@ export default async function WunschlisteDetailPage({ params, searchParams }: Pr
         </CardHeader>
         <CardContent className="space-y-4">
           <CatalogFilters
+            showOwnership={false}
             options={{
               manufacturers: listManufacturers().map((row) => ({ id: row.id, name: row.name })),
               themes: listThemes().map((row) => ({
