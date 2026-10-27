@@ -7,6 +7,16 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unreleased]
 
+### Hinzugefügt
+
+- **Fehlteile-Einkaufsliste** (Sammlung → Fehlteile): alle offenen Fehlteile
+  aus allen Exemplaren, zusammengefasst je Teil und Farbe. Download als
+  BrickLink-Wunschliste (XML für „Wanted → Upload", gängige Farbnamen werden
+  in BrickLink-Farbnummern übersetzt) und als CSV. Eine Zeile abhaken erledigt
+  das Teil in allen Sets. Hinweise bei vermutlichen Element-Nummern und
+  unbekannten Farben. Verkaufte Exemplare zählen nicht, der gewählte Sammler
+  gilt.
+
 ## [0.7.0] - 2026-10-27
 
 Mehr Erinnerung an jedes Stück: Fotos je Exemplar, eine Zeitleiste, was wann

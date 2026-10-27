@@ -424,6 +424,26 @@ dabei selbst**: Der erste offene Eintrag setzt den Sammlungseintrag auf
 „Teile fehlen", der letzte erledigte zurück auf „vollständig". Der Filter in
 der Sammlung stimmt damit, ohne dass du daran denken musst.
 
+### Die Einkaufsliste
+
+Sobald irgendwo etwas fehlt, steht oben auf der Sammlung **Fehlteile (n)**.
+Dort stehen alle offenen Fehlteile auf einer Liste, **je Teil und Farbe
+zusammengefasst**: Fehlt der rote 2×4-Stein im Feuerwehrhaus zweimal und im
+Polizeiauto einmal, steht da einmal „3× 3001 · Rot".
+
+- **BrickLink-Wunschliste** lädt eine XML-Datei herunter, die du auf BrickLink
+  unter *Wanted → Upload* hochlädst. Gängige Farbnamen (Rot, Hellgrau,
+  Dunkelblau …) werden in BrickLinks Farbnummern übersetzt; eine unbekannte
+  Farbe steht dort auf „beliebig" – die Liste sagt dir, welche.
+- **Als CSV** gibt dieselbe Liste für eine Tabelle oder zum Ausdrucken.
+- Ist ein Teil da, **hakst du die Zeile ab** – sie gilt dann in allen Sets als
+  erledigt, und die Vollständigkeit der Exemplare pflegt sich wie oben.
+
+BrickLink braucht die **Teilenummer** (3001), nicht die sechs- oder
+siebenstellige Element-Nummer aus der Teileliste der Anleitung (300121). Sieht
+eine Nummer danach aus, weist die Liste darauf hin. Einträge nur mit Notiz
+stehen getrennt und kommen nicht in den Download.
+
 ---
 
 ## 13. Einladungen

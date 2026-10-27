@@ -1,7 +1,8 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
+import { z } from 'zod';
 import { db } from '@/db';
 import { collectionItem, missingPart, photo, set } from '@/db/schema';
 import {
@@ -223,6 +224,36 @@ export async function setMissingPartResolved(
 
   syncCompleteness(row.collectionItemId);
   revalidateCollection(loadItemSetId(row.collectionItemId) ?? undefined);
+  return actionOk();
+}
+
+/**
+ * Ticks off several missing parts at once - one line of the shopping list can
+ * stand for the same part in several sets.
+ */
+export async function resolveMissingParts(missingPartIds: unknown): Promise<ActionResult> {
+  await requireUser();
+
+  const parsed = z.array(z.string().min(1).max(64)).min(1).max(500).safeParse(missingPartIds);
+  if (!parsed.success) return actionError('Ungültige Auswahl.');
+
+  const rows = db
+    .select({ collectionItemId: missingPart.collectionItemId })
+    .from(missingPart)
+    .where(inArray(missingPart.id, parsed.data))
+    .all();
+  if (rows.length === 0) return actionOk();
+
+  db.update(missingPart)
+    .set({ resolved: true })
+    .where(inArray(missingPart.id, parsed.data))
+    .run();
+
+  for (const itemId of new Set(rows.map((row) => row.collectionItemId))) {
+    syncCompleteness(itemId);
+  }
+  revalidateCollection();
+  revalidatePath('/sammlung/fehlteile');
   return actionOk();
 }
 

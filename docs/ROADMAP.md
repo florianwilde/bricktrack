@@ -95,3 +95,14 @@ Phase 1 bis 3 sind umgesetzt. Was noch offen ist, steht hier - ohne Termin
 und ohne Anspruch auf Vollstaendigkeit:
 
 - [ ] BrickLink-Preisfuehrer anbinden, falls der Aufwand sich doch lohnt
+
+## Nächste Runde (gewählt am 27.10.2026)
+
+- [x] Fehlteile-Einkaufsliste: alle offenen Fehlteile je Teil und Farbe, als
+      CSV und BrickLink-Wunschliste, abhaken für alle Sets (unveröffentlicht)
+- [ ] Kisten mit QR-Etikett: je Standort Inhalt und ein druckbares Etikett,
+      Scannen zeigt, was drin ist
+- [ ] Inventur per Scanner: mehrere Barcodes hintereinander, bekannte Sets mit
+      einem Tipp in die Sammlung, unbekannte zum Nacharbeiten
+- [ ] Automatische Backups: nächtlicher Export nach `DATA_DIR/backups` mit
+      Rotation, sichtbar unter Mehr → Export/Import
