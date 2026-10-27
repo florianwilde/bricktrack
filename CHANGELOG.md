@@ -9,6 +9,12 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
 
 ### Hinzugefügt
 
+- **Kisten mit QR-Etikett**: Unter Mehr → Standorte lassen sich Etiketten für
+  einen oder alle Standorte drucken – QR-Code, Name und der Weg dahin. Der
+  Code führt zur Sammlung, gefiltert auf diesen Standort; jede Handykamera
+  versteht ihn, der Scanner in Bricktrack auch. Erzeugt wird der Code auf dem
+  eigenen Server, ohne weitere Abhängigkeit und ohne fremden Dienst.
+
 - **Fehlteile-Einkaufsliste** (Sammlung → Fehlteile): alle offenen Fehlteile
   aus allen Exemplaren, zusammengefasst je Teil und Farbe. Download als
   BrickLink-Wunschliste (XML für „Wanted → Upload", gängige Farbnamen werden
@@ -16,6 +22,13 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
   das Teil in allen Sets. Hinweise bei vermutlichen Element-Nummern und
   unbekannten Farben. Verkaufte Exemplare zählen nicht, der gewählte Sammler
   gilt.
+
+### Geändert
+
+- Der Standortfilter der Sammlung schließt verschachtelte Standorte ein: Ein
+  Regal zeigt auch, was in seinen Kisten liegt. Die Auswahl nennt den ganzen
+  Weg („Kiste Keller 3 › Fach A"), und über der Liste steht, welcher Standort
+  gerade gefiltert ist.
 
 ## [0.7.0] - 2026-10-27
 

@@ -1,5 +1,8 @@
 'use client';
 
+import Link from 'next/link';
+import { QrCode } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { createLocation, deleteLocation, updateLocation } from '@/app/(app)/verwaltung/actions';
 import { CrudSection, type CrudItem } from './crud-section';
 import { Field } from '@/components/ui/field';
@@ -20,6 +23,29 @@ export function LocationList({ locations }: { locations: LocationRow[] }) {
       onCreate={createLocation}
       onUpdate={updateLocation}
       onDelete={deleteLocation}
+      toolbar={
+        locations.length > 0 ? (
+          <Button asChild variant="outline" className="w-full sm:w-auto">
+            <Link href="/etiketten">
+              <QrCode />
+              Alle Etiketten drucken
+            </Link>
+          </Button>
+        ) : null
+      }
+      renderActions={(item) => (
+        <Button
+          asChild
+          variant="ghost"
+          size="icon-sm"
+          aria-label={`Etikett für ${item.title}`}
+          title="Etikett mit QR-Code"
+        >
+          <Link href={`/etiketten?standort=${encodeURIComponent(item.id)}`}>
+            <QrCode />
+          </Link>
+        </Button>
+      )}
       deleteWarning={(item) =>
         `„${item.title}“ wird gelöscht. Sets an diesem Standort bleiben erhalten und haben danach keinen Standort mehr.`
       }

@@ -20,7 +20,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const legoImport = isRebrickableEnabled();
 
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className="flex min-h-dvh flex-col print:bg-white">
       <AppHeader
         user={user}
         collectors={collectors}
@@ -28,7 +28,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         legoImport={legoImport}
       />
       {/* Bottom padding keeps the mobile nav from covering the last row. */}
-      <main className="mx-auto w-full max-w-5xl flex-1 px-4 pt-4 pb-28 md:pb-10">{children}</main>
+      <main className="mx-auto w-full max-w-5xl flex-1 px-4 pt-4 pb-28 md:pb-10 print:max-w-none print:p-0">{children}</main>
       <BottomNav legoImport={legoImport} />
     </div>
   );

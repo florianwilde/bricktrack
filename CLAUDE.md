@@ -62,6 +62,7 @@ Bild-URLs, die der Nutzer selbst hinterlegt hat.
 | `src/lib/reminders.ts` | Regeln, wann eine Erinnerung faellig ist (rein) |
 | `src/lib/timeline.ts` | Verlauf der Sammlung nach Jahren/Monaten (rein) |
 | `src/lib/pdf-search.ts` | Textsuche in Anleitungs-PDFs (rein) |
+| `src/lib/locations.ts`, `src/lib/qr.ts` | Standort-Pfade und -Inhalt, QR-Etiketten als SVG (rein bzw. serverseitig) |
 | `src/lib/shopping-list.ts` | Fehlteile-Einkaufsliste, BrickLink-Farben und Wanted-XML (rein) |
 | `src/lib/reminder-job.ts`, `src/lib/mailer.ts` | Versand und Zeitplan |
 | `src/lib/mail-settings.ts`, `src/lib/secret-box.ts` | SMTP aus .env oder App (`app_setting`), Passwort verschluesselt |
@@ -79,7 +80,8 @@ Bild-URLs, die der Nutzer selbst hinterlegt hat.
 Das Design steht als `data-design` am `<html>` (Cookie `bricktrack-design`,
 pro Geraet, Standard `klemmbaustein`). Komponenten benutzen nur Tokens
 (`bg-primary`, `border-edge`, `--edge-w`, `--lift`, `bg-tone-1` ...), nie feste
-Farben - sonst stimmt ein Design nicht mehr. Karten mit Noppen: `<Studs />`
+Farben - sonst stimmt ein Design nicht mehr. Einzige Ausnahme sind die
+Etiketten unter `/etiketten`: Sie werden auf weisses Papier gedruckt. Karten mit Noppen: `<Studs />`
 neben die Karte in einen `relative`-Wrapper, die Karte selbst mit `brick`.
 
 ## Befehle

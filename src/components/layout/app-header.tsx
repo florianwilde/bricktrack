@@ -18,7 +18,7 @@ export function AppHeader({
   legoImport: boolean;
 }) {
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b print:hidden border-border bg-background/95 backdrop-blur">
       <div className="mx-auto flex h-14 max-w-5xl items-center gap-3 px-4">
         <Link
           href="/"

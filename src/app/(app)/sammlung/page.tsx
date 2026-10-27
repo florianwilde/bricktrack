@@ -10,6 +10,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { formatDate, formatNumber, pluralize } from '@/lib/format';
 import { collectorBadgeClass, collectorDotClass } from '@/lib/collector-colors';
 import { setImageSrc } from '@/lib/images';
+import { locationPath } from '@/lib/locations';
 import { completenessLabel, statusLabel } from '@/lib/labels';
 import { formatEuro } from '@/lib/money';
 import {
@@ -53,6 +54,9 @@ export default async function SammlungPage({ searchParams }: { searchParams: Sea
   };
 
   const items = listCollectionItems(filters);
+  const locations = listLocations();
+  // Arriving from a box label: say which box, including where it stands.
+  const placePath = filters.locationId ? locationPath(filters.locationId, locations) : [];
   const openParts = countOpenMissingParts(items.map((item) => item.id));
   // Across the whole collection of this collector, not just the filtered list.
   const openPartsTotal = listOpenMissingPartEntries(collectorId).length;
@@ -124,12 +128,16 @@ export default async function SammlungPage({ searchParams }: { searchParams: Sea
       ) : null}
 
       <CollectionFilters
-        locations={listLocations().map((row) => ({ id: row.id, name: row.name }))}
+        locations={locations.map((row) => ({
+          id: row.id,
+          name: locationPath(row.id, locations).join(' › '),
+        }))}
         manufacturers={listManufacturers().map((row) => ({ id: row.id, name: row.name }))}
       />
 
       <p className="text-sm text-muted-foreground">
         {pluralize(items.length, 'Eintrag', 'Einträge')}
+        {placePath.length > 0 ? ` · in ${placePath.join(' › ')}` : ''}
       </p>
 
       {items.length === 0 ? (
