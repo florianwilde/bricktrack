@@ -83,12 +83,15 @@ Laeuft vollstaendig im Docker-Stack.
       nachgeholt): Besitzstatus und Hersteller als Reiter, Thema und Jahr
       bleiben Auswahlfelder
 
+## Fotos, Suche und Verlauf (v0.7.0, abgeschlossen am 27.10.2026)
+
+- [x] Mehrere Fotos je Sammlungseintrag (bisher nur je Set)
+- [x] Anleitungen im PDF-Viewer durchsuchen, dazu Sprung auf eine Seitenzahl
+- [x] Statistik über die Zeit: was kam wann dazu (Sammlung → Verlauf)
+
 ## Danach
 
 Phase 1 bis 3 sind umgesetzt. Was noch offen ist, steht hier - ohne Termin
 und ohne Anspruch auf Vollstaendigkeit:
 
 - [ ] BrickLink-Preisfuehrer anbinden, falls der Aufwand sich doch lohnt
-- [x] Mehrere Fotos je Sammlungseintrag (unveröffentlicht)
-- [x] Anleitungen im PDF-Viewer durchsuchen (unveröffentlicht)
-- [x] Statistik ueber die Zeit: was kam wann dazu (unveröffentlicht)
