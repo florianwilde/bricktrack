@@ -90,5 +90,5 @@ und ohne Anspruch auf Vollstaendigkeit:
 
 - [ ] BrickLink-Preisfuehrer anbinden, falls der Aufwand sich doch lohnt
 - [x] Mehrere Fotos je Sammlungseintrag (unveröffentlicht)
-- [ ] Anleitungen im PDF-Viewer durchsuchen
+- [x] Anleitungen im PDF-Viewer durchsuchen (unveröffentlicht)
 - [ ] Statistik ueber die Zeit: was kam wann dazu

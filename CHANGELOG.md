@@ -9,6 +9,13 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
 
 ### Hinzugefügt
 
+- **Suche in Anleitungen**: Im PDF-Viewer nach Text suchen, etwa nach einer
+  Teilenummer. Treffer werden auf der Seite markiert, Pfeile und Enter
+  springen zur nächsten Fundstelle, darüber stehen die Seiten mit Treffern.
+  Groß- und Kleinschreibung, Umlaute und Leerzeichen zählen nicht. Enthält
+  ein PDF nur Bilder, sagt der Viewer das. Dazu ein Feld, um direkt zu einer
+  Seitenzahl zu springen. Alles läuft im Browser, nichts verlässt das Gerät.
+
 - **Fotos je Sammlungseintrag**: Jedes Exemplar hat eine eigene Kamera-Schaltfläche
   und eigene Fotos – etwa vom Zustand der Box oder vom Platz im Regal. Bis zu
   vier erscheinen als Vorschau unter dem Eintrag. Die Fotos liegen wie die
