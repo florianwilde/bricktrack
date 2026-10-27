@@ -66,7 +66,6 @@ Laeuft vollstaendig im Docker-Stack.
 - [x] Designauswahl pro Gerät, sechs Designs, Standard „Klemmbaustein"
 - [x] Platzhalter für Sets ohne Bild, neues Logo, Schriften lokal
 - [x] Startseite als Überblick mit Steinreihe und nächstem Termin
-- [x] Filter im Katalog als Reiter statt Auswahlfelder (unveröffentlicht)
 
 ## Alltag (v0.5.0, abgeschlossen am 26.10.2026)
 
@@ -77,6 +76,12 @@ Laeuft vollstaendig im Docker-Stack.
 - [x] „Für wen?“ in der Kopfzeile bei mehreren Sammlern
 - [x] Mailserver in der App einrichten
 - [x] `pnpm pruefe:umgebung` prüft die Umgebung vor dem Start
+
+## Katalog-Reiter (v0.6.0, abgeschlossen am 27.10.2026)
+
+- [x] Filter im Katalog als Reiter statt Auswahlfelder (aus 0.4.0
+      nachgeholt): Besitzstatus und Hersteller als Reiter, Thema und Jahr
+      bleiben Auswahlfelder
 
 ## Danach
 
