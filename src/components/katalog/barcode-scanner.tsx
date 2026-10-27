@@ -6,6 +6,7 @@ import { Loader2, ScanLine } from 'lucide-react';
 import { toast } from 'sonner';
 import { lookupScannedEan } from '@/app/(app)/katalog/scan-actions';
 import { formatEan, isValidEan } from '@/lib/ean';
+import { parseLocationLabel } from '@/lib/locations';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -48,6 +49,17 @@ export function BarcodeScannerDialog({
   const onDetected = useCallback(
     (raw: string) => {
       if (handledRef.current) return;
+
+      // A box label of this instance: straight to what is inside.
+      const label = parseLocationLabel(raw, window.location.origin);
+      if (label) {
+        handledRef.current = true;
+        stop();
+        setOpen(false);
+        router.push(label);
+        return;
+      }
+
       if (!isValidEan(raw)) return; // keep scanning on a misread
 
       handledRef.current = true;
@@ -152,7 +164,8 @@ export function BarcodeScannerDialog({
           <DialogTitle>Barcode scannen</DialogTitle>
           <DialogDescription>
             Halte den Strichcode auf der Packung ins Bild. Kennt der Katalog das Set schon,
-            landest du direkt darauf – sonst im Formular mit ausgefüllter EAN.
+            landest du direkt darauf – sonst im Formular mit ausgefüllter EAN. Auch das
+            QR-Etikett einer Kiste geht: dann siehst du, was darin liegt.
           </DialogDescription>
         </DialogHeader>
 

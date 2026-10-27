@@ -43,6 +43,10 @@ type Props<T extends CrudItem> = {
   onUpdate: (id: string, input: Record<string, unknown>) => Promise<ActionResult>;
   onDelete: (id: string) => Promise<ActionResult>;
   deleteWarning: (item: T) => string;
+  /** Extra buttons in each row, before edit and delete. */
+  renderActions?: (item: T) => React.ReactNode;
+  /** Shown between the create button and the list. */
+  toolbar?: React.ReactNode;
 };
 
 /**
@@ -60,6 +64,8 @@ export function CrudSection<T extends CrudItem>({
   onUpdate,
   onDelete,
   deleteWarning,
+  renderActions,
+  toolbar,
 }: Props<T>) {
   const router = useRouter();
   const [editing, setEditing] = useState<T | null>(null);
@@ -120,6 +126,8 @@ export function CrudSection<T extends CrudItem>({
         {createLabel}
       </Button>
 
+      {toolbar}
+
       {items.length === 0 ? (
         <p className="rounded-lg border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
           {emptyText}
@@ -134,6 +142,7 @@ export function CrudSection<T extends CrudItem>({
                   <p className="truncate text-xs text-muted-foreground">{item.subtitle}</p>
                 ) : null}
               </div>
+              {renderActions?.(item)}
               <Button
                 variant="ghost"
                 size="icon-sm"

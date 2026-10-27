@@ -12,6 +12,7 @@ import {
 } from '@/db/schema';
 import { ownedCopiesSql, SOLD_STATUS } from '@/lib/ownership';
 import type { CollectionStatus, Completeness, Condition } from '@/db/types';
+import { locationWithDescendants } from '@/lib/locations';
 import type { MissingPartEntry } from '@/lib/shopping-list';
 import type { TimelineItem } from '@/lib/timeline';
 
@@ -63,7 +64,16 @@ function buildWhere(filters: CollectionFilters): SQL | undefined {
   }
   if (filters.status) conditions.push(eq(collectionItem.status, filters.status));
   if (filters.completeness) conditions.push(eq(collectionItem.completeness, filters.completeness));
-  if (filters.locationId) conditions.push(eq(collectionItem.locationId, filters.locationId));
+  if (filters.locationId) {
+    // A shelf holds its boxes: filtering by a place includes what lies inside it.
+    const places = db
+      .select({ id: location.id, name: location.name, parentLocationId: location.parentLocationId })
+      .from(location)
+      .all();
+    conditions.push(
+      inArray(collectionItem.locationId, locationWithDescendants(filters.locationId, places)),
+    );
+  }
   if (filters.manufacturerId) conditions.push(eq(set.manufacturerId, filters.manufacturerId));
   if (filters.collectorId) conditions.push(eq(collectionItem.collectorId, filters.collectorId));
 

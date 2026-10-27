@@ -235,6 +235,23 @@ für die Frage „Was steht eigentlich in Kiste 3?".
 
 Verkaufte Exemplare zählen in keiner Kachel mit.
 
+### Kisten mit QR-Etikett
+
+Unter **Mehr → Standorte** hat jeder Standort ein **QR-Symbol**, oben steht
+**Alle Etiketten drucken**. Die Seite zeigt je Standort ein Etikett mit
+QR-Code, Namen und – bei verschachtelten Standorten – dem Weg dahin („Kiste
+Keller 3 › Fach A"). Drucken, an der Schnittlinie ausschneiden, auf die Kiste
+kleben.
+
+Den Code scannt **jede Handykamera**, oder der **Scanner in Bricktrack** (das
+Symbol neben „Set anlegen"). Beides öffnet die Sammlung, gefiltert auf diesen
+Standort, für alle Sammler. Ein Regal zeigt dabei auch, was in den Kisten
+darin liegt. Fremde QR-Codes, etwa auf einer Verpackung, ignoriert der
+Scanner.
+
+Das Etikett enthält die Adresse aus `BASE_URL`. Ziehst du auf eine andere
+Domain um, druckst du die Etiketten neu.
+
 ### Verlauf: Was kam wann dazu?
 
 Oben rechts auf der Sammlung führt **Verlauf** zu einer Zeitleiste – nach

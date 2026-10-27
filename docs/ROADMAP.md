@@ -100,8 +100,8 @@ und ohne Anspruch auf Vollstaendigkeit:
 
 - [x] Fehlteile-Einkaufsliste: alle offenen Fehlteile je Teil und Farbe, als
       CSV und BrickLink-Wunschliste, abhaken für alle Sets (unveröffentlicht)
-- [ ] Kisten mit QR-Etikett: je Standort Inhalt und ein druckbares Etikett,
-      Scannen zeigt, was drin ist
+- [x] Kisten mit QR-Etikett: je Standort Inhalt und ein druckbares Etikett,
+      Scannen zeigt, was drin ist (unveröffentlicht)
 - [ ] Inventur per Scanner: mehrere Barcodes hintereinander, bekannte Sets mit
       einem Tipp in die Sammlung, unbekannte zum Nacharbeiten
 - [ ] Automatische Backups: nächtlicher Export nach `DATA_DIR/backups` mit
