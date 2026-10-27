@@ -229,6 +229,8 @@ Session.
   wen?", Mailserver in der App, `pnpm pruefe:umgebung`. *Fertig in 0.5.0.*
 - **Katalog-Reiter** - Besitzstatus und Hersteller als Reiter statt
   Auswahlfeld. *Fertig in 0.6.0.*
+- **Fotos, Suche und Verlauf** - Fotos je Sammlungseintrag, Suche in
+  Anleitungs-PDFs, Verlauf der Sammlung. *Fertig in 0.7.0.*
 
 Details und Stand: `docs/ROADMAP.md`. Zeitaufwaende: `docs/DEVLOG.md`.
 

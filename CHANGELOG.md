@@ -7,6 +7,11 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-10-27
+
+Mehr Erinnerung an jedes Stück: Fotos je Exemplar, eine Zeitleiste, was wann
+dazukam, und Anleitungen, in denen sich eine Teilenummer finden lässt.
+
 ### Hinzugefügt
 
 - **Verlauf der Sammlung** (Sammlung → Verlauf): Was kam wann dazu, nach
@@ -14,14 +19,12 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
   Geschenke und der Stand insgesamt; aufklappbar mit den Sets. Grundlage ist
   „Im Besitz seit", Exemplare ohne Datum stehen getrennt. Gilt für den
   gewählten Sammler, verkaufte Sets zählen nicht mit.
-
 - **Suche in Anleitungen**: Im PDF-Viewer nach Text suchen, etwa nach einer
   Teilenummer. Treffer werden auf der Seite markiert, Pfeile und Enter
   springen zur nächsten Fundstelle, darüber stehen die Seiten mit Treffern.
   Groß- und Kleinschreibung, Umlaute und Leerzeichen zählen nicht. Enthält
   ein PDF nur Bilder, sagt der Viewer das. Dazu ein Feld, um direkt zu einer
   Seitenzahl zu springen. Alles läuft im Browser, nichts verlässt das Gerät.
-
 - **Fotos je Sammlungseintrag**: Jedes Exemplar hat eine eigene Kamera-Schaltfläche
   und eigene Fotos – etwa vom Zustand der Box oder vom Platz im Regal. Bis zu
   vier erscheinen als Vorschau unter dem Eintrag. Die Fotos liegen wie die
@@ -322,7 +325,8 @@ Erste lauffaehige Fassung: Phase 1 vollstaendig, im Docker-Stack verifiziert.
 - Unter Windows scheitert `pnpm build` an fehlenden Symlink-Rechten. Der
   Docker-Build unter Linux ist davon nicht betroffen.
 
-[Unreleased]: https://github.com/florianwilde/bricktrack/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/florianwilde/bricktrack/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/florianwilde/bricktrack/releases/tag/v0.7.0
 [0.6.0]: https://github.com/florianwilde/bricktrack/releases/tag/v0.6.0
 [0.5.0]: https://github.com/florianwilde/bricktrack/releases/tag/v0.5.0
 [0.4.0]: https://github.com/florianwilde/bricktrack/releases/tag/v0.4.0
