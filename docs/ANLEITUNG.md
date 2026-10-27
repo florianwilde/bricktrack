@@ -121,9 +121,12 @@ ihr sie besitzt. Das ist der wichtigste Gedanke der App:
 Deshalb kannst du unbesorgt Sets anlegen, die ihr euch nur anschaut – genau
 die braucht die Wunschliste später.
 
-**Suchen** kannst du nach Setnummer, Name oder EAN. Die vier Filter darunter:
-Besitzstatus, Hersteller, Thema und Jahr. Jeder Filterstand steckt in der
-URL – ein Lesezeichen auf „alle fehlenden Lego-Technic-Sets" ist damit möglich.
+**Suchen** kannst du nach Setnummer, Name oder EAN. Darunter stehen zwei
+Reihen Reiter: der Besitzstatus (Alle Sets, In der Sammlung, Fehlt noch, Auf
+einer Wunschliste) und die Hersteller – ein Tipp genügt. Passen nicht alle auf
+den Bildschirm, lässt sich die Reihe zur Seite wischen. Thema und Jahr wählst
+du in den beiden Feldern darunter. Jeder Filterstand steckt in der URL – ein
+Lesezeichen auf „alle fehlenden Lego-Technic-Sets" ist damit möglich.
 
 Die Kacheln zeigen auf einen Blick:
 
@@ -143,7 +146,7 @@ hinterlegst eine Bild-URL.
 
 ![Fehlende Sets](bilder/05-fehlende-sets.png)
 
-**Katalog → Filter „Fehlt noch"** (oder direkt `/katalog?besitz=fehlt`) zeigt
+**Katalog → Reiter „Fehlt noch"** (oder direkt `/katalog?besitz=fehlt`) zeigt
 ausschließlich Sets, die **nicht** in der Sammlung sind. Das ist der zentrale
 Weg zur Wunschliste.
 

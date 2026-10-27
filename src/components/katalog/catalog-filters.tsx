@@ -7,6 +7,7 @@ import { OWNERSHIP_FILTERS, OWNERSHIP_FILTER_LABELS } from '@/lib/ownership';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { NativeSelect } from '@/components/ui/native-select';
+import { FilterTabs } from './filter-tabs';
 
 export type FilterOptions = {
   manufacturers: Array<{ id: string; name: string }>;
@@ -17,8 +18,18 @@ export type FilterOptions = {
 /**
  * Filters live in the URL, so every state of the catalog is a shareable link
  * and the back button behaves the way people expect.
+ *
+ * Ownership and manufacturer are tabs: few options, picked often. Themes and
+ * years can run into the dozens and stay selects. `showOwnership={false}` for
+ * lists that are already narrowed to one ownership state.
  */
-export function CatalogFilters({ options }: { options: FilterOptions }) {
+export function CatalogFilters({
+  options,
+  showOwnership = true,
+}: {
+  options: FilterOptions;
+  showOwnership?: boolean;
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -77,32 +88,34 @@ export function CatalogFilters({ options }: { options: FilterOptions }) {
         ) : null}
       </div>
 
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-        <NativeSelect
-          aria-label="Besitzstatus"
+      {showOwnership ? (
+        <FilterTabs
+          label="Besitzstatus"
+          options={OWNERSHIP_FILTERS.map((value) => ({
+            value,
+            label: OWNERSHIP_FILTER_LABELS[value],
+          }))}
           value={ownership}
-          onChange={(event) => apply({ besitz: event.target.value })}
-        >
-          {OWNERSHIP_FILTERS.map((value) => (
-            <option key={value} value={value}>
-              {OWNERSHIP_FILTER_LABELS[value]}
-            </option>
-          ))}
-        </NativeSelect>
+          onChange={(value) => apply({ besitz: value === 'alle' ? null : value })}
+        />
+      ) : null}
 
-        <NativeSelect
-          aria-label="Hersteller"
+      {options.manufacturers.length > 1 ? (
+        <FilterTabs
+          label="Hersteller"
+          options={[
+            { value: '', label: 'Alle Hersteller' },
+            ...options.manufacturers.map((manufacturer) => ({
+              value: manufacturer.id,
+              label: manufacturer.name,
+            })),
+          ]}
           value={manufacturerId}
-          onChange={(event) => apply({ hersteller: event.target.value || null, thema: null })}
-        >
-          <option value="">Alle Hersteller</option>
-          {options.manufacturers.map((manufacturer) => (
-            <option key={manufacturer.id} value={manufacturer.id}>
-              {manufacturer.name}
-            </option>
-          ))}
-        </NativeSelect>
+          onChange={(value) => apply({ hersteller: value || null, thema: null })}
+        />
+      ) : null}
 
+      <div className="grid grid-cols-2 gap-2">
         <NativeSelect
           aria-label="Thema"
           value={themeId}

@@ -66,7 +66,7 @@ Laeuft vollstaendig im Docker-Stack.
 - [x] Designauswahl pro Gerät, sechs Designs, Standard „Klemmbaustein"
 - [x] Platzhalter für Sets ohne Bild, neues Logo, Schriften lokal
 - [x] Startseite als Überblick mit Steinreihe und nächstem Termin
-- [ ] Filter im Katalog als Reiter statt Auswahlfelder
+- [x] Filter im Katalog als Reiter statt Auswahlfelder (unveröffentlicht)
 
 ## Alltag (v0.5.0, abgeschlossen am 26.10.2026)
 
