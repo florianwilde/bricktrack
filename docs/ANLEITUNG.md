@@ -235,6 +235,18 @@ für die Frage „Was steht eigentlich in Kiste 3?".
 
 Verkaufte Exemplare zählen in keiner Kachel mit.
 
+### Verlauf: Was kam wann dazu?
+
+Oben rechts auf der Sammlung führt **Verlauf** zu einer Zeitleiste – nach
+Jahren oder für die letzten 24 Monate, das Neueste oben. Jede Zeile zeigt, wie
+viele Sets in dem Zeitraum dazukamen, mit Teilen, Ausgaben, Geschenken und dem
+Stand insgesamt. Antippen klappt die Sets darunter auf. Ruhige Zeiträume
+stehen zusammengefasst in einer Zeile.
+
+Maßgeblich ist **„Im Besitz seit"** am Sammlungseintrag, nicht der Tag, an dem
+das Set eingetippt wurde. Exemplare ohne dieses Datum stehen gesammelt unter
+„Ohne Kaufdatum" – dort lässt es sich nachtragen.
+
 ---
 
 ## 8. Wunschlisten

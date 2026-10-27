@@ -9,6 +9,12 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
 
 ### Hinzugefügt
 
+- **Verlauf der Sammlung** (Sammlung → Verlauf): Was kam wann dazu, nach
+  Jahren oder für die letzten 24 Monate. Je Zeitraum Anzahl, Teile, Ausgaben,
+  Geschenke und der Stand insgesamt; aufklappbar mit den Sets. Grundlage ist
+  „Im Besitz seit", Exemplare ohne Datum stehen getrennt. Gilt für den
+  gewählten Sammler, verkaufte Sets zählen nicht mit.
+
 - **Suche in Anleitungen**: Im PDF-Viewer nach Text suchen, etwa nach einer
   Teilenummer. Treffer werden auf der Seite markiert, Pfeile und Enter
   springen zur nächsten Fundstelle, darüber stehen die Seiten mit Treffern.
