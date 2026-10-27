@@ -26,6 +26,7 @@ du per Link mit Familie und Freunden teilst. Die reservieren dort ihr Geschenk
 | **Katalog** | Sets aller Hersteller, Suche nach Nummer, Name oder EAN, Filter nach Hersteller, Thema, Jahr und Besitzstatus |
 | **Sammlung** | Was tatsächlich da ist: Status, Vollständigkeit, Zustand, Standort, Kaufpreis, „geschenkt von" |
 | **Anleitungen** | PDFs hochladen und im Browser blättern (pdf.js, ohne externe Dienste) oder auf die Hersteller-Seite verlinken |
+| **Fehlteile** | Je Exemplar vermerken, als Einkaufsliste zusammengefasst – auch als BrickLink-Wunschliste |
 | **Fotos** | Eigene Bilder je Set und je Exemplar – direkt aus der Handykamera |
 | **Wunschlisten** | Mehrfachauswahl aus den fehlenden Sets, Priorität, Reihenfolge, Termin |
 | **Teilen** | Öffentlicher Link ohne Anmeldung, Reservierung mit Namen, Storno-Link, Überraschungsmodus |

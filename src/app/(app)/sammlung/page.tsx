@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Boxes, Euro, History, Layers, PackageSearch } from 'lucide-react';
+import { Boxes, Euro, History, Layers, PackageSearch, PuzzleIcon } from 'lucide-react';
 import { SetPlaceholder } from '@/components/brick/set-placeholder';
 import { Studs } from '@/components/brick/studs';
 import { CollectionFilters } from '@/components/sammlung/collection-filters';
@@ -17,6 +17,7 @@ import {
   countOpenMissingParts,
   getCollectionStats,
   listCollectionItems,
+  listOpenMissingPartEntries,
   type CollectionFilters as Filters,
 } from '@/lib/queries/collection';
 import { activeCollectorId } from '@/lib/collector-choice';
@@ -53,6 +54,8 @@ export default async function SammlungPage({ searchParams }: { searchParams: Sea
 
   const items = listCollectionItems(filters);
   const openParts = countOpenMissingParts(items.map((item) => item.id));
+  // Across the whole collection of this collector, not just the filtered list.
+  const openPartsTotal = listOpenMissingPartEntries(collectorId).length;
   const stats = getCollectionStats(collectorId);
   const missing = countMissingSets(collectorId);
 
@@ -70,8 +73,9 @@ export default async function SammlungPage({ searchParams }: { searchParams: Sea
 
   return (
     <div className="space-y-5">
-      <div className="flex items-start justify-between gap-3">
-        <div>
+      {/* The buttons wrap below the title on a phone instead of squeezing it. */}
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-52 flex-1">
           <h1 className="text-2xl font-semibold tracking-tight">Sammlung</h1>
           <p className="text-sm text-muted-foreground">
             {activeCollector
@@ -79,12 +83,22 @@ export default async function SammlungPage({ searchParams }: { searchParams: Sea
               : 'Alles, was tatsächlich da ist.'}
           </p>
         </div>
-        <Button asChild variant="outline" className="shrink-0">
-          <Link href="/sammlung/verlauf">
-            <History />
-            Verlauf
-          </Link>
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          {openPartsTotal > 0 ? (
+            <Button asChild variant="outline">
+              <Link href="/sammlung/fehlteile">
+                <PuzzleIcon />
+                Fehlteile ({formatNumber(openPartsTotal)})
+              </Link>
+            </Button>
+          ) : null}
+          <Button asChild variant="outline">
+            <Link href="/sammlung/verlauf">
+              <History />
+              Verlauf
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">

@@ -58,6 +58,7 @@ function isNeverCached(url) {
   return (
     url.pathname.startsWith('/api/auth/') ||
     url.pathname.startsWith('/api/export/') ||
+    url.pathname.startsWith('/api/missing-parts/') ||
     url.pathname.startsWith('/api/health')
   );
 }

@@ -12,6 +12,7 @@ import {
 } from '@/db/schema';
 import { ownedCopiesSql, SOLD_STATUS } from '@/lib/ownership';
 import type { CollectionStatus, Completeness, Condition } from '@/db/types';
+import type { MissingPartEntry } from '@/lib/shopping-list';
 import type { TimelineItem } from '@/lib/timeline';
 
 export type CollectionFilters = {
@@ -270,5 +271,36 @@ export function listTimelineItems(collectorId?: string): TimelineItem[] {
     .from(collectionItem)
     .innerJoin(set, eq(set.id, collectionItem.setId))
     .where(active)
+    .all();
+}
+
+/**
+ * Open missing parts across the whole collection, for the shopping list.
+ * Copies that were sold are left out - nobody buys parts for those.
+ */
+export function listOpenMissingPartEntries(collectorId?: string): MissingPartEntry[] {
+  const conditions = [
+    eq(missingPart.resolved, false),
+    sql`${collectionItem.status} <> ${SOLD_STATUS}`,
+  ];
+  if (collectorId) conditions.push(eq(collectionItem.collectorId, collectorId));
+
+  return db
+    .select({
+      id: missingPart.id,
+      partNumber: missingPart.partNumber,
+      colorName: missingPart.colorName,
+      quantity: missingPart.quantity,
+      notes: missingPart.notes,
+      collectionItemId: missingPart.collectionItemId,
+      setId: set.id,
+      setNumber: set.setNumber,
+      setName: set.name,
+    })
+    .from(missingPart)
+    .innerJoin(collectionItem, eq(collectionItem.id, missingPart.collectionItemId))
+    .innerJoin(set, eq(set.id, collectionItem.setId))
+    .where(and(...conditions))
+    .orderBy(asc(set.setNumber), asc(missingPart.createdAt))
     .all();
 }
