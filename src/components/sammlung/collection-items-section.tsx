@@ -2,11 +2,13 @@
 
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
-import { Loader2, Pencil, PuzzleIcon, Trash2 } from 'lucide-react';
+import { Camera, Loader2, Pencil, PuzzleIcon, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { deleteCollectionItem, updateCollectionItem } from '@/app/(app)/sammlung/actions';
 import type { MissingPartRow } from '@/lib/queries/collection';
 import { MissingPartsDialog } from './missing-parts-dialog';
+import { PhotosSection, type PhotoRow } from '@/components/katalog/photos-section';
+import { fileUrl } from '@/lib/images';
 import type { CollectionStatus, Completeness, Condition } from '@/db/types';
 import { collectorBadgeClass } from '@/lib/collector-colors';
 import { formatDate, toDateInputValue } from '@/lib/format';
@@ -34,6 +36,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -59,6 +62,7 @@ export type CollectionItemRow = {
   notes: string | null;
   setName: string;
   missingParts: MissingPartRow[];
+  photos: PhotoRow[];
   collectorId: string | null;
   collectorName: string | null;
   collectorColor: string | null;
@@ -80,8 +84,10 @@ export function CollectionItemsSection({
   // Only the id, never a snapshot: the dialog shows a live list, and a copy
   // taken when it opened would not show a part that was just added.
   const [partsItemId, setPartsItemId] = useState<string | null>(null);
+  const [photosItemId, setPhotosItemId] = useState<string | null>(null);
 
   const partsItem = items.find((item) => item.id === partsItemId) ?? null;
+  const photosItem = items.find((item) => item.id === photosItemId) ?? null;
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -129,8 +135,10 @@ export function CollectionItemsSection({
     <div className="space-y-3">
       <ul className="divide-y divide-border rounded-lg border border-border">
         {items.map((item) => (
-          <li key={item.id} className="flex items-start gap-3 p-3">
-            <div className="min-w-0 flex-1 space-y-1">
+          // Four actions do not fit beside the details on a phone; they wrap
+          // below instead of squeezing the text into a narrow column.
+          <li key={item.id} className="flex flex-wrap items-start gap-x-3 gap-y-1 p-3">
+            <div className="min-w-56 flex-1 space-y-1">
               <div className="flex flex-wrap items-center gap-2">
                 {collectors.length > 1 && item.collectorName ? (
                   <Badge className={collectorBadgeClass(item.collectorColor)}>
@@ -164,35 +172,71 @@ export function CollectionItemsSection({
                   .join(' · ') || 'Keine weiteren Angaben'}
               </p>
               {item.notes ? <p className="text-xs">{item.notes}</p> : null}
+              {item.photos.length > 0 ? (
+                <button
+                  type="button"
+                  onClick={() => setPhotosItemId(item.id)}
+                  aria-label={`${item.photos.length} Fotos ansehen`}
+                  className="flex gap-1.5 pt-1"
+                >
+                  {item.photos.slice(0, 4).map((entry) => (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      key={entry.id}
+                      src={fileUrl(entry.thumbnailPath ?? entry.filePath)}
+                      alt=""
+                      loading="lazy"
+                      className="size-12 rounded-md border border-border object-cover"
+                    />
+                  ))}
+                  {item.photos.length > 4 ? (
+                    <span className="flex size-12 items-center justify-center rounded-md border border-border bg-muted text-xs font-bold text-muted-foreground">
+                      +{item.photos.length - 4}
+                    </span>
+                  ) : null}
+                </button>
+              ) : null}
             </div>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label="Fehlteile"
-              title="Fehlteile"
-              onClick={() => setPartsItemId(item.id)}
-              disabled={pending}
-            >
-              <PuzzleIcon />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label="Bearbeiten"
-              onClick={() => setEditing(item)}
-              disabled={pending}
-            >
-              <Pencil />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label="Entfernen"
-              onClick={() => setDeleting(item)}
-              disabled={pending}
-            >
-              <Trash2 className="text-destructive" />
-            </Button>
+            <div className="ml-auto flex shrink-0 gap-1">
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label="Fotos"
+                title="Fotos"
+                onClick={() => setPhotosItemId(item.id)}
+                disabled={pending}
+              >
+                <Camera />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label="Fehlteile"
+                title="Fehlteile"
+                onClick={() => setPartsItemId(item.id)}
+                disabled={pending}
+              >
+                <PuzzleIcon />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label="Bearbeiten"
+                onClick={() => setEditing(item)}
+                disabled={pending}
+              >
+                <Pencil />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label="Entfernen"
+                onClick={() => setDeleting(item)}
+                disabled={pending}
+              >
+                <Trash2 className="text-destructive" />
+              </Button>
+            </div>
           </li>
         ))}
       </ul>
@@ -344,12 +388,29 @@ export function CollectionItemsSection({
         />
       ) : null}
 
+      <Dialog open={photosItem !== null} onOpenChange={(open) => !open && setPhotosItemId(null)}>
+        <DialogContent className="max-h-[85dvh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Fotos dieses Exemplars</DialogTitle>
+            <DialogDescription>{photosItem?.setName}</DialogDescription>
+          </DialogHeader>
+          {photosItem ? (
+            <PhotosSection
+              owner={{ kind: 'item', id: photosItem.id }}
+              photos={photosItem.photos}
+              emptyText="Noch keine Fotos von diesem Exemplar – etwa vom Zustand der Box oder vom Platz im Regal."
+            />
+          ) : null}
+        </DialogContent>
+      </Dialog>
+
       <AlertDialog open={deleting !== null} onOpenChange={(open) => !open && setDeleting(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Eintrag entfernen?</AlertDialogTitle>
             <AlertDialogDescription>
-              Das Set bleibt im Katalog, gilt danach aber wieder als „fehlt noch“.
+              Das Set bleibt im Katalog, gilt danach aber wieder als „fehlt noch“. Fotos
+              dieses Exemplars werden mitgelöscht.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

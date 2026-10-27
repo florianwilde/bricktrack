@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { and, eq } from 'drizzle-orm';
 import { db } from '@/db';
-import { collectionItem, missingPart, set } from '@/db/schema';
+import { collectionItem, missingPart, photo, set } from '@/db/schema';
 import {
   actionData,
   actionError,
@@ -14,6 +14,7 @@ import {
 import { defaultCollectorId } from '@/lib/queries/collectors';
 import { reconcileFulfilledWishlistItems } from '@/lib/queries/wishlists';
 import { requireUser } from '@/lib/session';
+import { deleteStoredFile } from '@/lib/uploads';
 import { collectionItemSchema, missingPartSchema } from '@/lib/validation';
 import type { Condition } from '@/db/types';
 
@@ -106,7 +107,16 @@ export async function deleteCollectionItem(id: string): Promise<ActionResult> {
   const existing = db.select().from(collectionItem).where(eq(collectionItem.id, id)).get();
   if (!existing) return actionOk();
 
+  const files = db
+    .select({ path: photo.filePath, thumb: photo.thumbnailPath })
+    .from(photo)
+    .where(eq(photo.collectionItemId, id))
+    .all()
+    .flatMap((row) => [row.path, row.thumb]);
+
+  // Rows go first (photos cascade): a file already gone must not block this.
   db.delete(collectionItem).where(eq(collectionItem.id, id)).run();
+  await Promise.all(files.map((file) => deleteStoredFile(file)));
   reconcileFulfilledWishlistItems();
 
   revalidateCollection(existing.setId);

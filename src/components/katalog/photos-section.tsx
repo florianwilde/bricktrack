@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 import { Camera, Loader2, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { addSetPhoto, deletePhoto } from '@/app/(app)/katalog/actions';
+import { addCollectionItemPhoto, addSetPhoto, deletePhoto } from '@/app/(app)/katalog/actions';
 import { fileUrl } from '@/lib/images';
 import { Button } from '@/components/ui/button';
 import {
@@ -24,7 +24,18 @@ export type PhotoRow = {
   caption: string | null;
 };
 
-export function PhotosSection({ setId, photos }: { setId: string; photos: PhotoRow[] }) {
+/** Whose photos these are: the catalog set, or one owned copy of it. */
+export type PhotoOwner = { kind: 'set' | 'item'; id: string };
+
+export function PhotosSection({
+  owner,
+  photos,
+  emptyText = 'Noch keine eigenen Fotos – zum Beispiel vom fertig gebauten Modell.',
+}: {
+  owner: PhotoOwner;
+  photos: PhotoRow[];
+  emptyText?: string;
+}) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [addOpen, setAddOpen] = useState(false);
@@ -34,7 +45,10 @@ export function PhotosSection({ setId, photos }: { setId: string; photos: PhotoR
     const formData = new FormData(event.currentTarget);
 
     startTransition(async () => {
-      const result = await addSetPhoto(setId, formData);
+      const result =
+        owner.kind === 'set'
+          ? await addSetPhoto(owner.id, formData)
+          : await addCollectionItemPhoto(owner.id, formData);
       if (!result.ok) {
         toast.error(result.error);
         return;
@@ -91,9 +105,7 @@ export function PhotosSection({ setId, photos }: { setId: string; photos: PhotoR
           ))}
         </ul>
       ) : (
-        <p className="text-sm text-muted-foreground">
-          Noch keine eigenen Fotos – zum Beispiel vom fertig gebauten Modell.
-        </p>
+        <p className="text-sm text-muted-foreground">{emptyText}</p>
       )}
 
       <Button variant="outline" onClick={() => setAddOpen(true)}>
@@ -106,11 +118,11 @@ export function PhotosSection({ setId, photos }: { setId: string; photos: PhotoR
           <DialogHeader>
             <DialogTitle>Foto hinzufügen</DialogTitle>
           </DialogHeader>
-          <form id="photo-form" onSubmit={submit} className="space-y-4">
-            <Field label="Bild" htmlFor="photo-file" required>
+          <form id={`photo-form-${owner.id}`} onSubmit={submit} className="space-y-4">
+            <Field label="Bild" htmlFor={`photo-file-${owner.id}`} required>
               {/* capture lets the phone open the camera directly. */}
               <Input
-                id="photo-file"
+                id={`photo-file-${owner.id}`}
                 name="file"
                 type="file"
                 accept="image/jpeg,image/png,image/webp"
@@ -118,15 +130,15 @@ export function PhotosSection({ setId, photos }: { setId: string; photos: PhotoR
                 required
               />
             </Field>
-            <Field label="Bildunterschrift" htmlFor="caption">
-              <Input id="caption" name="caption" maxLength={160} />
+            <Field label="Bildunterschrift" htmlFor={`photo-caption-${owner.id}`}>
+              <Input id={`photo-caption-${owner.id}`} name="caption" maxLength={160} />
             </Field>
           </form>
           <DialogFooter>
             <Button variant="outline" onClick={() => setAddOpen(false)} disabled={pending}>
               Abbrechen
             </Button>
-            <Button type="submit" form="photo-form" disabled={pending}>
+            <Button type="submit" form={`photo-form-${owner.id}`} disabled={pending}>
               {pending ? <Loader2 className="animate-spin" /> : null}
               Speichern
             </Button>
