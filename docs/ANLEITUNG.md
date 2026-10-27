@@ -195,6 +195,11 @@ Hier steht alles zu einem Set:
 - **Anleitungen** – PDFs hochladen (mehrere je Set, etwa „Buch 1 von 3") und
   direkt im Browser durchblättern, ohne Download und ohne fremde Dienste.
   Alternativ verlinkst du die Anleitung beim Hersteller.
+  Im Viewer suchst du nach Text, etwa einer Teilenummer aus der Teileliste:
+  Die Treffer werden auf der Seite gelb markiert, die Pfeile (oder Enter)
+  springen von Seite zu Seite. Über das Feld unten springst du direkt zu
+  einer Seitenzahl. Viele Anleitungen bestehen nur aus Bildern – dann sagt
+  der Viewer das, statt einfach nichts zu finden.
 - **Fotos** – eigene Bilder zum Set, am Handy direkt aus der Kamera.
 - **In der Sammlung** – jedes Exemplar mit Status, Vollständigkeit, Zustand,
   Standort, Kaufdatum, Preis und „geschenkt von". Über die **Kamera** am
