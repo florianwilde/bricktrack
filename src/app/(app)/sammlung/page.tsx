@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Boxes, Euro, Layers, PackageSearch } from 'lucide-react';
+import { Boxes, Euro, History, Layers, PackageSearch } from 'lucide-react';
 import { SetPlaceholder } from '@/components/brick/set-placeholder';
 import { Studs } from '@/components/brick/studs';
 import { CollectionFilters } from '@/components/sammlung/collection-filters';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { formatDate, formatNumber, pluralize } from '@/lib/format';
 import { collectorBadgeClass, collectorDotClass } from '@/lib/collector-colors';
@@ -69,13 +70,21 @@ export default async function SammlungPage({ searchParams }: { searchParams: Sea
 
   return (
     <div className="space-y-5">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Sammlung</h1>
-        <p className="text-sm text-muted-foreground">
-          {activeCollector
-            ? `Alles, was ${activeCollector.name} tatsächlich hat.`
-            : 'Alles, was tatsächlich da ist.'}
-        </p>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Sammlung</h1>
+          <p className="text-sm text-muted-foreground">
+            {activeCollector
+              ? `Alles, was ${activeCollector.name} tatsächlich hat.`
+              : 'Alles, was tatsächlich da ist.'}
+          </p>
+        </div>
+        <Button asChild variant="outline" className="shrink-0">
+          <Link href="/sammlung/verlauf">
+            <History />
+            Verlauf
+          </Link>
+        </Button>
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">

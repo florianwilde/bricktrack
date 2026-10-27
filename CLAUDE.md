@@ -60,6 +60,8 @@ Bild-URLs, die der Nutzer selbst hinterlegt hat.
 | `src/lib/similarity.ts` | Namensvergleich fuer die Dublettenpruefung (rein) |
 | `src/lib/prices.ts` | Wertentwicklung aus notierten Preisen (rein) |
 | `src/lib/reminders.ts` | Regeln, wann eine Erinnerung faellig ist (rein) |
+| `src/lib/timeline.ts` | Verlauf der Sammlung nach Jahren/Monaten (rein) |
+| `src/lib/pdf-search.ts` | Textsuche in Anleitungs-PDFs (rein) |
 | `src/lib/reminder-job.ts`, `src/lib/mailer.ts` | Versand und Zeitplan |
 | `src/lib/mail-settings.ts`, `src/lib/secret-box.ts` | SMTP aus .env oder App (`app_setting`), Passwort verschluesselt |
 | `src/lib/export.ts` | Export und Import des gesamten Bestands |

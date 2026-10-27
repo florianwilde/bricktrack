@@ -12,6 +12,7 @@ import {
 } from '@/db/schema';
 import { ownedCopiesSql, SOLD_STATUS } from '@/lib/ownership';
 import type { CollectionStatus, Completeness, Condition } from '@/db/types';
+import type { TimelineItem } from '@/lib/timeline';
 
 export type CollectionFilters = {
   q?: string;
@@ -241,4 +242,33 @@ export function countOpenMissingParts(collectionItemIds: string[]): Map<string, 
     .all();
 
   return new Map(rows.map((row) => [row.collectionItemId, row.open]));
+}
+
+/**
+ * Every copy still in the house, with what the timeline needs. Sold copies are
+ * left out, like in every other number on the collection page.
+ */
+export function listTimelineItems(collectorId?: string): TimelineItem[] {
+  const active = collectorId
+    ? and(
+        sql`${collectionItem.status} <> ${SOLD_STATUS}`,
+        eq(collectionItem.collectorId, collectorId),
+      )
+    : sql`${collectionItem.status} <> ${SOLD_STATUS}`;
+
+  return db
+    .select({
+      id: collectionItem.id,
+      setId: collectionItem.setId,
+      setNumber: set.setNumber,
+      setName: set.name,
+      acquiredAt: collectionItem.acquiredAt,
+      pieceCount: set.pieceCount,
+      acquiredPriceCents: collectionItem.acquiredPriceCents,
+      giftedBy: collectionItem.giftedBy,
+    })
+    .from(collectionItem)
+    .innerJoin(set, eq(set.id, collectionItem.setId))
+    .where(active)
+    .all();
 }
