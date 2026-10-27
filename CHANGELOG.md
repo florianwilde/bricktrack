@@ -7,6 +7,11 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-10-27
+
+Der Katalog lässt sich mit einem Tipp filtern: Besitzstatus und Hersteller
+stehen als Reiter über den Sets.
+
 ### Geändert
 
 - **Katalogfilter als Reiter**: Besitzstatus und Hersteller stehen als Reiter
@@ -296,7 +301,8 @@ Erste lauffaehige Fassung: Phase 1 vollstaendig, im Docker-Stack verifiziert.
 - Unter Windows scheitert `pnpm build` an fehlenden Symlink-Rechten. Der
   Docker-Build unter Linux ist davon nicht betroffen.
 
-[Unreleased]: https://github.com/florianwilde/bricktrack/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/florianwilde/bricktrack/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/florianwilde/bricktrack/releases/tag/v0.6.0
 [0.5.0]: https://github.com/florianwilde/bricktrack/releases/tag/v0.5.0
 [0.4.0]: https://github.com/florianwilde/bricktrack/releases/tag/v0.4.0
 [0.3.0]: https://github.com/florianwilde/bricktrack/releases/tag/v0.3.0
