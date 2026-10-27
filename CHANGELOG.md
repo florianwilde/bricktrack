@@ -7,6 +7,14 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unreleased]
 
+### Hinzugefügt
+
+- **Fotos je Sammlungseintrag**: Jedes Exemplar hat eine eigene Kamera-Schaltfläche
+  und eigene Fotos – etwa vom Zustand der Box oder vom Platz im Regal. Bis zu
+  vier erscheinen als Vorschau unter dem Eintrag. Die Fotos liegen wie die
+  Set-Fotos unter `files/photos/` und sind nur mit Anmeldung abrufbar. Wird
+  ein Exemplar oder das ganze Set gelöscht, verschwinden auch die Dateien.
+
 ## [0.6.0] - 2026-10-27
 
 Der Katalog lässt sich mit einem Tipp filtern: Besitzstatus und Hersteller

@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { and, eq, ne } from 'drizzle-orm';
 import { db } from '@/db';
-import { instruction, photo, set } from '@/db/schema';
+import { collectionItem, instruction, photo, set } from '@/db/schema';
 import { actionData, actionError, actionOk, formToObject, parseForm, type ActionResult } from '@/lib/action-result';
 import { env } from '@/env';
 import { safeFetch, SafeFetchError } from '@/lib/safe-fetch';
@@ -161,6 +161,14 @@ export async function deleteSet(id: string): Promise<ActionResult> {
       .where(eq(photo.setId, id))
       .all()
       .flatMap((row) => [row.path, row.thumb]),
+    // Owned copies go with the set, and their photos with them.
+    ...db
+      .select({ path: photo.filePath, thumb: photo.thumbnailPath })
+      .from(photo)
+      .innerJoin(collectionItem, eq(photo.collectionItemId, collectionItem.id))
+      .where(eq(collectionItem.setId, id))
+      .all()
+      .flatMap((row) => [row.path, row.thumb]),
     ...db
       .select({ path: instruction.filePath })
       .from(instruction)
@@ -298,6 +306,51 @@ export async function addSetPhoto(setId: string, formData: FormData): Promise<Ac
   return actionOk();
 }
 
+/**
+ * A photo of one owned copy - the scratch on the box, the build in the
+ * shelf. Stored under photos/<itemId>, so like set photos only with a session.
+ */
+export async function addCollectionItemPhoto(
+  collectionItemId: string,
+  formData: FormData,
+): Promise<ActionResult> {
+  await requireUser();
+
+  const item = db
+    .select({ setId: collectionItem.setId })
+    .from(collectionItem)
+    .where(eq(collectionItem.id, collectionItemId))
+    .get();
+  if (!item) return actionError('Diesen Sammlungseintrag gibt es nicht mehr.');
+
+  const file = fileFrom(formData, 'file');
+  if (!file) return actionError('Bitte wähle ein Bild aus.');
+
+  const parsed = parseForm(z.object({ caption: optionalText(160) }), formToObject(formData));
+  if (!parsed.ok) return parsed;
+
+  try {
+    const stored = await storeImage(file, 'photo', collectionItemId);
+    db.insert(photo)
+      .values({
+        id: crypto.randomUUID(),
+        collectionItemId,
+        filePath: stored.filePath,
+        thumbnailPath: stored.thumbnailPath,
+        caption: parsed.data.caption,
+        sortOrder: 0,
+        createdAt: now(),
+      })
+      .run();
+  } catch (error) {
+    if (error instanceof UploadError) return actionError(error.message);
+    throw error;
+  }
+
+  revalidateSet(item.setId);
+  return actionOk();
+}
+
 export async function deletePhoto(id: string): Promise<ActionResult> {
   await requireUser();
 
@@ -311,5 +364,13 @@ export async function deletePhoto(id: string): Promise<ActionResult> {
   ]);
 
   if (existing.setId) revalidateSet(existing.setId);
+  if (existing.collectionItemId) {
+    const item = db
+      .select({ setId: collectionItem.setId })
+      .from(collectionItem)
+      .where(eq(collectionItem.id, existing.collectionItemId))
+      .get();
+    revalidateSet(item?.setId);
+  }
   return actionOk();
 }

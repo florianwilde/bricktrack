@@ -195,9 +195,13 @@ Hier steht alles zu einem Set:
 - **Anleitungen** – PDFs hochladen (mehrere je Set, etwa „Buch 1 von 3") und
   direkt im Browser durchblättern, ohne Download und ohne fremde Dienste.
   Alternativ verlinkst du die Anleitung beim Hersteller.
-- **Fotos** – eigene Bilder, am Handy direkt aus der Kamera.
+- **Fotos** – eigene Bilder zum Set, am Handy direkt aus der Kamera.
 - **In der Sammlung** – jedes Exemplar mit Status, Vollständigkeit, Zustand,
-  Standort, Kaufdatum, Preis und „geschenkt von".
+  Standort, Kaufdatum, Preis und „geschenkt von". Über die **Kamera** am
+  Exemplar hängst du Fotos an genau dieses Stück – die Delle in der Box, den
+  Platz im Regal, den Zustand vor dem Verkauf. Die ersten vier erscheinen als
+  kleine Vorschau unter dem Eintrag. Wird das Exemplar entfernt, gehen seine
+  Fotos mit.
 
 ### Die fünf Status eines Exemplars
 

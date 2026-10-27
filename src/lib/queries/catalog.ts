@@ -1,5 +1,5 @@
 import 'server-only';
-import { and, asc, desc, eq, like, not, or, sql, type SQL } from 'drizzle-orm';
+import { and, asc, desc, eq, inArray, like, not, or, sql, type SQL } from 'drizzle-orm';
 import { db } from '@/db';
 import {
   collectionItem,
@@ -214,6 +214,24 @@ export function listPhotosForSet(setId: string) {
     .where(eq(photo.setId, setId))
     .orderBy(asc(photo.sortOrder), asc(photo.createdAt))
     .all();
+}
+
+/** Photos of several owned copies in one query, grouped by copy. */
+export function listPhotosForCollectionItems(itemIds: string[]) {
+  const grouped = new Map<string, Array<typeof photo.$inferSelect>>();
+  if (itemIds.length === 0) return grouped;
+
+  const rows = db
+    .select()
+    .from(photo)
+    .where(inArray(photo.collectionItemId, itemIds))
+    .orderBy(asc(photo.sortOrder), asc(photo.createdAt))
+    .all();
+  for (const row of rows) {
+    if (!row.collectionItemId) continue;
+    grouped.set(row.collectionItemId, [...(grouped.get(row.collectionItemId) ?? []), row]);
+  }
+  return grouped;
 }
 
 export function listCollectionItemsForSet(setId: string) {

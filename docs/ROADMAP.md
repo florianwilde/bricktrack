@@ -89,6 +89,6 @@ Phase 1 bis 3 sind umgesetzt. Was noch offen ist, steht hier - ohne Termin
 und ohne Anspruch auf Vollstaendigkeit:
 
 - [ ] BrickLink-Preisfuehrer anbinden, falls der Aufwand sich doch lohnt
-- [ ] Mehrere Fotos je Sammlungseintrag (bisher nur je Set)
+- [x] Mehrere Fotos je Sammlungseintrag (unveröffentlicht)
 - [ ] Anleitungen im PDF-Viewer durchsuchen
 - [ ] Statistik ueber die Zeit: was kam wann dazu

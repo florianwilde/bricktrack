@@ -19,6 +19,7 @@ import {
   getSetById,
   listCollectionItemsForSet,
   listInstructionsForSet,
+  listPhotosForCollectionItems,
   listPhotosForSet,
   listPricePoints,
 } from '@/lib/queries/catalog';
@@ -60,8 +61,11 @@ export default async function SetDetailPage({ params, searchParams }: Props) {
   const locationNames = new Map(locations.map((row) => [row.id, row.name]));
 
   const collectorsById = new Map(collectors.map((row) => [row.id, row]));
-  const collectionItems = listCollectionItemsForSet(set.id).map((item) => ({
+  const itemRows = listCollectionItemsForSet(set.id);
+  const itemPhotos = listPhotosForCollectionItems(itemRows.map((item) => item.id));
+  const collectionItems = itemRows.map((item) => ({
     ...item,
+    photos: itemPhotos.get(item.id) ?? [],
     locationName: item.locationId ? (locationNames.get(item.locationId) ?? null) : null,
     setName: `${set.setNumber} · ${set.name}`,
     missingParts: listMissingParts(item.id),
@@ -207,7 +211,7 @@ export default async function SetDetailPage({ params, searchParams }: Props) {
           <CardTitle>Fotos</CardTitle>
         </CardHeader>
         <CardContent>
-          <PhotosSection setId={set.id} photos={listPhotosForSet(set.id)} />
+          <PhotosSection owner={{ kind: 'set', id: set.id }} photos={listPhotosForSet(set.id)} />
         </CardContent>
       </Card>
 
