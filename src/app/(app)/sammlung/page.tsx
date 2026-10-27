@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Boxes, Euro, History, Layers, PackageSearch, PuzzleIcon } from 'lucide-react';
+import { Boxes, Euro, History, Layers, ListChecks, PackageSearch, PuzzleIcon } from 'lucide-react';
 import { SetPlaceholder } from '@/components/brick/set-placeholder';
 import { Studs } from '@/components/brick/studs';
 import { CollectionFilters } from '@/components/sammlung/collection-filters';
@@ -96,6 +96,12 @@ export default async function SammlungPage({ searchParams }: { searchParams: Sea
               </Link>
             </Button>
           ) : null}
+          <Button asChild variant="outline">
+            <Link href="/sammlung/inventur">
+              <ListChecks />
+              Inventur
+            </Link>
+          </Button>
           <Button asChild variant="outline">
             <Link href="/sammlung/verlauf">
               <History />

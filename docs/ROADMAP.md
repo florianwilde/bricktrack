@@ -102,7 +102,7 @@ und ohne Anspruch auf Vollstaendigkeit:
       CSV und BrickLink-Wunschliste, abhaken für alle Sets (unveröffentlicht)
 - [x] Kisten mit QR-Etikett: je Standort Inhalt und ein druckbares Etikett,
       Scannen zeigt, was drin ist (unveröffentlicht)
-- [ ] Inventur per Scanner: mehrere Barcodes hintereinander, bekannte Sets mit
-      einem Tipp in die Sammlung, unbekannte zum Nacharbeiten
+- [x] Inventur per Scanner: mehrere Barcodes hintereinander, bekannte Sets mit
+      einem Tipp in die Sammlung, unbekannte zum Nacharbeiten (unveröffentlicht)
 - [ ] Automatische Backups: nächtlicher Export nach `DATA_DIR/backups` mit
       Rotation, sichtbar unter Mehr → Export/Import

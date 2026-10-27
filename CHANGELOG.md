@@ -9,6 +9,13 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
 
 ### Hinzugefügt
 
+- **Inventur per Scanner** (＋ → Inventur, oder Sammlung → Inventur): Kiste
+  für Kiste scannen, die Kamera bleibt an. Bekannte Sets kommen einzeln oder
+  alle auf einmal in die Sammlung, mit gewähltem Sammler und Standort;
+  unbekannte lassen sich zwischendurch anlegen. Dieselbe Kiste zählt nur
+  einmal, solange sie im Bild ist; ein QR-Etikett setzt den Standort. Die
+  Liste bleibt auf dem Gerät erhalten.
+
 - **Kisten mit QR-Etikett**: Unter Mehr → Standorte lassen sich Etiketten für
   einen oder alle Standorte drucken – QR-Code, Name und der Weg dahin. Der
   Code führt zur Sammlung, gefiltert auf diesen Standort; jede Handykamera
