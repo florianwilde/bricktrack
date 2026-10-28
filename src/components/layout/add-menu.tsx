@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Hash, Link2, PencilLine, Plus, ScanLine, type LucideIcon } from 'lucide-react';
+import { Hash, Link2, ListChecks, PencilLine, Plus, ScanLine, type LucideIcon } from 'lucide-react';
 import { cn } from 'cn';
 import { Studs } from '@/components/brick/studs';
 import { BarcodeScannerDialog } from '@/components/katalog/barcode-scanner';
@@ -70,6 +70,14 @@ export function AddMenu({
       icon: PencilLine,
       tone: 'bg-card',
       href: '/katalog/neu?weg=hand',
+    },
+    {
+      id: 'inventur',
+      label: 'Inventur',
+      hint: 'viele Kisten nacheinander',
+      icon: ListChecks,
+      tone: 'bg-tone-4',
+      href: '/sammlung/inventur',
     },
   ];
 

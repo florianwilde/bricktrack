@@ -235,6 +235,26 @@ für die Frage „Was steht eigentlich in Kiste 3?".
 
 Verkaufte Exemplare zählen in keiner Kachel mit.
 
+### Inventur: viele Kisten auf einmal
+
+Über das **＋** in der Navigation (oder **Inventur** oben auf der Sammlung)
+geht es zur Inventur. Wähl, für wen die Sets sind und wo sie stehen, dann
+**Kamera an** und Kiste für Kiste den Strichcode ins Bild halten. Jeder
+Treffer landet in der Liste; dieselbe Kiste zählt nur einmal, solange sie im
+Bild bleibt – scannst du sie später noch einmal, sind es zwei Exemplare. Ohne
+Kamera tippst du die EAN ein.
+
+- **Bekannte Sets** übernimmst du einzeln oder alle auf einmal mit
+  „n Sets übernehmen". Sie kommen mit Sammler und Standort in die Sammlung,
+  Details trägst du später nach.
+- **Unbekannte** stehen mit „Anlegen" in der Liste. Nach dem Anlegen zurück
+  zur Inventur – die Liste ist noch da und erkennt das neue Set.
+- Das **QR-Etikett einer Kiste** zu scannen setzt den Standort für alles, was
+  danach kommt.
+
+Die Liste liegt nur auf diesem Gerät und bleibt über einen Neustart des
+Browsers erhalten, bis du sie leerst.
+
 ### Kisten mit QR-Etikett
 
 Unter **Mehr → Standorte** hat jeder Standort ein **QR-Symbol**, oben steht
