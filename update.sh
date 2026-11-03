@@ -58,7 +58,9 @@ if [ "$DO_BACKUP" -eq 1 ]; then
   # Der Container wird kurz angehalten, damit die SQLite-Datei nicht mitten in
   # einem Schreibvorgang eingepackt wird.
   docker compose stop app >/dev/null 2>&1 || true
-  tar czf "$BACKUP_FILE" data .env 2>/dev/null || {
+  # data/backups sind die Sicherungen der App selbst - die gehoeren nicht noch
+  # einmal in jedes Archiv.
+  tar czf "$BACKUP_FILE" --exclude=data/backups data .env 2>/dev/null || {
     error "Die Sicherung ist fehlgeschlagen. Abbruch."
     docker compose start app >/dev/null 2>&1 || true
     exit 1

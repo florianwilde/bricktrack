@@ -104,5 +104,7 @@ und ohne Anspruch auf Vollstaendigkeit:
       Scannen zeigt, was drin ist (unveröffentlicht)
 - [x] Inventur per Scanner: mehrere Barcodes hintereinander, bekannte Sets mit
       einem Tipp in die Sammlung, unbekannte zum Nacharbeiten (unveröffentlicht)
-- [ ] Automatische Backups: nächtlicher Export nach `DATA_DIR/backups` mit
-      Rotation, sichtbar unter Mehr → Export/Import
+- [x] Automatische Backups: nächtliche Sicherung nach `DATA_DIR/backups` mit
+      Rotation, sichtbar unter Mehr → Export/Import (unveröffentlicht) –
+      vollständig (Datenbank mit Konten, Dateien als Hardlinks) statt als
+      Export, weil der Export Konten bewusst weglässt

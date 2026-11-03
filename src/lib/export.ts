@@ -269,7 +269,11 @@ export function importArchive(bytes: Uint8Array, ownerUserId: string): ImportSum
     const target = safeTarget(relative);
     if (!target) continue;
     fs.mkdirSync(path.dirname(target), { recursive: true });
-    fs.writeFileSync(target, content);
+    // Rename instead of overwriting in place: the backups hold hard links to
+    // the old file, and writing into it would change them as well.
+    const temporary = `${target}.${crypto.randomUUID()}.tmp`;
+    fs.writeFileSync(temporary, content);
+    fs.renameSync(temporary, target);
     restored += 1;
   }
 

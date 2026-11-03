@@ -9,6 +9,13 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
 
 ### Hinzugefügt
 
+- **Automatische Sicherung**: jede Nacht ab 3 Uhr ein vollständiger Stand nach
+  `DATA_DIR/backups/<Datum>/` – die Datenbank per `VACUUM INTO` (konsistent,
+  auch während die App schreibt) und alle Dateien als Hardlinks, die kaum
+  Platz kosten. Die letzten `BACKUP_KEEP` Stände bleiben (Standard 14, `0`
+  schaltet ab); vor jedem Import wird zusätzlich gesichert. Liste und „Jetzt
+  sichern" unter Mehr → Export & Import, Zurückspielen im README beschrieben.
+
 - **Inventur per Scanner** (＋ → Inventur, oder Sammlung → Inventur): Kiste
   für Kiste scannen, die Kamera bleibt an. Bekannte Sets kommen einzeln oder
   alle auf einmal in die Sammlung, mit gewähltem Sammler und Standort;
@@ -32,6 +39,10 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
 
 ### Geändert
 
+- Hochgeladene und importierte Dateien werden erst vollständig geschrieben
+  und dann umbenannt. Damit taucht nie eine halbe Datei auf, und eine
+  Sicherung, die per Hardlink auf eine ältere Datei zeigt, bleibt unberührt.
+- `update.sh` packt `data/backups` nicht mit in sein Archiv.
 - Der Standortfilter der Sammlung schließt verschachtelte Standorte ein: Ein
   Regal zeigt auch, was in seinen Kisten liegt. Die Auswahl nennt den ganzen
   Weg („Kiste Keller 3 › Fach A"), und über der Liste steht, welcher Standort

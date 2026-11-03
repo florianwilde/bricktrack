@@ -1,6 +1,7 @@
 import { sql } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
+import { ensureBackupScheduler } from '@/lib/backup-job';
 import { ensureReminderScheduler } from '@/lib/reminder-job';
 
 export const dynamic = 'force-dynamic';
@@ -13,6 +14,7 @@ export function GET() {
   // The container polls this every 30s, which makes it the earliest reliable
   // moment to have the reminder scheduler running. Repeat calls are free.
   ensureReminderScheduler();
+  ensureBackupScheduler();
 
   try {
     db.get(sql`select 1`);

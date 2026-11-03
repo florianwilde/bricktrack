@@ -68,6 +68,7 @@ Bild-URLs, die der Nutzer selbst hinterlegt hat.
 | `src/lib/reminder-job.ts`, `src/lib/mailer.ts` | Versand und Zeitplan |
 | `src/lib/mail-settings.ts`, `src/lib/secret-box.ts` | SMTP aus .env oder App (`app_setting`), Passwort verschluesselt |
 | `src/lib/export.ts` | Export und Import des gesamten Bestands |
+| `src/lib/backup.ts`, `src/lib/backup-job.ts`, `src/lib/backup-plan.ts` | Naechtliche Sicherung, Rotation, Zeitplan (Plan rein) |
 | `src/lib/money.ts`, `src/lib/format.ts` | Cent-Umrechnung, dd.MM.yyyy |
 | `src/components/layout/more-items.ts` | Eintraege der Seite „Mehr" (Konto, Design, Stammdaten), auch Titel der Verwaltungsseiten |
 | `src/lib/collector-choice.ts` | Aktiver Sammler: `?sammler=` vor Cookie aus dem Umschalter „Fuer wen?" |
@@ -189,7 +190,12 @@ DATA_DIR/
     images/sets/<setId>/...     Set-Bilder (oeffentlich lesbar)
     photos/...                  eigene Fotos (nur mit Session)
     instructions/<setId>/...    Anleitungs-PDFs (nur mit Session)
+  backups/<Datum>/              naechtliche Sicherung: bricktrack.db + files/ (Hardlinks)
 ```
+
+Dateien unter `files/` werden nie an Ort und Stelle ueberschrieben, sondern
+geschrieben und umbenannt - sonst aenderte sich die per Hardlink verbundene
+Sicherung mit.
 
 Set-**Bilder** sind ohne Login abrufbar, weil die oeffentliche
 Wunschliste sie braucht. Fotos und Anleitungen erfordern zwingend eine
@@ -214,7 +220,8 @@ Session.
    Rate-Limiting auf den Login-Endpunkten.
 6. Der Export enthaelt **keine** Konten, Passwoerter oder Passkeys - und
    keine Reservierungen, Teilen-Token oder `app_setting` (SMTP-Zugang). Das Backup ist `./data`, nicht der
-   Export.
+   Export. Die Sicherungen unter `DATA_DIR/backups` enthalten Konten und
+   verlassen den Server deshalb nie ueber die App.
 7. Der Service Worker beantwortet nur GET-Anfragen aus dem Cache und niemals
    `/api/auth`, `/api/export` oder den Healthcheck. Beim Abmelden wird der
    Cache geleert.

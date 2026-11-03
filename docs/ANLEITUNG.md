@@ -523,6 +523,19 @@ entstanden sind.
 > **Das richtige Backup bleibt `./data`.** Ein Verzeichnis, Datenbank und
 > Dateien darin. Siehe [README](../README.md#backup-und-restore).
 
+### Automatische Sicherung
+
+Oben auf derselben Seite steht die **automatische Sicherung**: Jede Nacht ab
+3 Uhr legt Bricktrack einen vollständigen Stand an – Datenbank mit Konten und
+alle Dateien –, und zwar auch **vor jedem Import**. Die Liste zeigt Datum,
+Anlass und Größe; **Jetzt sichern** legt sofort einen Stand an, etwa bevor du
+viel aufräumst. Wie viele Stände bleiben, steht in `BACKUP_KEEP` (Standard 14).
+
+Zurückspielen geht absichtlich nur auf dem Server, nicht per Knopf in der App
+– die Schritte stehen im [README](../README.md#automatische-sicherung). Gegen
+einen Plattenschaden hilft die automatische Sicherung nicht, sie liegt neben
+den Daten.
+
 Der **Import** liest ein solches ZIP wieder ein – und **ersetzt dabei alle
 vorhandenen Daten**. Zusammenführen zweier Sammlungen ist bewusst nicht
 möglich: Es bräuchte Konfliktregeln für jede Tabelle, und das Ergebnis wäre

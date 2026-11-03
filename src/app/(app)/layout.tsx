@@ -3,6 +3,7 @@ import { BottomNav } from '@/components/layout/bottom-nav';
 import { storedCollectorId } from '@/lib/collector-choice';
 import { listCollectors } from '@/lib/queries/collectors';
 import { isRebrickableEnabled } from '@/lib/rebrickable';
+import { ensureBackupScheduler } from '@/lib/backup-job';
 import { ensureReminderScheduler } from '@/lib/reminder-job';
 import { requireUser } from '@/lib/session';
 
@@ -10,6 +11,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   // Second entry point besides the healthcheck, in case someone turns that
   // off. The call is idempotent.
   ensureReminderScheduler();
+  ensureBackupScheduler();
 
   const user = await requireUser();
   const collectors = listCollectors().map((row) => ({

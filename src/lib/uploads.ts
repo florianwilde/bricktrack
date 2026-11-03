@@ -69,10 +69,17 @@ export function resolveFilePath(relativePath: string): string {
   return absolute;
 }
 
+/**
+ * Written next to the target and renamed into place: the file appears whole or
+ * not at all, and as a new inode - a hard-linked backup of an older file with
+ * the same name can never be changed through it.
+ */
 async function writeFile(relativePath: string, data: Buffer): Promise<void> {
   const absolute = resolveFilePath(relativePath);
   await fs.mkdir(path.dirname(absolute), { recursive: true });
-  await fs.writeFile(absolute, data);
+  const temporary = `${absolute}.${crypto.randomUUID()}.tmp`;
+  await fs.writeFile(temporary, data);
+  await fs.rename(temporary, absolute);
 }
 
 export type StoredImage = {
