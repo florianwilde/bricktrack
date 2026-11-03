@@ -242,6 +242,8 @@ Session.
   Auswahlfeld. *Fertig in 0.6.0.*
 - **Fotos, Suche und Verlauf** - Fotos je Sammlungseintrag, Suche in
   Anleitungs-PDFs, Verlauf der Sammlung. *Fertig in 0.7.0.*
+- **Ordnung im Bestand** - Fehlteile-Einkaufsliste, QR-Etiketten fuer
+  Standorte, Inventur per Scanner, naechtliche Sicherung. *Fertig in 0.8.0.*
 
 Details und Stand: `docs/ROADMAP.md`. Zeitaufwaende: `docs/DEVLOG.md`.
 
