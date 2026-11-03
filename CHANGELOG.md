@@ -7,28 +7,30 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unreleased]
 
-### Hinzugefügt
+## [0.8.0] - 2026-11-03
 
+Ordnung im Bestand: Kisten mit QR-Etikett, Inventur per Scanner, eine
+Einkaufsliste für Fehlteile – und eine Sicherung, die jede Nacht von selbst
+läuft.
+
+### Hinzugefügt
 - **Automatische Sicherung**: jede Nacht ab 3 Uhr ein vollständiger Stand nach
   `DATA_DIR/backups/<Datum>/` – die Datenbank per `VACUUM INTO` (konsistent,
   auch während die App schreibt) und alle Dateien als Hardlinks, die kaum
   Platz kosten. Die letzten `BACKUP_KEEP` Stände bleiben (Standard 14, `0`
   schaltet ab); vor jedem Import wird zusätzlich gesichert. Liste und „Jetzt
   sichern" unter Mehr → Export & Import, Zurückspielen im README beschrieben.
-
 - **Inventur per Scanner** (＋ → Inventur, oder Sammlung → Inventur): Kiste
   für Kiste scannen, die Kamera bleibt an. Bekannte Sets kommen einzeln oder
   alle auf einmal in die Sammlung, mit gewähltem Sammler und Standort;
   unbekannte lassen sich zwischendurch anlegen. Dieselbe Kiste zählt nur
   einmal, solange sie im Bild ist; ein QR-Etikett setzt den Standort. Die
   Liste bleibt auf dem Gerät erhalten.
-
 - **Kisten mit QR-Etikett**: Unter Mehr → Standorte lassen sich Etiketten für
   einen oder alle Standorte drucken – QR-Code, Name und der Weg dahin. Der
   Code führt zur Sammlung, gefiltert auf diesen Standort; jede Handykamera
   versteht ihn, der Scanner in Bricktrack auch. Erzeugt wird der Code auf dem
   eigenen Server, ohne weitere Abhängigkeit und ohne fremden Dienst.
-
 - **Fehlteile-Einkaufsliste** (Sammlung → Fehlteile): alle offenen Fehlteile
   aus allen Exemplaren, zusammengefasst je Teil und Farbe. Download als
   BrickLink-Wunschliste (XML für „Wanted → Upload", gängige Farbnamen werden
@@ -366,7 +368,8 @@ Erste lauffaehige Fassung: Phase 1 vollstaendig, im Docker-Stack verifiziert.
 - Unter Windows scheitert `pnpm build` an fehlenden Symlink-Rechten. Der
   Docker-Build unter Linux ist davon nicht betroffen.
 
-[Unreleased]: https://github.com/florianwilde/bricktrack/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/florianwilde/bricktrack/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/florianwilde/bricktrack/releases/tag/v0.8.0
 [0.7.0]: https://github.com/florianwilde/bricktrack/releases/tag/v0.7.0
 [0.6.0]: https://github.com/florianwilde/bricktrack/releases/tag/v0.6.0
 [0.5.0]: https://github.com/florianwilde/bricktrack/releases/tag/v0.5.0

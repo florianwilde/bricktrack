@@ -96,15 +96,17 @@ und ohne Anspruch auf Vollstaendigkeit:
 
 - [ ] BrickLink-Preisfuehrer anbinden, falls der Aufwand sich doch lohnt
 
-## Nächste Runde (gewählt am 27.10.2026)
+## Ordnung im Bestand (v0.8.0, abgeschlossen am 03.11.2026)
+
+Am 27.10.2026 gewählt.
 
 - [x] Fehlteile-Einkaufsliste: alle offenen Fehlteile je Teil und Farbe, als
-      CSV und BrickLink-Wunschliste, abhaken für alle Sets (unveröffentlicht)
+      CSV und BrickLink-Wunschliste, abhaken für alle Sets
 - [x] Kisten mit QR-Etikett: je Standort Inhalt und ein druckbares Etikett,
-      Scannen zeigt, was drin ist (unveröffentlicht)
+      Scannen zeigt, was drin ist
 - [x] Inventur per Scanner: mehrere Barcodes hintereinander, bekannte Sets mit
-      einem Tipp in die Sammlung, unbekannte zum Nacharbeiten (unveröffentlicht)
+      einem Tipp in die Sammlung, unbekannte zum Nacharbeiten
 - [x] Automatische Backups: nächtliche Sicherung nach `DATA_DIR/backups` mit
-      Rotation, sichtbar unter Mehr → Export/Import (unveröffentlicht) –
+      Rotation, sichtbar unter Mehr → Export/Import –
       vollständig (Datenbank mit Konten, Dateien als Hardlinks) statt als
       Export, weil der Export Konten bewusst weglässt
