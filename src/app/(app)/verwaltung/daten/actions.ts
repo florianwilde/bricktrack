@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { actionData, actionError, type ActionResult } from '@/lib/action-result';
+import { createBackup, pruneBackups } from '@/lib/backup';
 import { importArchive, ImportError, type ImportSummary } from '@/lib/export';
 import { requireAdmin } from '@/lib/session';
 
@@ -27,6 +28,17 @@ export async function importArchiveAction(
     return actionError('Das Archiv ist größer als 512 MB und wird nicht eingelesen.');
   }
 
+  // An import replaces everything, so the state before it is kept first -
+  // even with nightly backups switched off.
+  try {
+    createBackup('before-import');
+  } catch (error) {
+    console.error('[import] Sicherung vor dem Import fehlgeschlagen', error);
+    return actionError(
+      'Vor dem Import ließ sich keine Sicherung anlegen. Es wurde nichts verändert – bitte den Speicherplatz prüfen.',
+    );
+  }
+
   try {
     const summary = importArchive(
       new Uint8Array(await file.arrayBuffer()),
@@ -41,5 +53,19 @@ export async function importArchiveAction(
     return actionError(
       'Das Archiv konnte nicht eingelesen werden. Die vorhandenen Daten wurden nicht verändert.',
     );
+  }
+}
+
+/** "Jetzt sichern" on the data page. */
+export async function createBackupAction(): Promise<ActionResult<{ name: string }>> {
+  await requireAdmin();
+  try {
+    const backup = createBackup('manual');
+    pruneBackups();
+    revalidatePath('/verwaltung/daten');
+    return actionData({ name: backup.name });
+  } catch (error) {
+    console.error('[backup] Sicherung von Hand fehlgeschlagen', error);
+    return actionError('Die Sicherung ist fehlgeschlagen. Bitte den Speicherplatz prüfen.');
   }
 }

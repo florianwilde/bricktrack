@@ -116,6 +116,7 @@ data/
   files/images/sets/…       Set-Bilder
   files/photos/…            eigene Fotos
   files/instructions/…      Anleitungs-PDFs
+  backups/<Datum>/…         nächtliche Sicherungen der App (siehe unten)
 ```
 
 **Sichern** (Container kurz anhalten, damit die Datenbank nicht mitten im
@@ -139,6 +140,33 @@ docker compose up -d
 
 Migrationen laufen bei jedem Start automatisch – ein altes Backup wird beim
 Zurückspielen also auf den aktuellen Schemastand gehoben.
+
+### Automatische Sicherung
+
+Die App sichert sich jede Nacht ab 3 Uhr selbst nach `data/backups/<Datum>/`:
+die Datenbank vollständig (mit Konten) und alle Dateien als Hardlinks – eine
+Datei, die sich nicht geändert hat, belegt also keinen zweiten Platz. Die
+letzten `BACKUP_KEEP` Stände bleiben (Standard 14, `0` schaltet ab), dazu
+wird vor jedem Import gesichert. Die Liste steht unter Mehr → Export & Import.
+
+Das schützt vor Fehlern – ein falscher Import, ein versehentlich gelöschtes
+Set –, **nicht vor einem Plattenschaden**: Die Sicherungen liegen neben den
+Daten. `./data` gehört trotzdem regelmäßig auf ein anderes Gerät.
+
+**Einen Stand zurückspielen** (der aktuelle wird dabei nur beiseitegelegt):
+
+```bash
+docker compose down
+NAME=2026-11-03_0300                      # Ordner unter data/backups
+mv data/db data/db-vor-restore
+mkdir data/db && cp data/backups/$NAME/bricktrack.db data/db/
+mv data/files data/files-vor-restore
+cp -al data/backups/$NAME/files data/files  # Hardlinks, geht sofort
+sudo chown -R 1000:1000 ./data
+docker compose up -d
+```
+
+Läuft alles, können `data/db-vor-restore` und `data/files-vor-restore` weg.
 
 ## Aktualisieren
 

@@ -26,6 +26,7 @@ next-env.d.ts
 /data-test
 /data-test-export
 /data-test-photos
+/data-test-backup
 
 # production
 *.tsbuildinfo

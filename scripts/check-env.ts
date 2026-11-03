@@ -125,6 +125,13 @@ async function main() {
         : 'Kein REBRICKABLE_API_KEY – Lego-Import aus, alles andere geht',
     );
 
+    report(
+      env.BACKUP_KEEP > 0 ? 'ok' : 'warn',
+      env.BACKUP_KEEP > 0
+        ? `Nächtliche Sicherung an, ${env.BACKUP_KEEP} Stände unter ${env.BACKUPS_DIR}`
+        : 'BACKUP_KEEP=0 – keine nächtliche Sicherung (vor Importen wird trotzdem gesichert)',
+    );
+
     if (env.SMTP_HOST && !env.SMTP_FROM) {
       report('warn', 'SMTP_HOST ohne SMTP_FROM – Mailversand bleibt aus');
     } else if (!env.SMTP_HOST && (env.SMTP_FROM || env.SMTP_USER || env.SMTP_PASSWORD)) {

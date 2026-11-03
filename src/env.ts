@@ -47,6 +47,9 @@ const schema = z.object({
 
   /** How many days before the event a reminder goes out. */
   REMINDER_DAYS_BEFORE: z.coerce.number().int().min(1).max(90).default(14),
+
+  /** Nightly backups to keep under DATA_DIR/backups; 0 switches them off. */
+  BACKUP_KEEP: z.coerce.number().int().min(0).max(365).default(14),
 });
 
 /**
@@ -89,6 +92,7 @@ export const env = {
   DB_DIR: path.join(dataDir, 'db'),
   DB_PATH: path.join(dataDir, 'db', 'bricktrack.db'),
   FILES_DIR: path.join(dataDir, 'files'),
+  BACKUPS_DIR: path.join(dataDir, 'backups'),
 
   /**
    * WebAuthn relying party ID: the registrable domain of BASE_URL. Passkeys are
