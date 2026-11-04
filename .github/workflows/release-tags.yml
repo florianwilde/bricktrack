@@ -1,0 +1,37 @@
+# Legt fuer jeden Release-Merge auf main den Tag und die GitHub-Release-Seite
+# an - ein Release ist damit nur noch das Mergen des "Release x.y.z"-PRs.
+# Details: scripts/release-tags.mjs
+name: Release-Tags
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-tags
+  cancel-in-progress: false
+
+jobs:
+  tags:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The whole history and all tags, to see which releases are missing.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Fehlende Tags und Releases anlegen
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          node scripts/release-tags.mjs
+        env:
+          GH_TOKEN: ${{ github.token }}

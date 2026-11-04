@@ -7,6 +7,19 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unreleased]
 
+### Hinzugefügt
+
+- Tags und Release-Seiten auf GitHub entstehen automatisch: Nach jedem Push
+  auf `main` legt eine GitHub Action für jeden Merge „Release x.y.z“ ohne Tag
+  den Tag auf genau diesem Merge an, dazu die Release-Seite mit dem Abschnitt
+  aus diesem Changelog. Ein Release ist damit nur noch das Mergen des
+  Release-PRs. Holt beim ersten Lauf auch 0.5.0 bis 1.0.0 nach.
+
+### Geändert
+
+- Der BrickLink-Preisführer ist von der Roadmap gestrichen. Preise werden von
+  Hand notiert.
+
 ## [1.0.0] - 2026-11-04
 
 Bricktrack ist fertig für den Alltag: Katalog für jeden Hersteller, Sammlung
@@ -15,10 +28,6 @@ Reservierung ohne Konto, mehrere Kinder, Passkeys, Inventur per Scanner,
 QR-Etiketten für Kisten – und eine Sicherung, die jede Nacht von selbst läuft.
 Seit 0.8.0 kamen keine neuen Funktionen dazu; diese Version schließt ab, was
 für einen verlässlichen Betrieb fehlte.
-
-Bewusst nicht dabei ist der BrickLink-Preisführer (OAuth1 mit eigener
-Anwendung je Nutzer für eine Zahl, die man in zehn Sekunden eintippt). Preise
-werden von Hand notiert.
 
 ### Geändert
 

@@ -256,3 +256,7 @@ Details und Stand: `docs/ROADMAP.md`. Zeitaufwaende: `docs/DEVLOG.md`.
 - Nach jedem abgeschlossenen Teilschritt committen.
 - `pnpm lint` und `pnpm typecheck` muessen sauber sein, bevor eine Phase
   als fertig gilt.
+- Release: PR „Release x.y.z" mit Version in `package.json` und Abschnitt
+  `## [x.y.z] - Datum` im Changelog, gemergt mit dem Titel
+  `Merge: Release x.y.z - Name`. Tag und GitHub-Release legt danach die Action
+  `.github/workflows/release-tags.yml` an (`scripts/release-tags.mjs`).
