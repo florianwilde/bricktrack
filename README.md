@@ -23,9 +23,11 @@ du per Link mit Familie und Freunden teilst. Die reservieren dort ihr Geschenk
 
 | | |
 |---|---|
-| **Katalog** | Sets aller Hersteller, Suche nach Nummer, Name oder EAN, Filter nach Hersteller, Thema, Jahr und Besitzstatus |
-| **Sammlung** | Was tatsächlich da ist: Status, Vollständigkeit, Zustand, Standort, Kaufpreis, „geschenkt von" |
-| **Anleitungen** | PDFs hochladen und im Browser blättern (pdf.js, ohne externe Dienste) oder auf die Hersteller-Seite verlinken |
+| **Katalog** | Sets aller Hersteller, Suche nach Nummer, Name oder EAN, Reiter für Besitzstatus und Hersteller, Filter nach Thema und Jahr; neue Sets per Barcode, aus einem Link oder über Rebrickable |
+| **Sammlung** | Was tatsächlich da ist: Status, Vollständigkeit, Zustand, Standort, Kaufpreis, „geschenkt von"; Verlauf, was wann dazukam |
+| **Inventur** | Kiste für Kiste scannen, am Ende alles auf einmal übernehmen |
+| **Standorte** | Verschachtelt (Keller › Regal › Kiste), mit druckbarem QR-Etikett, das zeigt, was drin ist |
+| **Anleitungen** | PDFs hochladen, im Browser blättern und durchsuchen (pdf.js, ohne externe Dienste) oder auf die Hersteller-Seite verlinken |
 | **Fehlteile** | Je Exemplar vermerken, als Einkaufsliste zusammengefasst – auch als BrickLink-Wunschliste |
 | **Fotos** | Eigene Bilder je Set und je Exemplar – direkt aus der Handykamera |
 | **Wunschlisten** | Mehrfachauswahl aus den fehlenden Sets, Priorität, Reihenfolge, Termin |
@@ -33,7 +35,8 @@ du per Link mit Familie und Freunden teilst. Die reservieren dort ihr Geschenk
 | **Mehrere Kinder** | Gemeinsamer Katalog, getrennte Sammlungen und Wunschlisten – sichtbar erst ab dem zweiten Sammler |
 | **Preise** | Notierte Preise je Set, Wertentwicklung gegen die UVP |
 | **Erinnerungen** | E-Mail, wenn ein Termin näher rückt und noch Wünsche offen sind (SMTP optional) |
-| **Anmeldung** | E-Mail und Passwort oder Passkey (WebAuthn), mehrere Geräte je Konto |
+| **Anmeldung** | E-Mail und Passwort oder Passkey (WebAuthn), mehrere Geräte je Konto, Einladungen für weitere Erwachsene |
+| **Sicherung** | Jede Nacht ein vollständiger Stand, vor jedem Import zusätzlich; Export als ZIP, JSON und CSV |
 
 Mobil zuerst gebaut: Die App wird im Laden und im Kinderzimmer benutzt, nicht
 am Schreibtisch.

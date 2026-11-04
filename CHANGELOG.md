@@ -7,6 +7,23 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unreleased]
 
+### Geändert
+
+- `update.sh` sagt, von welcher Adresse es den neuen Stand holt – ein Server,
+  der nach einem Umzug noch auf die alte zeigt, fällt so sofort auf.
+- Abhängigkeiten der Entwicklungswerkzeuge angehoben (`systeminformation`,
+  `qs`, das esbuild in drizzle-kit). Zur Laufzeit meldet `pnpm audit --prod`
+  keine bekannte Lücke.
+
+### Doku
+
+- Screenshots der Anleitung neu erzeugt – seit 0.6.0 zeigten Katalog und
+  fehlende Sets noch die alten Auswahlfelder –, dazu neue Bilder für
+  Fehlteile-Liste, Etiketten, Inventur und Verlauf.
+- Der Smoke-Test deckt jetzt auch Inventur, Fehlteile-Liste, Etiketten und
+  Sicherung ab. Der Screenshot-Lauf war seit den Katalog-Reitern (0.6.0) an
+  einem mehrdeutigen „Alle"-Knopf hängen geblieben.
+
 ## [0.8.0] - 2026-11-03
 
 Ordnung im Bestand: Kisten mit QR-Etikett, Inventur per Scanner, eine
