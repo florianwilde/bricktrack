@@ -7,7 +7,8 @@
  * "Release x.y.z" pull request - no computer with push rights needed. A
  * release is a first-parent commit on main titled "Merge: Release x.y.z" or
  * "Merge: Release x.y.z - Name"; the tag points at exactly that merge commit.
- * Safe to run any number of times: existing tags are left alone.
+ * Safe to run any number of times: existing tags are left alone, and a tag
+ * without a release page only gets the page.
  *
  *   node scripts/release-tags.mjs            create what is missing
  *   node scripts/release-tags.mjs --dry-run  only print it
@@ -48,7 +49,18 @@ export function tagMessage(release) {
 }
 
 function run(command, args, options = {}) {
-  return execFileSync(command, args, { encoding: 'utf8', ...options }).trim();
+  // With inherited stdio there is no captured output to return.
+  const output = execFileSync(command, args, { encoding: 'utf8', ...options });
+  return typeof output === 'string' ? output.trim() : '';
+}
+
+function hasRelease(tag) {
+  try {
+    run('gh', ['release', 'view', tag, '--json', 'tagName'], { stdio: 'pipe' });
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function main() {
@@ -57,20 +69,27 @@ function main() {
   const existing = new Set(run('git', ['tag', '--list', 'v*']).split('\n').filter(Boolean));
   const changelog = fs.readFileSync('CHANGELOG.md', 'utf8');
 
-  const missing = parseReleaseMerges(log).filter((release) => !existing.has(`v${release.version}`));
-  if (missing.length === 0) {
-    console.log('[release-tags] Alle Releases haben ihren Tag.');
-    return;
-  }
+  const releases = parseReleaseMerges(log);
+  const newest = releases[releases.length - 1];
+  let changed = 0;
 
-  const newest = missing[missing.length - 1];
-  for (const release of missing) {
+  for (const release of releases) {
     const tag = `v${release.version}`;
-    console.log(`[release-tags] ${tag} -> ${release.sha.slice(0, 7)} (${tagMessage(release)})`);
+    const needsTag = !existing.has(tag);
+    // Without a token (a local dry run) the release pages cannot be checked.
+    const needsRelease = needsTag || (!dryRun && !hasRelease(tag));
+    if (!needsTag && !needsRelease) continue;
+    changed += 1;
+
+    console.log(
+      `[release-tags] ${tag} -> ${release.sha.slice(0, 7)} (${tagMessage(release)})${needsTag ? '' : ', nur Release-Seite'}`,
+    );
     if (dryRun) continue;
 
-    run('git', ['tag', '-a', tag, '-m', tagMessage(release), release.sha]);
-    run('git', ['push', 'origin', `refs/tags/${tag}`], { stdio: 'inherit' });
+    if (needsTag) {
+      run('git', ['tag', '-a', tag, '-m', tagMessage(release), release.sha]);
+      run('git', ['push', 'origin', `refs/tags/${tag}`], { stdio: 'inherit' });
+    }
 
     const notes = changelogSection(changelog, release.version) ?? 'Siehe CHANGELOG.md.';
     run(
@@ -90,6 +109,8 @@ function main() {
       { stdio: 'inherit' },
     );
   }
+
+  if (changed === 0) console.log('[release-tags] Alle Releases haben Tag und Release-Seite.');
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) main();
