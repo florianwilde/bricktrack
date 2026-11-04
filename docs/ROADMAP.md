@@ -114,10 +114,3 @@ Am 27.10.2026 gewählt.
 - [x] Screenshots der Anleitung neu erzeugt, vier neue für Fehlteile-Liste,
       Etiketten, Inventur und Verlauf
 - [x] README, Schnellstart und Anleitung auf dem Stand aller Funktionen
-
-## Nicht in 1.0
-
-- BrickLink-Preisführer: bewusst weggelassen. Er verlangt OAuth1 mit einer
-  pro Nutzer registrierten Anwendung – viel Apparat für eine Zahl, die sich in
-  zehn Sekunden eintippen lässt. Preise werden von Hand notiert, die
-  Datenstruktur (`price_point.source`) ist offen dafür.
