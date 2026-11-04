@@ -89,8 +89,9 @@ Alle Werte kommen aus `.env` (Vorlage: `.env.example`).
 | `BIND_ADDRESS` | nein | `127.0.0.1` | Auf welcher Host-Adresse der Container lauscht. `0.0.0.0`, wenn der Proxy auf einem anderen Host läuft. |
 | `HOST_PORT` | nein | `3000` | Port auf dem Host, falls 3000 belegt ist. |
 | `REBRICKABLE_API_KEY` | nein | – | Lego-Import. Ohne Key läuft alles manuell. |
-| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM` | nein | – | Mailversand für Wunschlisten-Erinnerungen. Ohne `SMTP_HOST` und `SMTP_FROM` ist die Funktion aus. |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM` | nein | – | Mailversand für Wunschlisten-Erinnerungen. Einfacher in der App unter Mehr → Erinnerungen → Mailserver; steht er hier, hat die `.env` Vorrang. |
 | `REMINDER_DAYS_BEFORE` | nein | `14` | Wie viele Tage vor dem Termin erinnert wird. |
+| `BACKUP_KEEP` | nein | `14` | Wie viele nächtliche Sicherungen unter `data/backups` bleiben. `0` schaltet sie ab. |
 
 ### Reverse Proxy
 

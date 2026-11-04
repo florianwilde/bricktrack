@@ -244,6 +244,8 @@ Session.
   Anleitungs-PDFs, Verlauf der Sammlung. *Fertig in 0.7.0.*
 - **Ordnung im Bestand** - Fehlteile-Einkaufsliste, QR-Etiketten fuer
   Standorte, Inventur per Scanner, naechtliche Sicherung. *Fertig in 0.8.0.*
+- **Version 1.0** - Abhaengigkeiten ohne Laufzeit-Luecken, Smoke-Test und
+  Screenshots fuer alle Funktionen, Doku vollstaendig. *Fertig in 1.0.0.*
 
 Details und Stand: `docs/ROADMAP.md`. Zeitaufwaende: `docs/DEVLOG.md`.
 

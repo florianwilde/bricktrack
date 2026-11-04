@@ -137,7 +137,7 @@ Registrierung.
 
 **Der erste registrierte Nutzer wird automatisch Administrator.** Danach ist
 die Registrierung geschlossen – weitere Konten entstehen nur über einen
-Einladungslink (ab Version 0.2.0).
+Einladungslink.
 
 Also: gleich beim ersten Aufruf selbst registrieren, bevor es jemand anderes
 tut.
