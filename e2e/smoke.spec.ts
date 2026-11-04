@@ -152,6 +152,80 @@ test('Einladung: zweiter Elternteil bekommt ein eigenes Konto', async ({ page, b
   await secondTry.close();
 });
 
+test('Inventur, Fehlteile, Etikett und Sicherung', async ({ page }) => {
+  await page.goto('/anmelden');
+  await page.getByLabel('E-Mail').fill('test@bricktrack.local');
+  await page.getByLabel('Passwort').fill('smoketest-passwort');
+  await page.getByRole('button', { name: 'Anmelden', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Hallo Florian' })).toBeVisible();
+
+  // --- a box to put things in ------------------------------------------------
+  await page.goto('/verwaltung/standorte');
+  await page.getByRole('button', { name: 'Standort anlegen' }).click();
+  await page.getByLabel('Name').fill('Kiste Keller 3');
+  await page.getByRole('button', { name: 'Speichern' }).click();
+  await expect(page.getByText('Kiste Keller 3')).toBeVisible();
+  const labelHref = await page
+    .getByRole('link', { name: 'Etikett für Kiste Keller 3' })
+    .getAttribute('href');
+  const locationId = new URL(labelHref!, 'http://x').searchParams.get('standort');
+  expect(locationId).toBeTruthy();
+
+  // --- a set with a barcode --------------------------------------------------
+  await page.goto('/katalog/neu');
+  await page.getByLabel('Setnummer').fill('60414');
+  await page.getByRole('textbox', { name: 'Name', exact: true }).fill('Feuerwehrstation');
+  await page.getByLabel('EAN').fill('4006381333931');
+  await page.getByRole('button', { name: 'Set anlegen' }).click();
+  await expect(page.getByRole('heading', { name: 'Feuerwehrstation' })).toBeVisible();
+
+  // --- inventory: two boxes of it go into the box ---------------------------
+  await page.goto('/sammlung/inventur');
+  await page.getByLabel('Standort').selectOption({ label: 'Kiste Keller 3' });
+  for (let copy = 0; copy < 2; copy += 1) {
+    await page.getByLabel('EAN eintippen').fill('4006381333931');
+    await page.getByRole('button', { name: 'Hinzufügen' }).click();
+  }
+  await expect(page.getByRole('link', { name: '60414 · Feuerwehrstation' })).toBeVisible();
+  await page.getByRole('button', { name: '2 Sets übernehmen' }).click();
+  await expect(page.getByText('2 Sets in die Sammlung übernommen.')).toBeVisible();
+
+  // The box label leads to exactly what is inside.
+  await page.goto(`/sammlung?standort=${locationId}&sammler=alle`);
+  await expect(page.getByText('2 Einträge · in Kiste Keller 3')).toBeVisible();
+
+  // --- a missing part on one copy, and the shopping list --------------------
+  const setHref = await page
+    .getByRole('link', { name: /Feuerwehrstation/ })
+    .first()
+    .getAttribute('href');
+  await page.goto(setHref!);
+  await page.getByRole('button', { name: 'Fehlteile' }).first().click();
+  await page.getByLabel('Teilenummer').fill('3001');
+  await page.getByLabel('Farbe').fill('Rot');
+  await page.getByLabel('Anzahl').fill('2');
+  await page.getByRole('button', { name: 'Hinzufügen' }).click();
+  await expect(page.getByText('Fehlteil vermerkt.')).toBeVisible();
+
+  await page.goto('/sammlung/fehlteile');
+  await expect(page.getByText('1 Teil, 2 Stück')).toBeVisible();
+  const wanted = await page.request.get('/api/missing-parts/xml?sammler=alle');
+  expect(wanted.status()).toBe(200);
+  const xml = await wanted.text();
+  expect(xml).toContain('<ITEMID>3001</ITEMID>');
+  expect(xml).toContain('<COLOR>5</COLOR>');
+  expect(xml).toContain('<MINQTY>2</MINQTY>');
+
+  // --- labels and backups ----------------------------------------------------
+  await page.goto('/etiketten');
+  await expect(page.getByRole('img', { name: 'QR-Code für Kiste Keller 3' })).toBeVisible();
+
+  await page.goto('/verwaltung/daten');
+  await page.getByRole('button', { name: 'Jetzt sichern' }).click();
+  await expect(page.getByText(/^Gesichert: /)).toBeVisible();
+  await expect(page.getByText(/^Von Hand · Datenbank/)).toBeVisible();
+});
+
 test('Ohne Anmeldung fuehrt jeder geschuetzte Pfad zur Anmeldung', async ({ page }) => {
   await page.goto('/sammlung');
   await expect(page).toHaveURL(/\/anmelden|\/registrieren/);

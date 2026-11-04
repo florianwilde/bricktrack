@@ -202,7 +202,8 @@ test('Screenshots fuer die Anleitung', async ({ page, browser }) => {
   await expect(page.getByText('Sets, die Max noch nicht hat')).toBeVisible();
   await shoot(page, '22-sammler-filter');
   // Back to everybody, so the following pictures show the whole family.
-  await page.getByRole('radio', { name: /Alle/ }).click();
+  // Scoped: the catalog tabs ("Alle Sets", "Alle Hersteller") are radios too.
+  await page.getByRole('radiogroup', { name: 'Für wen?' }).getByRole('radio', { name: 'Alle' }).click();
   await expect(page.getByText('Sets, die noch nicht in der Sammlung sind')).toBeVisible();
 
   // --- 17. prices -----------------------------------------------------------
@@ -221,4 +222,42 @@ test('Screenshots fuer die Anleitung', async ({ page, browser }) => {
   await visit(page, '/verwaltung/erinnerungen');
   await expect(page.getByText('Erinnerungen').first()).toBeVisible();
   await shoot(page, '24-erinnerungen');
+
+  // --- 19. shopping list for missing parts ----------------------------------
+  // The part noted on the set page above is on it already.
+  await visit(page, '/sammlung/fehlteile');
+  await expect(page.getByRole('link', { name: 'BrickLink-Wunschliste' })).toBeVisible();
+  await shoot(page, '28-fehlteile-liste');
+
+  // --- 20. box labels -------------------------------------------------------
+  await visit(page, '/etiketten');
+  await expect(page.getByRole('button', { name: 'Drucken' })).toBeVisible();
+  await shoot(page, '29-etiketten');
+
+  // --- 21. inventory --------------------------------------------------------
+  // A set with a barcode first, so the list shows a match and not only misses.
+  await visit(page, '/katalog/neu?weg=hand');
+  // By id: with the Rebrickable placeholder key the Lego import has a
+  // "Setnummer" field of its own on the same page.
+  await page.locator('#setNumber').fill('60414');
+  await page.getByRole('textbox', { name: 'Name', exact: true }).fill('Feuerwehrstation');
+  await page.getByLabel('EAN').fill('4006381333931');
+  await page.getByRole('button', { name: 'Set anlegen' }).click();
+  await expect(page.getByRole('heading', { name: 'Feuerwehrstation' })).toBeVisible();
+
+  await visit(page, '/sammlung/inventur');
+  await expect(page.getByLabel('EAN eintippen')).toBeVisible();
+  for (const code of ['4006381333931', '4006381333931', '5901234123457']) {
+    await page.getByLabel('EAN eintippen').fill(code);
+    await page.getByRole('button', { name: 'Hinzufügen' }).click();
+  }
+  await expect(page.getByRole('link', { name: '60414 · Feuerwehrstation' })).toBeVisible();
+  await expect(page.getByText('Nicht im Katalog')).toBeVisible();
+  await shoot(page, '30-inventur');
+  await page.getByRole('button', { name: 'Liste leeren' }).click();
+
+  // --- 22. timeline ---------------------------------------------------------
+  await visit(page, '/sammlung/verlauf');
+  await expect(page.getByRole('heading', { name: 'Verlauf' })).toBeVisible();
+  await shoot(page, '31-verlauf');
 });

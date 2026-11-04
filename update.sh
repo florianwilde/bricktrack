@@ -83,7 +83,9 @@ if [ "$DO_PULL" -eq 1 ]; then
     exit 1
   fi
 
-  info "Neue Version wird geholt …"
+  # Zeigt, woher geholt wird: Ein Klon, der nach einem Umzug noch auf die alte
+  # Adresse zeigt, meldet sonst nur "schon aktuell" und bekommt nie Neues.
+  info "Neue Version wird geholt von $(git remote get-url origin 2>/dev/null || echo origin) …"
   git pull --ff-only
   NEW_COMMIT="$(git rev-parse HEAD)"
 

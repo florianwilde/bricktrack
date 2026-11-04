@@ -89,13 +89,6 @@ Laeuft vollstaendig im Docker-Stack.
 - [x] Anleitungen im PDF-Viewer durchsuchen, dazu Sprung auf eine Seitenzahl
 - [x] Statistik über die Zeit: was kam wann dazu (Sammlung → Verlauf)
 
-## Danach
-
-Phase 1 bis 3 sind umgesetzt. Was noch offen ist, steht hier - ohne Termin
-und ohne Anspruch auf Vollstaendigkeit:
-
-- [ ] BrickLink-Preisfuehrer anbinden, falls der Aufwand sich doch lohnt
-
 ## Ordnung im Bestand (v0.8.0, abgeschlossen am 03.11.2026)
 
 Am 27.10.2026 gewählt.
@@ -110,3 +103,21 @@ Am 27.10.2026 gewählt.
       Rotation, sichtbar unter Mehr → Export/Import –
       vollständig (Datenbank mit Konten, Dateien als Hardlinks) statt als
       Export, weil der Export Konten bewusst weglässt
+
+## Version 1.0 (abgeschlossen am 04.11.2026)
+
+- [x] Abhängigkeiten geprüft: zur Laufzeit keine bekannte Lücke; übrig sind
+      drei Funde in Entwicklungswerkzeugen (shadcn-CLI, eslint) ohne
+      verträgliche Korrektur
+- [x] Smoke-Test um Inventur, Fehlteile-Liste, Etiketten und Sicherung
+      erweitert, alle Läufe gegen den Produktionsbuild grün
+- [x] Screenshots der Anleitung neu erzeugt, vier neue für Fehlteile-Liste,
+      Etiketten, Inventur und Verlauf
+- [x] README, Schnellstart und Anleitung auf dem Stand aller Funktionen
+
+## Nicht in 1.0
+
+- BrickLink-Preisführer: bewusst weggelassen. Er verlangt OAuth1 mit einer
+  pro Nutzer registrierten Anwendung – viel Apparat für eine Zahl, die sich in
+  zehn Sekunden eintippen lässt. Preise werden von Hand notiert, die
+  Datenstruktur (`price_point.source`) ist offen dafür.

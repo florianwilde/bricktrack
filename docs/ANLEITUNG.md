@@ -237,6 +237,8 @@ Verkaufte Exemplare zählen in keiner Kachel mit.
 
 ### Inventur: viele Kisten auf einmal
 
+![Inventur](bilder/30-inventur.png)
+
 Über das **＋** in der Navigation (oder **Inventur** oben auf der Sammlung)
 geht es zur Inventur. Wähl, für wen die Sets sind und wo sie stehen, dann
 **Kamera an** und Kiste für Kiste den Strichcode ins Bild halten. Jeder
@@ -257,6 +259,8 @@ Browsers erhalten, bis du sie leerst.
 
 ### Kisten mit QR-Etikett
 
+![Etiketten](bilder/29-etiketten.png)
+
 Unter **Mehr → Standorte** hat jeder Standort ein **QR-Symbol**, oben steht
 **Alle Etiketten drucken**. Die Seite zeigt je Standort ein Etikett mit
 QR-Code, Namen und – bei verschachtelten Standorten – dem Weg dahin („Kiste
@@ -273,6 +277,8 @@ Das Etikett enthält die Adresse aus `BASE_URL`. Ziehst du auf eine andere
 Domain um, druckst du die Etiketten neu.
 
 ### Verlauf: Was kam wann dazu?
+
+![Verlauf](bilder/31-verlauf.png)
 
 Oben rechts auf der Sammlung führt **Verlauf** zu einer Zeitleiste – nach
 Jahren oder für die letzten 24 Monate, das Neueste oben. Jede Zeile zeigt, wie
@@ -462,6 +468,8 @@ dabei selbst**: Der erste offene Eintrag setzt den Sammlungseintrag auf
 der Sammlung stimmt damit, ohne dass du daran denken musst.
 
 ### Die Einkaufsliste
+
+![Fehlteile-Einkaufsliste](bilder/28-fehlteile-liste.png)
 
 Sobald irgendwo etwas fehlt, steht oben auf der Sammlung **Fehlteile (n)**.
 Dort stehen alle offenen Fehlteile auf einer Liste, **je Teil und Farbe
@@ -680,10 +688,10 @@ zwei echte Sets desselben Themas nicht.
 Dafür ist die ganze App gebaut:
 
 **„Welche Sets hat er?"**
-→ Sammlung. Oder im Katalog der Filter „In der Sammlung".
+→ Sammlung. Oder im Katalog der Reiter „In der Sammlung".
 
 **„Welche Sets hat er noch nicht?"**
-→ Katalog, Filter „Fehlt noch". Von dort in zwei Handgriffen auf eine
+→ Katalog, Reiter „Fehlt noch". Von dort in zwei Handgriffen auf eine
 Wunschliste und per Link zu Oma. Bei mehreren Kindern beantwortet der
 Umschalter oben die Frage für jedes einzeln.
 

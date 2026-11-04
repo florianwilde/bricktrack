@@ -155,9 +155,10 @@ eigener Passkey – Handy, Tablet, Laptop.
 3. **Mehr → Standorte**: „Regal Kinderzimmer", „Kiste Keller 3" …
 4. **＋ in der Navigation → Von Hand**: Setnummer, Name, Bild.
 5. Auf der Set-Seite **„Zur Sammlung hinzufügen"**, wenn das Set da ist.
-6. **Katalog → Filter „Fehlt noch"**: Kachel lange drücken, mehrere auswählen,
+6. **Katalog → Reiter „Fehlt noch"**: Kachel lange drücken, mehrere auswählen,
    **„Zur Wunschliste hinzufügen"**.
 7. **Wunschlisten → Liste öffnen → Link kopieren** und verschicken.
+8. Viele Sets auf einmal? **＋ → Inventur**: Kiste für Kiste scannen.
 
 Wie das im Einzelnen aussieht, zeigt die [bebilderte
 Anleitung](docs/ANLEITUNG.md).
@@ -170,7 +171,9 @@ Anleitung](docs/ANLEITUNG.md).
 
 ## Sichern
 
-Alles, was zählt, liegt in **einem** Verzeichnis:
+Die App sichert sich jede Nacht selbst nach `data/backups/` (Datenbank und
+Dateien, die letzten 14 Stände) – das hilft bei Fehlern, nicht bei einem
+Plattenschaden. Für den gehört **ein** Verzeichnis auf ein anderes Gerät:
 
 ```bash
 docker compose stop app
