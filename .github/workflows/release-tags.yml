@@ -27,6 +27,9 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 22
+          # The script needs only Node and git; without this, setup-node sees
+          # "packageManager: pnpm" and tries to cache a pnpm that is not there.
+          package-manager-cache: false
 
       - name: Fehlende Tags und Releases anlegen
         run: |
