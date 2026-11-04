@@ -104,7 +104,7 @@ Am 27.10.2026 gewählt.
       vollständig (Datenbank mit Konten, Dateien als Hardlinks) statt als
       Export, weil der Export Konten bewusst weglässt
 
-## Version 1.0 (abgeschlossen am 04.11.2026)
+## Version 1.0 (v1.0.0, abgeschlossen am 04.11.2026)
 
 - [x] Abhängigkeiten geprüft: zur Laufzeit keine bekannte Lücke; übrig sind
       drei Funde in Entwicklungswerkzeugen (shadcn-CLI, eslint) ohne

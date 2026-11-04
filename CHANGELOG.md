@@ -7,6 +7,19 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-04
+
+Bricktrack ist fertig für den Alltag: Katalog für jeden Hersteller, Sammlung
+mit Standorten, Fehlteilen, Fotos und Verlauf, teilbare Wunschlisten mit
+Reservierung ohne Konto, mehrere Kinder, Passkeys, Inventur per Scanner,
+QR-Etiketten für Kisten – und eine Sicherung, die jede Nacht von selbst läuft.
+Seit 0.8.0 kamen keine neuen Funktionen dazu; diese Version schließt ab, was
+für einen verlässlichen Betrieb fehlte.
+
+Bewusst nicht dabei ist der BrickLink-Preisführer (OAuth1 mit eigener
+Anwendung je Nutzer für eine Zahl, die man in zehn Sekunden eintippt). Preise
+werden von Hand notiert.
+
 ### Geändert
 
 - `update.sh` sagt, von welcher Adresse es den neuen Stand holt – ein Server,
@@ -23,6 +36,8 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
 - Der Smoke-Test deckt jetzt auch Inventur, Fehlteile-Liste, Etiketten und
   Sicherung ab. Der Screenshot-Lauf war seit den Katalog-Reitern (0.6.0) an
   einem mehrdeutigen „Alle"-Knopf hängen geblieben.
+- Die Konfigurationstabelle im README nennt `BACKUP_KEEP` und den Mailserver
+  in der App.
 
 ## [0.8.0] - 2026-11-03
 
@@ -385,7 +400,8 @@ Erste lauffaehige Fassung: Phase 1 vollstaendig, im Docker-Stack verifiziert.
 - Unter Windows scheitert `pnpm build` an fehlenden Symlink-Rechten. Der
   Docker-Build unter Linux ist davon nicht betroffen.
 
-[Unreleased]: https://github.com/florianwilde/bricktrack/compare/v0.8.0...HEAD
+[Unreleased]: https://github.com/florianwilde/bricktrack/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/florianwilde/bricktrack/releases/tag/v1.0.0
 [0.8.0]: https://github.com/florianwilde/bricktrack/releases/tag/v0.8.0
 [0.7.0]: https://github.com/florianwilde/bricktrack/releases/tag/v0.7.0
 [0.6.0]: https://github.com/florianwilde/bricktrack/releases/tag/v0.6.0
